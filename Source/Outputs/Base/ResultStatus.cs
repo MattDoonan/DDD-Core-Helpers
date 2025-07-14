@@ -1,4 +1,5 @@
-﻿using Outputs.Helpers;
+﻿using Outputs.Base.Interfaces;
+using Outputs.Helpers;
 
 namespace Outputs.Base;
 
@@ -51,7 +52,7 @@ public abstract class ResultStatus : IResultStatus
         ErrorReason = because;
     }
 
-    protected static bool AllSucceeded(params ResultStatus[] results)
+    protected static bool AllSucceeded(params IResultStatus[] results)
     {
         return results.All(r => r.Successful);
     }

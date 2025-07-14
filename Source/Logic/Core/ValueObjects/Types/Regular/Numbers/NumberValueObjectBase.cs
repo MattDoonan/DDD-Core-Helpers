@@ -2,9 +2,9 @@
 using Core.Results;
 using Core.ValueObjects.Types.Regular.Base;
 
-namespace Core.ValueObjects.Types.Regular.Cases;
+namespace Core.ValueObjects.Types.Regular.Numbers;
 
-public abstract class NumberValueObjectBase<TValue, T>(TValue value) : ValueObjectBase<TValue>(value), INumberValueObject<TValue, T>
+public abstract class NumberValueObjectBase<TValue, T>(TValue value) : ValueObjectBase<TValue>(value)
     where TValue : INumber<TValue>, IComparable<TValue>, IEquatable<TValue>
     where T : class, IValueObject<TValue, T>
 {

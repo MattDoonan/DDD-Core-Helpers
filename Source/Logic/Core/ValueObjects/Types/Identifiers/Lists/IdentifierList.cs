@@ -3,37 +3,33 @@ using Core.ValueObjects.Types.Identifiers.Base;
 
 namespace Core.ValueObjects.Types.Identifiers.Lists;
 
-public class IdentifierList<TValue, T> : IIdentifierList<TValue, T> 
+public class IdentifierList<TValue, T>(List<T> values) : IIdentifierList<TValue, T>
     where TValue : IComparable<TValue>, IEquatable<TValue>
     where T : class, IIdentifier<TValue, T>
 {
-    public List<T> Values { get; }
+    public List<T> Values { get; } = values;
 
-    public IdentifierList()
+    public IdentifierList() : this([])
     {
-        Values = [];
-    }
-    
-    public IdentifierList(List<T> values)
-    {
-        Values = values;
     }
 
-    public EntityResult Add(T identifier)
+    public ValueObjectResult Add(T identifier)
     {
         var contains = Get(identifier);
         if (contains.Successful)
         {
-            return EntityResult.Fail("the identifier already exists in the list");
+            return ValueObjectResult.Fail("the identifier already exists in the list");
         }
         Values.Add(identifier);
-        return EntityResult.Pass();
+        return ValueObjectResult.Pass($"Successfully added the identifier of type {typeof(T).Name}");
     }
 
-    public EntityResult Remove(T identifier)
+    public ValueObjectResult Remove(T identifier)
     {
        var removed = Values.Remove(identifier); 
-       return removed ? EntityResult.Pass() : EntityResult.Fail("the identifier does not exist in the list");
+       return removed 
+           ? ValueObjectResult.Pass($"Successfully removed {typeof(T)} from list") 
+           : ValueObjectResult.Fail("the identifier does not exist in the list");
     }
 
     public ValueObjectResult<T> Get(T identifier)
@@ -45,8 +41,8 @@ public class IdentifierList<TValue, T> : IIdentifierList<TValue, T>
     {
         var existingItem = Values.FirstOrDefault(id => id.Value.Equals(value));
         return existingItem == null
-            ? ValueObjectResult<T>.Fail("the identifier does not exist in the list")
-            : ValueObjectResult<T>.Pass(existingItem);
+            ? ValueObjectResult.Fail<T>("the identifier does not exist in the list")
+            : ValueObjectResult.Pass(existingItem);
     }
 
     public void OrderAsc()

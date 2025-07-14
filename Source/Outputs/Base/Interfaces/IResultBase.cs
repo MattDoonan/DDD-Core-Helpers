@@ -1,11 +1,13 @@
-﻿namespace Outputs.Base;
+﻿namespace Outputs.Base.Interfaces;
 
 public interface IResultStatusBase<TResult> 
     where TResult : IResultStatus
 {
     static abstract TResult Pass(string successLog = "");
     static abstract TResult Fail(string because = "");
-    static abstract TResult AllPass(params ResultStatus[] result);
+    static abstract TResult AllPass(params TResult[] result);
+    static abstract TResult RemoveValue(IResultStatus status);
+
 }
 
 public interface IResultValueBase<in T, out TResultValue>

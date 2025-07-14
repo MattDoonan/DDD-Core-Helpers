@@ -1,7 +1,7 @@
 ﻿using Core.Results;
 using Core.ValueObjects.Types.Regular.Base;
 
-namespace Core.ValueObjects.Types.Regular.Cases;
+namespace Core.ValueObjects.Types.Regular.Strings;
 
 public interface IStringValueObject<T> : IValueObject
     where T : class, IValueObject<string, T>

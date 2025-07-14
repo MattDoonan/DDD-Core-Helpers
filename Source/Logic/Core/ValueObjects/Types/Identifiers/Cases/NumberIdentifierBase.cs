@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Core.ValueObjects.Types.Identifiers.Base;
 using Core.ValueObjects.Types.Identifiers.Lists;
-using Core.ValueObjects.Types.Regular.Cases;
+using Core.ValueObjects.Types.Regular.Numbers;
 
 namespace Core.ValueObjects.Types.Identifiers.Cases;
 

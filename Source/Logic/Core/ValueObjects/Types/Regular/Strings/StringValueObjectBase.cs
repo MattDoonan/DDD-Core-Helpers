@@ -1,9 +1,9 @@
 ﻿using Core.Results;
 using Core.ValueObjects.Types.Regular.Base;
 
-namespace Core.ValueObjects.Types.Regular.Cases;
+namespace Core.ValueObjects.Types.Regular.Strings;
 
-public abstract class StringValueObjectBase<T>(string value) : ValueObjectBase<string>(value), IStringValueObject<T>
+public abstract class StringValueObjectBase<T>(string value) : ValueObjectBase<string>(value)
     where T : class, IValueObject<string, T>
 {
     public ValueObjectResult<T> ToLower(StringValueObjectBase<T> value)

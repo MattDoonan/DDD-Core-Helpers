@@ -1,4 +1,4 @@
-﻿namespace Outputs.Base;
+﻿namespace Outputs.Base.Interfaces;
 
 public interface IResultFailure
 {

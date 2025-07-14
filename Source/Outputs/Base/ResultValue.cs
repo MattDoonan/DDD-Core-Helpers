@@ -1,6 +1,8 @@
-﻿namespace Outputs.Base;
+﻿using Outputs.Base.Interfaces;
 
-public abstract class ResultValueBase<T> : ResultStatus, IResultValue<T>
+namespace Outputs.Base;
+
+public abstract class ResultValue<T> : ResultStatus, IResultValue<T>
 {
     public T Value
     {
@@ -16,12 +18,12 @@ public abstract class ResultValueBase<T> : ResultStatus, IResultValue<T>
     
     private readonly T? _value;
     
-    protected ResultValueBase(T value, string successLog) : base(successLog)
+    protected ResultValue(T value, string successLog) : base(successLog)
     {
         _value = value;
     }
     
-    protected ResultValueBase(string baseMessage, string because) : base(baseMessage, because)
+    protected ResultValue(string baseMessage, string because) : base(baseMessage, because)
     {
         
     }

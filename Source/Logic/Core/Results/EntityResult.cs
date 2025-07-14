@@ -1,5 +1,6 @@
-﻿using Core.Entities.Base;
+﻿using Core.Entities.Interfaces;
 using Outputs.Base;
+using Outputs.Base.Interfaces;
 
 namespace Core.Results;
 
@@ -20,20 +21,32 @@ public class EntityResult : ResultStatus, IResultStatusBase<EntityResult>
         return new EntityResult(successLog);
     }
 
+    public static EntityResult<T> Pass<T>(T value, string successLog = "")
+        where T : class, IEntity
+    {
+        return EntityResult<T>.Pass(value, successLog);
+    }
+    
     public static EntityResult Fail(string because)
     {
         return new EntityResult(BaseErrorMessage, because);
     }
-
-    public static EntityResult AllPass(params ResultStatus[] result)
+    
+    public static EntityResult<T> Fail<T>(string because)
+        where T : class, IEntity
     {
-        var succeeded = AllSucceeded(result);
-        return succeeded 
-            ? new EntityResult("All entities are successful")
-            : new EntityResult("Error while checking entity results", "all entities are not successful");
+        return EntityResult<T>.Fail(because);
     }
 
-    public static EntityResult Create(IResultStatus status)
+    public static EntityResult AllPass(params EntityResult[] result)
+    {
+        var succeeded = AllSucceeded(result.Cast<IResultStatus>().ToArray());
+        return succeeded 
+            ? new EntityResult("All entity results were successful")
+            : new EntityResult("Error while checking entity results", "not all entity results were successful");
+    }
+
+    public static EntityResult RemoveValue(IResultStatus status)
     {
         return status.Failed 
             ? new EntityResult(BaseErrorMessage, status.ErrorReason)
@@ -41,7 +54,7 @@ public class EntityResult : ResultStatus, IResultStatusBase<EntityResult>
     }
 }
 
-public class EntityResult<T> : ResultValueBase<T>, IResultValueBase<T, EntityResult<T>>
+public class EntityResult<T> : ResultValue<T>, IResultValueBase<T, EntityResult<T>>
     where T : class, IEntity
 {
     private EntityResult(T value, string successLog) : base(value, successLog)
@@ -64,6 +77,6 @@ public class EntityResult<T> : ResultValueBase<T>, IResultValueBase<T, EntityRes
 
     public EntityResult ToStatus()
     {
-        return EntityResult.Create(this);
+        return EntityResult.RemoveValue(this);
     }
 }

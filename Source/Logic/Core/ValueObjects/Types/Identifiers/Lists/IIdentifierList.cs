@@ -7,8 +7,8 @@ public interface IIdentifierList<in TValue, T>
     where T : class, IIdentifier
 {
     List<T> Values { get; }
-    EntityResult Add(T identifier);
-    EntityResult Remove(T identifier);
+    ValueObjectResult Add(T identifier);
+    ValueObjectResult Remove(T identifier);
     ValueObjectResult<T> Get(T identifier);
     ValueObjectResult<T> Get(TValue identifier);
     void OrderAsc();

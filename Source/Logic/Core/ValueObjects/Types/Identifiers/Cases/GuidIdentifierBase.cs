@@ -16,6 +16,6 @@ public abstract class GuidIdentifierBase<T>(Guid value) : IdentifierBase<Guid, T
     {
         return Guid.TryParse(value, out var guid) 
             ? T.Create(guid) 
-            : ValueObjectResult<T>.Fail("string failed to parse to Guid");
+            : ValueObjectResult.Fail<T>("string failed to parse to Guid");
     }
 }

@@ -2,7 +2,7 @@
 using Core.Results;
 using Core.ValueObjects.Types.Regular.Base;
 
-namespace Core.ValueObjects.Types.Regular.Cases;
+namespace Core.ValueObjects.Types.Regular.Numbers;
 
 public interface INumberValueObject<in TValue, T> : IValueObject
     where TValue : INumber<TValue>

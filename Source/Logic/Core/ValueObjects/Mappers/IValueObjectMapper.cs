@@ -14,7 +14,7 @@ public interface IValueObjectToValueMapper<TValue, in T>
     where TValue : IComparable<TValue>, IEquatable<TValue>
     where T : class, IValueObject<TValue, T>
 {
-    ValueResult<TValue> Map(T value);
+    MapperResult<TValue> Map(T value);
 }
 
 public interface IValueObjectMapper<TValue, T> : IValueToValueObjectMapper<TValue, T>, IValueObjectToValueMapper<TValue, T>
