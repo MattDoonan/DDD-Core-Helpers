@@ -48,7 +48,7 @@ public class EntityResult : ResultStatus, IResultStatusBase<EntityResult>
 
     public static EntityResult RemoveValue(IResultStatus status)
     {
-        return status.Failed 
+        return status.IsFailure 
             ? new EntityResult(BaseErrorMessage, status.ErrorReason)
             : new EntityResult(status.SuccessLog);
     }

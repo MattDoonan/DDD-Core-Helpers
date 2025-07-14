@@ -10,6 +10,6 @@ public abstract class IdentifierBase<TValue, T>(TValue value) : ValueObjectBase<
 
     public bool IsInList(IIdentifierList<TValue, T> identifierList)
     {
-        return identifierList.Get(Value).Successful;
+        return identifierList.Get(Value).IsSuccessful;
     }
 }

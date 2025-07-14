@@ -16,7 +16,7 @@ public class IdentifierList<TValue, T>(List<T> values) : IIdentifierList<TValue,
     public ValueObjectResult Add(T identifier)
     {
         var contains = Get(identifier);
-        if (contains.Successful)
+        if (contains.IsSuccessful)
         {
             return ValueObjectResult.Fail("the identifier already exists in the list");
         }

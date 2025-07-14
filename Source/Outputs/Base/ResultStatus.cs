@@ -5,10 +5,10 @@ namespace Outputs.Base;
 
 public abstract class ResultStatus : IResultStatus
 {
-    public bool Successful => !Failed;
-    public string SuccessLog { get; }
-    public bool Failed { get; }
-    public string ErrorReason { get; }
+    public bool IsSuccessful => !IsFailure;
+    public string SuccessLog { get; } = string.Empty;
+    public bool IsFailure { get; }
+    public string ErrorReason { get; } = string.Empty;
     public string ErrorMessage
     {
         get
@@ -25,7 +25,7 @@ public abstract class ResultStatus : IResultStatus
 
     private readonly string _baseFailureMessage;
     
-    protected ResultStatus(string baseMessage, string because) : this(true, failureMessageStarter: baseMessage, because: because)
+    protected ResultStatus(string failureMessageStarter, string because) : this(true, failureMessageStarter: failureMessageStarter, because: because)
     {
         
     }
@@ -42,7 +42,7 @@ public abstract class ResultStatus : IResultStatus
         string because = ""
     )
     {
-        Failed = hasFailed;
+        IsFailure = hasFailed;
         if (!hasFailed)
         {
             SuccessLog = successLog;
@@ -54,6 +54,6 @@ public abstract class ResultStatus : IResultStatus
 
     protected static bool AllSucceeded(params IResultStatus[] results)
     {
-        return results.All(r => r.Successful);
+        return results.All(r => r.IsSuccessful);
     }
 }

@@ -35,7 +35,7 @@ public class MapperResult :  ResultStatus, IResultStatusBase<MapperResult>
 
     public static MapperResult RemoveValue(IResultStatus status)
     {
-        return status.Failed 
+        return status.IsFailure 
             ? new MapperResult(BaseErrorMessage, status.ErrorReason)
             : new MapperResult(status.SuccessLog); 
     }

@@ -2,7 +2,7 @@
 
 public interface IResultFailure
 {
-    public bool Failed { get; }
+    public bool IsFailure { get; }
 
     public string ErrorMessage { get; }
     public string ErrorReason { get; }
@@ -12,6 +12,6 @@ public interface IResultFailure
 
 public interface IResultStatus : IResultFailure
 {
-    public bool Successful => !Failed;
+    public bool IsSuccessful => !IsFailure;
     public string SuccessLog { get; }
 }

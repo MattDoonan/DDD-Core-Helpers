@@ -12,6 +12,6 @@ public class NumberIdentifierBase<TValue, T>(TValue value) : NumberValueObjectBa
 {
     public bool IsInList(IIdentifierList<TValue, T> identifierList)
     {
-        return identifierList.Get(Value).Successful;
+        return identifierList.Get(Value).IsSuccessful;
     }
 }

@@ -48,7 +48,7 @@ public class ValueObjectResult : ResultStatus, IResultStatusBase<ValueObjectResu
 
     public static ValueObjectResult RemoveValue(IResultStatus status)
     {
-        return status.Failed 
+        return status.IsFailure 
             ? new ValueObjectResult(BaseErrorMessage, status.ErrorReason)
             : new ValueObjectResult(status.SuccessLog); 
     }
