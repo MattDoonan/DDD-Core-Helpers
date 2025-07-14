@@ -1,0 +1,7 @@
+﻿# Build results
+bin/
+obj/
+.idea/
+.vscode/
+.vs/
+*.user

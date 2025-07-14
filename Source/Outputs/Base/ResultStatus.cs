@@ -1,0 +1,58 @@
+﻿using Outputs.Helpers;
+
+namespace Outputs.Base;
+
+public abstract class ResultStatus : IResultStatus
+{
+    public bool Successful => !Failed;
+    public string SuccessLog { get; }
+    public bool Failed { get; }
+    public string ErrorReason { get; }
+    public string ErrorMessage
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(_baseFailureMessage))
+            {
+                return string.Empty;
+            }
+            return string.IsNullOrWhiteSpace(ErrorReason) 
+                ? _baseFailureMessage 
+                : ResultErrorMessage.Create(_baseFailureMessage, ErrorReason);
+        }
+    }
+
+    private readonly string _baseFailureMessage;
+    
+    protected ResultStatus(string baseMessage, string because) : this(true, failureMessageStarter: baseMessage, because: because)
+    {
+        
+    }
+    
+    protected ResultStatus(string successLog) : this(false, successLog: successLog)
+    {
+        
+    }
+    
+    private ResultStatus(
+        bool hasFailed, 
+        string successLog = "", 
+        string failureMessageStarter = "", 
+        string because = ""
+    )
+    {
+        Failed = hasFailed;
+        if (!hasFailed)
+        {
+            SuccessLog = successLog;
+            return;
+        }
+        _baseFailureMessage = failureMessageStarter;
+        ErrorReason = because;
+    }
+
+    protected static bool AllSucceeded(params ResultStatus[] results)
+    {
+        return results.All(r => r.Successful);
+    }
+}
