@@ -2,10 +2,16 @@
 
 public static class ResultErrorMessage
 {
-    public static string Create(string sentenceStarter, string? because)
+    public static bool Create(string sentenceStarter, string? because, out string errorLog)
     {
-        return string.IsNullOrWhiteSpace(because) 
+        errorLog = string.Empty;
+        if (string.IsNullOrWhiteSpace(sentenceStarter))
+        {
+            return false;
+        }
+        errorLog = string.IsNullOrWhiteSpace(because) 
             ? sentenceStarter 
             : $"{sentenceStarter} because {because}";
+        return true;
     }
 }

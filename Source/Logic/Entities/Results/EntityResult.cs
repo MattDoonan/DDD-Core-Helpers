@@ -7,6 +7,11 @@ namespace Entities.Results;
 public class EntityResult : ResultStatus, IResultStatusBase<EntityResult>
 {
     private const string BaseErrorMessage = "Error during entity opperation";
+    
+    private EntityResult(IResultStatus result) : base(result)
+    {
+    }
+    
     private EntityResult(string successLog) : base(successLog)
     {
     }
@@ -40,17 +45,12 @@ public class EntityResult : ResultStatus, IResultStatusBase<EntityResult>
 
     public static EntityResult AllPass(params EntityResult[] result)
     {
-        var succeeded = AllSucceeded(result.Cast<IResultStatus>().ToArray());
-        return succeeded 
-            ? new EntityResult("All entity results were successful")
-            : new EntityResult("Error while checking entity results", "not all entity results were successful");
+        return AllPass<EntityResult>(result.Cast<IResultStatus>().ToArray());
     }
 
     public static EntityResult RemoveValue(IResultStatus status)
     {
-        return status.IsFailure 
-            ? new EntityResult(BaseErrorMessage, status.ErrorReason)
-            : new EntityResult(status.SuccessLog);
+        return new EntityResult(status);
     }
 }
 

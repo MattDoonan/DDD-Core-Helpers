@@ -15,11 +15,6 @@ public class ResultStatusTests
         public TestResultStatus(string successLog) : base(successLog)
         {
         }
-
-        public static bool AllSucceededTest(params IResultStatus[] results)
-        {
-            return AllSucceeded(results);
-        }
     }
 
     [Fact]
@@ -29,8 +24,8 @@ public class ResultStatusTests
         var result = new TestResultStatus(expectedLog);
         Assert.True(result.IsSuccessful);
         Assert.False(result.IsFailure);
-        Assert.Equal(expectedLog, result.SuccessLog);
-        Assert.Empty(result.ErrorMessage);
+        Assert.Empty(result.SuccessLogs);
+        Assert.Empty(result.ErrorMessages);
     }
     
     [Fact]
@@ -40,8 +35,8 @@ public class ResultStatusTests
         var result = new TestResultStatus(expectedLog);
         Assert.True(result.IsSuccessful);
         Assert.False(result.IsFailure);
-        Assert.Equal(expectedLog, result.SuccessLog);
-        Assert.Empty(result.ErrorMessage);
+        Assert.Contains(expectedLog, result.SuccessLogs);
+        Assert.Empty(result.ErrorMessages);
     }
     
     [Fact]
@@ -52,12 +47,10 @@ public class ResultStatusTests
         var result = new TestResultStatus(failureMessageStarter, because);
         Assert.False(result.IsSuccessful);
         Assert.True(result.IsFailure);
-        Assert.Equal(because, result.ErrorReason);
-        Assert.Empty(result.SuccessLog);
+        Assert.Empty(result.SuccessLogs);
     }
     
-    [Theory]
-    [InlineData("", "", "")]
+    [Theory] 
     [InlineData("This passed the test", "", "This passed the test")]
     [InlineData("This passed the test", "we want to test the failure", "This passed the test because we want to test the failure")]
     public void IHaveAFailedResult_WithAValidErrorMessage_ShouldFormatErrorMessage(string failureMessageStarter, string because, string expectedErrorMessage)
@@ -65,7 +58,7 @@ public class ResultStatusTests
         var result = new TestResultStatus(failureMessageStarter, because);
         Assert.False(result.IsSuccessful);
         Assert.True(result.IsFailure);
-        Assert.Equal(expectedErrorMessage, result.ErrorMessage);
+        Assert.Contains(expectedErrorMessage, result.ErrorMessages);
     }
     
 }

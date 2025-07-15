@@ -6,25 +6,11 @@ namespace Outputs.Base;
 public abstract class ResultStatus : IResultStatus
 {
     public bool IsSuccessful => !IsFailure;
-    public string SuccessLog { get; } = string.Empty;
+    public List<string> SuccessLogs { get; } = [];
     public bool IsFailure { get; }
-    public string ErrorReason { get; } = string.Empty;
-    public string ErrorMessage
-    {
-        get
-        {
-            if (string.IsNullOrWhiteSpace(_baseFailureMessage))
-            {
-                return string.Empty;
-            }
-            return string.IsNullOrWhiteSpace(ErrorReason) 
-                ? _baseFailureMessage 
-                : ResultErrorMessage.Create(_baseFailureMessage, ErrorReason);
-        }
-    }
+    public List<string> ErrorMessages { get; } = [];
 
-    private readonly string _baseFailureMessage;
-    
+
     protected ResultStatus(string failureMessageStarter, string because) : this(true, failureMessageStarter: failureMessageStarter, because: because)
     {
         
@@ -33,6 +19,13 @@ public abstract class ResultStatus : IResultStatus
     protected ResultStatus(string successLog) : this(false, successLog: successLog)
     {
         
+    }
+    
+    protected ResultStatus(IResultStatus result)
+    {
+        IsFailure = result.IsFailure;
+        SuccessLogs.AddRange(result.SuccessLogs);
+        ErrorMessages.AddRange(result.ErrorMessages);
     }
     
     private ResultStatus(
@@ -45,15 +38,32 @@ public abstract class ResultStatus : IResultStatus
         IsFailure = hasFailed;
         if (!hasFailed)
         {
-            SuccessLog = successLog;
+            if (!string.IsNullOrWhiteSpace(successLog))
+            {
+                SuccessLogs.Add(successLog);
+            }
             return;
         }
-        _baseFailureMessage = failureMessageStarter;
-        ErrorReason = because;
+        if (ResultErrorMessage.Create(failureMessageStarter, because, out var errorMessage))
+        {
+            ErrorMessages.Add(errorMessage);
+        }
     }
 
-    protected static bool AllSucceeded(params IResultStatus[] results)
+    protected static TResult AllPass<TResult>(params IResultStatus[] results)
+        where TResult : IResultStatusBase<TResult>, IResultStatus
     {
-        return results.All(r => r.IsSuccessful);
+        var allSuccessful = results.All(r => r.IsSuccessful);
+        return allSuccessful
+            ? CreateResult(TResult.Pass($"All {nameof(TResult)} were successful"), results)
+            : CreateResult(TResult.Fail($"Not all {nameof(TResult)} were successful"), results);
+    }
+
+    private static TResult CreateResult<TResult>(TResult result, IResultStatus[] results)
+        where TResult : IResultStatusBase<TResult>, IResultStatus
+    {
+        result.SuccessLogs.AddRange(results.SelectMany(r => r.SuccessLogs));
+        result.ErrorMessages.AddRange(results.SelectMany(r => r.ErrorMessages));
+        return result;
     }
 }

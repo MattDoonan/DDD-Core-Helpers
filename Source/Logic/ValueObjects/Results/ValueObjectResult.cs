@@ -8,6 +8,10 @@ public class ValueObjectResult : ResultStatus, IResultStatusBase<ValueObjectResu
 {
     private const string BaseErrorMessage = "Error during value object opperation";
 
+    private ValueObjectResult(IResultStatus resultStatus) : base(resultStatus)
+    {
+    }
+    
     private ValueObjectResult(string successLog) : base(successLog)
     {
     }
@@ -40,17 +44,12 @@ public class ValueObjectResult : ResultStatus, IResultStatusBase<ValueObjectResu
 
     public static ValueObjectResult AllPass(params ValueObjectResult[] result)
     {
-        var succeeded = AllSucceeded(result.Cast<IResultStatus>().ToArray());
-        return succeeded 
-            ? new ValueObjectResult("All value objects results were successful")
-            : new ValueObjectResult("Error checking value object results", "not all value object results were successful");
+        return AllPass<ValueObjectResult>(result.Cast<IResultStatus>().ToArray());
     }
 
     public static ValueObjectResult RemoveValue(IResultStatus status)
     {
-        return status.IsFailure 
-            ? new ValueObjectResult(BaseErrorMessage, status.ErrorReason)
-            : new ValueObjectResult(status.SuccessLog); 
+        return new ValueObjectResult(status);
     }
 }
 

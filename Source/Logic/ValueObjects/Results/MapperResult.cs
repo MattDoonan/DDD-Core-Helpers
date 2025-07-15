@@ -6,12 +6,16 @@ namespace ValueObjects.Results;
 public class MapperResult :  ResultStatus, IResultStatusBase<MapperResult>
 {
     private const string BaseErrorMessage = "Failed to map result";
+
+    private MapperResult(IResultStatus resultStatus) : base(resultStatus)
+    {
+    }
     
-    public MapperResult(string baseMessage, string because) : base(baseMessage, because)
+    private MapperResult(string baseMessage, string because) : base(baseMessage, because)
     {
     }
 
-    public MapperResult(string successLog) : base(successLog)
+    private MapperResult(string successLog) : base(successLog)
     {
     }
 
@@ -27,17 +31,12 @@ public class MapperResult :  ResultStatus, IResultStatusBase<MapperResult>
 
     public static MapperResult AllPass(params MapperResult[] result)
     {
-        var succeeded = AllSucceeded(result.Cast<IResultStatus>().ToArray());
-        return succeeded
-            ? new MapperResult("All mapper results were successful")
-            : new MapperResult("Error checking mapper results", "not all map results were successful");
+        return AllPass<MapperResult>(result.Cast<IResultStatus>().ToArray());
     }
 
     public static MapperResult RemoveValue(IResultStatus status)
     {
-        return status.IsFailure 
-            ? new MapperResult(BaseErrorMessage, status.ErrorReason)
-            : new MapperResult(status.SuccessLog); 
+        return new MapperResult(status);
     }
 }
 

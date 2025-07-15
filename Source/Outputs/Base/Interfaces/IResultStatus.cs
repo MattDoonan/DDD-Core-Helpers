@@ -3,9 +3,7 @@
 public interface IResultFailure
 {
     public bool IsFailure { get; }
-
-    public string ErrorMessage { get; }
-    public string ErrorReason { get; }
+    public List<string> ErrorMessages { get; }
 
 }
 
@@ -13,5 +11,5 @@ public interface IResultFailure
 public interface IResultStatus : IResultFailure
 {
     public bool IsSuccessful => !IsFailure;
-    public string SuccessLog { get; }
+    public List<string> SuccessLogs { get; }
 }

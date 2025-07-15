@@ -27,5 +27,10 @@ public abstract class ResultValue<T> : ResultStatus, IResultValue<T>
     {
         
     }
+
+    public string GetTypeOf()
+    {
+        return typeof(T).Name;
+    }
     
 }
