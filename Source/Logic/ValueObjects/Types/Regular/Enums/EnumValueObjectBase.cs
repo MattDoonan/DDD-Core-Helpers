@@ -4,7 +4,7 @@ using ValueObjects.Types.Regular.Base;
 
 namespace ValueObjects.Types.Regular.Enums;
 
-public abstract class EnumValueObjectBase<TEnum, TConvert, T, TMapper> : IEnumValueObject<TEnum, T>
+public abstract class EnumValueObjectBase<TEnum, TConvert, T, TMapper>(TEnum value) : ValueObjectBase<TEnum, T>(value), IEnumValueObject<TEnum, T>
     where TEnum : Enum, IComparable<TEnum>, IEquatable<TEnum>
     where TConvert : IComparable<TConvert>, IEquatable<TConvert>
     where T : class, IValueObject<TEnum, T>

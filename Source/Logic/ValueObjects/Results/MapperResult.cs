@@ -3,7 +3,7 @@ using Outputs.Base.Interfaces;
 
 namespace ValueObjects.Results;
 
-public class MapperResult :  ResultStatus, IResultStatusBase<MapperResult>
+public class MapperResult : BasicResult<MapperResult>, IResultStatusBase<MapperResult>
 {
     private const string BaseErrorMessage = "Failed to map result";
 
@@ -23,15 +23,20 @@ public class MapperResult :  ResultStatus, IResultStatusBase<MapperResult>
     {
         return new MapperResult(successLog);
     }
+    
+    public static MapperResult<T> Pass<T>(T value, string successLog = "")
+    {
+        return MapperResult<T>.Pass(value, successLog);
+    }
 
     public static MapperResult Fail(string because = "")
     {
         return new MapperResult(BaseErrorMessage, because);
     }
 
-    public static MapperResult AllPass(params MapperResult[] result)
+    public static MapperResult<T> Fail<T>(string because = "")
     {
-        return AllPass<MapperResult>(result.Cast<IResultStatus>().ToArray());
+        return MapperResult<T>.Fail(because);
     }
 
     public static MapperResult RemoveValue(IResultStatus status)
@@ -40,7 +45,7 @@ public class MapperResult :  ResultStatus, IResultStatusBase<MapperResult>
     }
 }
 
-public class MapperResult<T> :  ResultValue<T>, IResultValueBase<T, MapperResult<T>>
+public class MapperResult<T> :  ResultValue<T>
 {
     private MapperResult(T value, string successLog) : base(value, successLog)
     {
@@ -50,12 +55,12 @@ public class MapperResult<T> :  ResultValue<T>, IResultValueBase<T, MapperResult
     {
     }
 
-    public static MapperResult<T> Pass(T value, string successLog = "")
+    internal static MapperResult<T> Pass(T value, string successLog = "")
     {
         return new MapperResult<T>(value, successLog);
     }
 
-    public static MapperResult<T> Fail(string because = "")
+    internal static MapperResult<T> Fail(string because = "")
     {
         return new MapperResult<T>(because);
     }

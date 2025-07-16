@@ -4,7 +4,7 @@ using ValueObjects.Types.Regular.Base;
 
 namespace ValueObjects.Results;
 
-public class ValueObjectResult : ResultStatus, IResultStatusBase<ValueObjectResult>
+public class ValueObjectResult : BasicResult<ValueObjectResult>, IResultStatusBase<ValueObjectResult>
 {
     private const string BaseErrorMessage = "Error during value object opperation";
 
@@ -35,16 +35,11 @@ public class ValueObjectResult : ResultStatus, IResultStatusBase<ValueObjectResu
     {
         return new ValueObjectResult(BaseErrorMessage, because);
     }
-    
+
     public static ValueObjectResult<T> Fail<T>(string because = "")
         where T : class, IValueObject
     {
         return ValueObjectResult<T>.Fail(because);
-    }
-
-    public static ValueObjectResult AllPass(params ValueObjectResult[] result)
-    {
-        return AllPass<ValueObjectResult>(result.Cast<IResultStatus>().ToArray());
     }
 
     public static ValueObjectResult RemoveValue(IResultStatus status)
@@ -54,7 +49,7 @@ public class ValueObjectResult : ResultStatus, IResultStatusBase<ValueObjectResu
 }
 
 
-public class ValueObjectResult<T> : ResultValue<T>, IResultValueBase<T, ValueObjectResult<T>> 
+public class ValueObjectResult<T> : ResultValue<T>
   where T : class, IValueObject
 {
     private ValueObjectResult(T value, string successLog) : base(value, successLog)
@@ -65,12 +60,12 @@ public class ValueObjectResult<T> : ResultValue<T>, IResultValueBase<T, ValueObj
     {
     }
 
-    public static ValueObjectResult<T> Pass(T value, string successLog = "")
+    internal static ValueObjectResult<T> Pass(T value, string successLog = "")
     {
         return new ValueObjectResult<T>(value, successLog);
     }
 
-    public static ValueObjectResult<T> Fail(string because = "")
+    internal static ValueObjectResult<T> Fail(string because = "")
     {
         return new ValueObjectResult<T>(because);
     }

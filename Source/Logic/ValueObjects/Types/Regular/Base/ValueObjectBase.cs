@@ -1,7 +1,8 @@
 ﻿namespace ValueObjects.Types.Regular.Base;
 
-public abstract class ValueObjectBase<TValue>(TValue value) : IValue<ValueObjectBase<TValue>>
+public abstract class ValueObjectBase<TValue, T>(TValue value) : IValue<T>
     where TValue : IComparable<TValue>, IEquatable<TValue>
+    where T : class, IValueObject<TValue, T>
 {
     public TValue Value { get; } = value;
 
@@ -12,24 +13,24 @@ public abstract class ValueObjectBase<TValue>(TValue value) : IValue<ValueObject
 
     public virtual int CompareTo(object? obj)
     {
-        if (obj is ValueObjectBase<TValue> otherValue)
+        if (obj is T otherValue)
         {
             return CompareTo(otherValue);
         }
         throw new ArgumentException($"Object is not of the correct type {typeof(TValue)}");
     }
 
-    public virtual int CompareTo(ValueObjectBase<TValue>? other)
+    public virtual int CompareTo(T? other)
     {
         return other is null ? 1 : Value.CompareTo(other.Value);
     }
 
     public override bool Equals(object? obj)
     {
-        return obj is ValueObjectBase<TValue> otherValue && Equals(otherValue);
+        return obj is T otherValue && Equals(otherValue);
     }
 
-    public virtual bool Equals(ValueObjectBase<TValue>? other)
+    public virtual bool Equals(T? other)
     {
         return other is not null && Value.Equals(other.Value);
     }
@@ -39,12 +40,12 @@ public abstract class ValueObjectBase<TValue>(TValue value) : IValue<ValueObject
         return Value.GetHashCode();
     }
 
-    public static bool operator ==(ValueObjectBase<TValue> left, ValueObjectBase<TValue> right)
+    public static bool operator ==(ValueObjectBase<TValue, T> left, T right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(ValueObjectBase<TValue> left, ValueObjectBase<TValue> right)
+    public static bool operator !=(ValueObjectBase<TValue, T> left, T right)
     {
         return !(left == right);
     }

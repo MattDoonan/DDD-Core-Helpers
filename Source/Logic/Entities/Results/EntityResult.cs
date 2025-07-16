@@ -4,7 +4,7 @@ using Outputs.Base.Interfaces;
 
 namespace Entities.Results;
 
-public class EntityResult : ResultStatus, IResultStatusBase<EntityResult>
+public class EntityResult : BasicResult<EntityResult>, IResultStatusBase<EntityResult>
 {
     private const string BaseErrorMessage = "Error during entity opperation";
     
@@ -43,18 +43,13 @@ public class EntityResult : ResultStatus, IResultStatusBase<EntityResult>
         return EntityResult<T>.Fail(because);
     }
 
-    public static EntityResult AllPass(params EntityResult[] result)
-    {
-        return AllPass<EntityResult>(result.Cast<IResultStatus>().ToArray());
-    }
-
     public static EntityResult RemoveValue(IResultStatus status)
     {
         return new EntityResult(status);
     }
 }
 
-public class EntityResult<T> : ResultValue<T>, IResultValueBase<T, EntityResult<T>>
+public class EntityResult<T> : ResultValue<T>
     where T : class, IEntity
 {
     private EntityResult(T value, string successLog) : base(value, successLog)
@@ -65,12 +60,12 @@ public class EntityResult<T> : ResultValue<T>, IResultValueBase<T, EntityResult<
     {
     }
 
-    public static EntityResult<T> Pass(T value, string successLog = "")
+    internal static EntityResult<T> Pass(T value, string successLog = "")
     {
        return new EntityResult<T>(value, successLog);
     }
 
-    public static EntityResult<T> Fail(string because)
+    internal static EntityResult<T> Fail(string because)
     {
         return new EntityResult<T>(because);
     }

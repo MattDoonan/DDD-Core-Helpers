@@ -4,7 +4,7 @@ using ValueObjects.Types.Regular.Base;
 
 namespace ValueObjects.Types.Regular.Numbers;
 
-public abstract class NumberValueObjectBase<TValue, T>(TValue value) : ValueObjectBase<TValue>(value)
+public abstract class NumberValueObjectBase<TValue, T>(TValue value) : ValueObjectBase<TValue, T>(value)
     where TValue : INumber<TValue>, IComparable<TValue>, IEquatable<TValue>
     where T : class, IValueObject<TValue, T>
 {

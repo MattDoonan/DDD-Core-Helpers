@@ -49,21 +49,4 @@ public abstract class ResultStatus : IResultStatus
             ErrorMessages.Add(errorMessage);
         }
     }
-
-    protected static TResult AllPass<TResult>(params IResultStatus[] results)
-        where TResult : IResultStatusBase<TResult>, IResultStatus
-    {
-        var allSuccessful = results.All(r => r.IsSuccessful);
-        return allSuccessful
-            ? CreateResult(TResult.Pass($"All {nameof(TResult)} were successful"), results)
-            : CreateResult(TResult.Fail($"Not all {nameof(TResult)} were successful"), results);
-    }
-
-    private static TResult CreateResult<TResult>(TResult result, IResultStatus[] results)
-        where TResult : IResultStatusBase<TResult>, IResultStatus
-    {
-        result.SuccessLogs.AddRange(results.SelectMany(r => r.SuccessLogs));
-        result.ErrorMessages.AddRange(results.SelectMany(r => r.ErrorMessages));
-        return result;
-    }
 }
