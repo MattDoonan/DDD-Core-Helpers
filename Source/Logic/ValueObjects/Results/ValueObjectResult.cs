@@ -32,6 +32,11 @@ public class ValueObjectResult<T> : ValueResult<T>
     {
     }
 
+    public Result<T> ToResult()
+    {
+        return this;
+    }
+
     internal static ValueObjectResult<T> Pass(T value)
     {
         return new ValueObjectResult<T>(value);

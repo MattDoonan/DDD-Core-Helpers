@@ -27,6 +27,11 @@ public abstract class BasicValueResult<T, TResult> : ValueResult<T>
         return TResult.RemoveValue(this);
     }
     
+    public Result<T> ToResult()
+    {
+        return this;
+    }
+    
     public static implicit operator TResult(BasicValueResult<T, TResult> result)
     {
         return result.RemoveValue();

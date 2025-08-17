@@ -24,6 +24,7 @@ public abstract class ResultStatus : IResultStatus
     
     protected ResultStatus(IResultStatus result)
     {
+        FailureType = result.FailureType;
         IsFailure = result.IsFailure;
         ErrorMessages.AddRange(result.ErrorMessages);
     }

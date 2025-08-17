@@ -16,6 +16,11 @@ public abstract class BasicResult<TStatusResult> : ResultStatus
     protected BasicResult(IResultStatus result) : base(result)
     {
     }
+    
+    public Result ToResult()
+    {
+        return this;
+    }
 
     public static TStatusResult Merge(params IResultStatus[] results)
     {

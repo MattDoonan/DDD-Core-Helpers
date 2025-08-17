@@ -7,8 +7,6 @@ namespace ValueObjects.Results;
 
 public class MapperResult : BasicResult<MapperResult>, IResultStatusBase<MapperResult>
 {
-    private const string BaseErrorMessage = "Failed to map result";
-
     private MapperResult(IResultStatus resultStatus) : base(resultStatus)
     {
     }
@@ -65,5 +63,10 @@ public class MapperResult<T> :  BasicValueResult<T, MapperResult>
     internal static MapperResult<T> Fail(string because = "")
     {
         return new MapperResult<T>(FailureType.Mapper, because);
+    }
+    
+    public static implicit operator MapperResult<T>(T value)
+    {
+        return Pass(value);
     }
 }

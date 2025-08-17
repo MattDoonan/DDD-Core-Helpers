@@ -8,7 +8,7 @@ public abstract class ValueResult<T> : ResultStatus, IValueResult<T>
     {
         get
         {
-            if (_value == null)
+            if (_value == null || !_hasValue)
             {
                 throw new InvalidOperationException($"Cannot access {typeof(T).Name} Value when the result is an error" );
             }
@@ -17,10 +17,12 @@ public abstract class ValueResult<T> : ResultStatus, IValueResult<T>
     }
     
     private readonly T? _value;
+    private readonly bool _hasValue;
     
     protected ValueResult(T value)
     {
         _value = value;
+        _hasValue  = true;
     }
     
     protected ValueResult(IValueResult<T> valueResult) : base(valueResult)
@@ -28,6 +30,11 @@ public abstract class ValueResult<T> : ResultStatus, IValueResult<T>
         if (valueResult.IsSuccessful)
         {
             _value = valueResult.Value;
+            _hasValue = true;
+        }
+        else
+        {
+            _hasValue = false;
         }
     }
     
@@ -37,11 +44,12 @@ public abstract class ValueResult<T> : ResultStatus, IValueResult<T>
         {
             throw new  InvalidOperationException($"Cannot access {typeof(T).Name} Value when the result is a failure");
         }
+        _hasValue = false;
     }
     
     protected ValueResult(FailureType failureType, string because) : base(failureType, failureType.ToMessage<T>(), because)
     {
-        
+        _hasValue = false;
     }
 
     public string GetTypeOf()

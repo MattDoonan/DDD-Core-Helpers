@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Source\Logic\En
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueObjectTests", "Tests\ValueObjectTests\ValueObjectTests.csproj", "{245B3361-91A3-41BF-A56A-92F76A5E0A78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutputTests", "Tests\OutputTests\OutputTests.csproj", "{19D666C6-8146-42E9-9541-0BE80685E82D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultsTests", "Tests\ResultsTests\ResultsTests.csproj", "{19D666C6-8146-42E9-9541-0BE80685E82D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
