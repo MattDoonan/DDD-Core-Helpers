@@ -1,4 +1,5 @@
-﻿using ValueObjects.Results;
+﻿using Outputs.Results;
+using ValueObjects.Results;
 using ValueObjects.Types.Identifiers.Base;
 
 namespace ValueObjects.Types.Identifiers.Lists;

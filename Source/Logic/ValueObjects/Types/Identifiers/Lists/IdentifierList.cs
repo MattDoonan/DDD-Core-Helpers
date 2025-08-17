@@ -21,14 +21,14 @@ public class IdentifierList<TValue, T>(List<T> values) : IIdentifierList<TValue,
             return ValueObjectResult.Fail("the identifier already exists in the list");
         }
         Values.Add(identifier);
-        return ValueObjectResult.Pass($"Successfully added the identifier of type {typeof(T).Name}");
+        return ValueObjectResult.Pass();
     }
 
     public ValueObjectResult Remove(T identifier)
     {
        var removed = Values.Remove(identifier); 
        return removed 
-           ? ValueObjectResult.Pass($"Successfully removed {typeof(T)} from list") 
+           ? ValueObjectResult.Pass() 
            : ValueObjectResult.Fail("the identifier does not exist in the list");
     }
 

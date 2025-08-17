@@ -1,4 +1,6 @@
-﻿using ValueObjects.Results;
+﻿using Outputs.ObjectTypes;
+using Outputs.Results;
+using ValueObjects.Results;
 using ValueObjects.Types.Identifiers.Lists;
 using ValueObjects.Types.Regular.Base;
 

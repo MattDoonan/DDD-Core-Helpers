@@ -1,15 +1,15 @@
-﻿using Outputs.Base.Interfaces;
+﻿using Outputs.Results.Interfaces;
 
-namespace Outputs.Base;
+namespace Outputs.Results.Abstract;
 
 public abstract class BasicResult<TStatusResult> : ResultStatus
-    where TStatusResult : IResultStatusBase<TStatusResult>, IResultStatus
+    where TStatusResult : BasicResult<TStatusResult>, IResultStatusBase<TStatusResult>
 {
-    protected BasicResult(string failureMessageStarter, string because) : base(failureMessageStarter, because)
+    protected BasicResult(FailureType failureType, string because) : base(failureType, failureType.ToMessage(), because)
     {
     }
 
-    protected BasicResult(string successLog) : base(successLog)
+    protected BasicResult()
     {
     }
 
@@ -21,14 +21,24 @@ public abstract class BasicResult<TStatusResult> : ResultStatus
     {
         var allSuccessful = results.All(r => r.IsSuccessful);
         return allSuccessful
-            ? CreateResult(TStatusResult.Pass($"All {nameof(TStatusResult)} were successful"), results)
+            ? CreateResult(TStatusResult.Pass(), results)
             : CreateResult(TStatusResult.Fail($"Not all {nameof(TStatusResult)} were successful"), results);
     }
     
     private static TStatusResult CreateResult(TStatusResult result, IResultStatus[] results)
     {
-        result.SuccessLogs.AddRange(results.SelectMany(r => r.SuccessLogs));
         result.ErrorMessages.AddRange(results.SelectMany(r => r.ErrorMessages));
         return result;
     }
+    
+    public static implicit operator Result(BasicResult<TStatusResult> result)
+    {
+        return Result.Create(result);
+    }
+    
+    public static implicit operator BasicResult<TStatusResult>(bool pass)
+    {
+        return pass ? TStatusResult.Pass() : TStatusResult.Fail();;
+    }
+    
 }

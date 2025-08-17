@@ -3,11 +3,12 @@
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>ValueObjects</AssemblyName>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Outputs\Outputs.csproj" />
+      <ProjectReference Include="..\..\BaseClasses\BaseClasses.csproj" />
     </ItemGroup>
 
 </Project>

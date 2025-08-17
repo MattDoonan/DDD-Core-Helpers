@@ -1,5 +1,7 @@
-﻿using Outputs.Base;
-using Outputs.Base.Interfaces;
+﻿
+using Outputs.Results;
+using Outputs.Results.Abstract;
+using Outputs.Results.Interfaces;
 
 namespace ValueObjects.Results;
 
@@ -11,32 +13,22 @@ public class MapperResult : BasicResult<MapperResult>, IResultStatusBase<MapperR
     {
     }
     
-    private MapperResult(string baseMessage, string because) : base(baseMessage, because)
+    private MapperResult(FailureType failureType, string because) : base(failureType, because)
     {
     }
 
-    private MapperResult(string successLog) : base(successLog)
+    private MapperResult()
     {
     }
 
-    public static MapperResult Pass(string successLog = "")
+    public static MapperResult Pass()
     {
-        return new MapperResult(successLog);
-    }
-    
-    public static MapperResult<T> Pass<T>(T value, string successLog = "")
-    {
-        return MapperResult<T>.Pass(value, successLog);
+        return new MapperResult();
     }
 
     public static MapperResult Fail(string because = "")
     {
-        return new MapperResult(BaseErrorMessage, because);
-    }
-
-    public static MapperResult<T> Fail<T>(string because = "")
-    {
-        return MapperResult<T>.Fail(because);
+        return new MapperResult(FailureType.Mapper, because);
     }
 
     public static MapperResult RemoveValue(IResultStatus status)
@@ -45,23 +37,28 @@ public class MapperResult : BasicResult<MapperResult>, IResultStatusBase<MapperR
     }
 }
 
-public class MapperResult<T> :  ResultValue<T>
+public class MapperResult<T> :  BasicValueResult<T, MapperResult>
 {
-    private MapperResult(T value, string successLog) : base(value, successLog)
+    private MapperResult(T value) : base(value)
     {
     }
 
-    private MapperResult(string because) : base($"Failed to map object to {typeof(T).Name}", because)
+    private MapperResult(FailureType failureType, string because) : base(failureType, because)
     {
     }
 
-    internal static MapperResult<T> Pass(T value, string successLog = "")
+    internal static MapperResult<T> Pass(T value)
     {
-        return new MapperResult<T>(value, successLog);
+        return new MapperResult<T>(value);
     }
 
     internal static MapperResult<T> Fail(string because = "")
     {
-        return new MapperResult<T>(because);
+        return new MapperResult<T>(FailureType.Mapper, because);
+    }
+    
+    public static implicit operator Result<T>(MapperResult<T> result)
+    {
+        return Result.Create(result);
     }
 }

@@ -1,22 +1,23 @@
-﻿using Outputs.Base.Interfaces;
-using Outputs.Helpers;
+﻿using Outputs.Helpers;
+using Outputs.Results.Interfaces;
 
-namespace Outputs.Base;
+namespace Outputs.Results.Abstract;
 
 public abstract class ResultStatus : IResultStatus
 {
     public bool IsSuccessful => !IsFailure;
-    public List<string> SuccessLogs { get; } = [];
     public bool IsFailure { get; }
     public List<string> ErrorMessages { get; } = [];
+    public FailureType FailureType { get; }
+    public string MainError => FailureType.ToMessage();
 
-
-    protected ResultStatus(string failureMessageStarter, string because) : this(true, failureMessageStarter: failureMessageStarter, because: because)
+    protected ResultStatus(FailureType failureType, string failureMessageStarter, string because) 
+        : this(true, failureType : failureType, failureMessageStarter: failureMessageStarter, because: because)
     {
         
     }
     
-    protected ResultStatus(string successLog) : this(false, successLog: successLog)
+    protected ResultStatus() : this(false)
     {
         
     }
@@ -24,13 +25,12 @@ public abstract class ResultStatus : IResultStatus
     protected ResultStatus(IResultStatus result)
     {
         IsFailure = result.IsFailure;
-        SuccessLogs.AddRange(result.SuccessLogs);
         ErrorMessages.AddRange(result.ErrorMessages);
     }
     
     private ResultStatus(
         bool hasFailed, 
-        string successLog = "", 
+        FailureType failureType = FailureType.None,
         string failureMessageStarter = "", 
         string because = ""
     )
@@ -38,15 +38,22 @@ public abstract class ResultStatus : IResultStatus
         IsFailure = hasFailed;
         if (!hasFailed)
         {
-            if (!string.IsNullOrWhiteSpace(successLog))
-            {
-                SuccessLogs.Add(successLog);
-            }
             return;
         }
+        FailureType = failureType;
         if (ResultErrorMessage.Create(failureMessageStarter, because, out var errorMessage))
         {
             ErrorMessages.Add(errorMessage);
         }
+    }
+    
+    public void LogMessage()
+    {
+        Console.WriteLine(GetErrorMessages());
+    }
+
+    public string GetErrorMessages()
+    {
+        return string.Join(Environment.NewLine, ErrorMessages.ToArray());
     }
 }

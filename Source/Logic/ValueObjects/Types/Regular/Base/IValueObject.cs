@@ -1,6 +1,6 @@
-﻿namespace ValueObjects.Types.Regular.Base;
+﻿using Outputs.ObjectTypes;
 
-public interface IValueObject;
+namespace ValueObjects.Types.Regular.Base;
 
 public interface IValueObject<TValue, T> : IValueObject, IValue<T>, IValueObjectFactory<TValue, T>
     where T : class, IValueObject<TValue, T>
