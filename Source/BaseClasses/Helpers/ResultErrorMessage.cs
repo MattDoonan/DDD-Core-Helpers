@@ -2,7 +2,7 @@
 
 public static class ResultErrorMessage
 {
-    public static bool Create(string sentenceStarter, string? because, out string errorLog)
+    public static bool TryCreate(string sentenceStarter, string? because, out string errorLog)
     {
         errorLog = string.Empty;
         if (string.IsNullOrWhiteSpace(sentenceStarter))

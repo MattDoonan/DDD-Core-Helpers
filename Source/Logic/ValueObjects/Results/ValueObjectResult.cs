@@ -5,51 +5,23 @@ using Outputs.Results.Interfaces;
 
 namespace ValueObjects.Results;
 
-public class ValueObjectResult : BasicResult<ValueObjectResult>, IResultStatusBase<ValueObjectResult>
+public static class ValueObjectResult
 {
-
-    private ValueObjectResult(IResultStatus resultStatus) : base(resultStatus)
-    {
-    }
-    
-    private ValueObjectResult(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-    
-    private ValueObjectResult()
-    {
-    }
-
-    public static ValueObjectResult Pass()
-    {
-        return new ValueObjectResult();
-    }
-    
     public static ValueObjectResult<T> Pass<T>(T value)
         where T : class, IValueObject
     {
         return ValueObjectResult<T>.Pass(value);
     }
     
-    public static ValueObjectResult Fail(string because = "")
-    {
-        return new ValueObjectResult(FailureType.ValueObject, because);
-    }
-
     public static ValueObjectResult<T> Fail<T>(string because = "")
         where T : class, IValueObject
     {
         return ValueObjectResult<T>.Fail(because);
     }
-
-    public static ValueObjectResult RemoveValue(IResultStatus status)
-    {
-        return new ValueObjectResult(status);
-    }
 }
 
 
-public class ValueObjectResult<T> : BasicValueResult<T, ValueObjectResult>
+public class ValueObjectResult<T> : ValueResult<T>
   where T : class, IValueObject
 {
     private ValueObjectResult(T value) : base(value)

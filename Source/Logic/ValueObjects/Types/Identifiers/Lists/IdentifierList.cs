@@ -1,4 +1,5 @@
-﻿using ValueObjects.Results;
+﻿using Outputs.Results;
+using ValueObjects.Results;
 using ValueObjects.Types.Identifiers.Base;
 
 namespace ValueObjects.Types.Identifiers.Lists;
@@ -13,36 +14,36 @@ public class IdentifierList<TValue, T>(List<T> values) : IIdentifierList<TValue,
     {
     }
 
-    public ValueObjectResult Add(T identifier)
+    public Result Add(T identifier)
     {
         var contains = Get(identifier);
         if (contains.IsSuccessful)
         {
-            return ValueObjectResult.Fail("the identifier already exists in the list");
+            return Result.Fail("the identifier already exists in the list");
         }
         Values.Add(identifier);
-        return ValueObjectResult.Pass();
+        return Result.Pass();
     }
 
-    public ValueObjectResult Remove(T identifier)
+    public Result Remove(T identifier)
     {
        var removed = Values.Remove(identifier); 
        return removed 
-           ? ValueObjectResult.Pass() 
-           : ValueObjectResult.Fail("the identifier does not exist in the list");
+           ? Result.Pass() 
+           : Result.Fail("the identifier does not exist in the list");
     }
 
-    public ValueObjectResult<T> Get(T identifier)
+    public Result<T> Get(T identifier)
     {
         return Get(identifier.Value);
     }
     
-    public ValueObjectResult<T> Get(TValue value)
+    public Result<T> Get(TValue value)
     {
         var existingItem = Values.FirstOrDefault(id => id.Value.Equals(value));
         return existingItem == null
-            ? ValueObjectResult.Fail<T>("the identifier does not exist in the list")
-            : ValueObjectResult.Pass(existingItem);
+            ? Result.Fail<T>("the identifier does not exist in the list")
+            : Result.Pass(existingItem);
     }
 
     public void OrderAsc()

@@ -41,7 +41,7 @@ public abstract class ResultStatus : IResultStatus
             return;
         }
         FailureType = failureType;
-        if (ResultErrorMessage.Create(failureMessageStarter, because, out var errorMessage))
+        if (ResultErrorMessage.TryCreate(failureMessageStarter, because, out var errorMessage))
         {
             ErrorMessages.Add(errorMessage);
         }

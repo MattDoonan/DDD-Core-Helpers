@@ -25,10 +25,20 @@ public class MapperResult : BasicResult<MapperResult>, IResultStatusBase<MapperR
     {
         return new MapperResult();
     }
+    
+    public static MapperResult<T> Pass<T>(T value)
+    {
+        return MapperResult<T>.Pass(value);
+    }
 
     public static MapperResult Fail(string because = "")
     {
         return new MapperResult(FailureType.Mapper, because);
+    }
+    
+    public static MapperResult<T> Fail<T>(string because = "")
+    {
+        return MapperResult<T>.Fail(because);
     }
 
     public static MapperResult RemoveValue(IResultStatus status)
@@ -55,10 +65,5 @@ public class MapperResult<T> :  BasicValueResult<T, MapperResult>
     internal static MapperResult<T> Fail(string because = "")
     {
         return new MapperResult<T>(FailureType.Mapper, because);
-    }
-    
-    public static implicit operator Result<T>(MapperResult<T> result)
-    {
-        return Result.Create(result);
     }
 }
