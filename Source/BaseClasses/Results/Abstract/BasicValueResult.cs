@@ -3,14 +3,14 @@ using Outputs.Results.Interfaces;
 
 namespace Outputs.Results.Abstract;
 
-public abstract class BasicValueResult<T, TResult> : ValueResult<T>
+public abstract class BasicValueResult<T, TResult> : ContentResult<T>
     where TResult : BasicResult<TResult>, IResultStatusBase<TResult>
 {
     protected BasicValueResult(T value) : base(value)
     {
     }
 
-    protected BasicValueResult(IValueResult<T> valueResult) : base(valueResult)
+    protected BasicValueResult(IContentResult<T> valueResult) : base(valueResult)
     {
     }
 

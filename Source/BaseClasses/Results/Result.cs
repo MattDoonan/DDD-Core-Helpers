@@ -71,24 +71,7 @@ public class Result : BasicResult<Result>, IAdvancedResult<Result>
     
     public static Result<T> Copy<T>(Result<T> result)
     {
-        return Result<T>.Copy(result);
-    }
-    
-    public static Result<T> ValueObjectFailure<T>(string because = "")
-        where T : IValueObject
-    {
-        return Result<T>.Fail(FailureType.ValueObject, because);
-    }
-    
-    public static Result<T> MappingFailure<T>(string because = "")
-    {
-        return Result<T>.Fail(FailureType.Mapper, because);
-    }
-    
-    public static Result<T> EntityFailure<T>(string because = "")
-        where T : IEntity
-    {
-        return Result<T>.Fail(FailureType.Entity, because);
+        return Result<T>.Create(result);
     }
     
     public static Result<T> NotFound<T>(string because = "")
@@ -121,7 +104,7 @@ public class Result : BasicResult<Result>, IAdvancedResult<Result>
         return new Result(status);
     }
     
-    public static Result<T> Create<T>(IValueResult<T> result)
+    public static Result<T> Create<T>(IContentResult<T> result)
     {
         return Result<T>.Create(result);
     }
@@ -142,7 +125,7 @@ public class Result<T> : BasicValueResult<T, Result>
     {
     }
     
-    private Result(IValueResult<T> result) : base(result)
+    private Result(IContentResult<T> result) : base(result)
     {
     }
     
@@ -156,12 +139,7 @@ public class Result<T> : BasicValueResult<T, Result>
         return new Result<T>(failureType, because);
     }
     
-    internal static Result<T> Copy(Result<T> result)
-    {
-        return new Result<T>(result);
-    }
-    
-    internal static Result<T> Create(IValueResult<T> result)
+    internal static Result<T> Create(IContentResult<T> result)
     {
         return new Result<T>(result);
     }

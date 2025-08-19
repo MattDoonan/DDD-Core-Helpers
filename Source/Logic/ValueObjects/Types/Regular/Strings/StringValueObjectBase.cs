@@ -3,7 +3,7 @@ using ValueObjects.Types.Regular.Base;
 
 namespace ValueObjects.Types.Regular.Strings;
 
-public abstract class StringValueObjectBase<T>(string value) : ValueObjectBase<string, T>(value)
+public abstract class StringValueObjectBase<T>(string value) : ValueObjectBase<string>(value)
     where T : class, IValueObject<string, T>
 {
     public ValueObjectResult<T> ToLower(StringValueObjectBase<T> value)

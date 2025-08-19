@@ -20,7 +20,7 @@ public class ValueObjectResultTests : BasicValueResultTests
     
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
-        var obj = new TestValueObject(1);
+        var obj = TestValueObject.Create(1).Content;
         var result = ValueObjectResult.Pass(obj);
         ResultTestHelper.CheckSuccess(result, obj);
     }
@@ -40,14 +40,14 @@ public class ValueObjectResultTests : BasicValueResultTests
 
     public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
     {
-        var obj = new TestValueObject(1);
+        var obj = TestValueObject.Create(1).Content;
         ValueObjectResult<TestValueObject> convertedResult = obj;
         ResultTestHelper.CheckSuccess(convertedResult, obj);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
     {
-        var obj = new TestValueObject(1);
+        var obj = TestValueObject.Create(1).Content;
         var valueObjectResult = ValueObjectResult.Pass(obj);
         var convertedResult = valueObjectResult.ToResult();
         Assert.IsType<Result<TestValueObject>>(convertedResult);

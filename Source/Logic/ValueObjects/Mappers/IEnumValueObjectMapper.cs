@@ -9,6 +9,6 @@ public interface IEnumValueObjectMapper<out TEnum, TConvert, T>
     where TConvert : IComparable<TConvert>, IEquatable<TConvert>
     where T : class, IValueObject<TEnum, T>
 {
-    static abstract MapperResult<TConvert> Map(IEnumValueObject<TEnum, T> value);
+    static abstract MapperResult<TConvert> Map(IEnumValueObject<TEnum, TConvert, T> value);
     static abstract MapperResult<T> Map(TConvert value);
 }

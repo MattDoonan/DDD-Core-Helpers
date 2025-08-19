@@ -5,7 +5,7 @@ using ValueObjects.Types.Regular.Base;
 
 namespace ValueObjects.Types.Regular.Numbers;
 
-public interface INumberValueObject<in TValue, T> : IValueObject
+public interface IIncrementalValueObject<in TValue, T> : IValueObject
     where TValue : INumber<TValue>
     where T : class, IValueObject<TValue, T>
 {

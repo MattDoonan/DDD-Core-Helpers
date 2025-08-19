@@ -21,7 +21,7 @@ public static class ValueObjectResult
 }
 
 
-public class ValueObjectResult<T> : ValueResult<T>
+public class ValueObjectResult<T> : ContentResult<T>
   where T : class, IValueObject
 {
     private ValueObjectResult(T value) : base(value)

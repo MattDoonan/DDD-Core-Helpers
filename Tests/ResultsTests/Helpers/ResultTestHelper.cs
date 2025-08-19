@@ -6,15 +6,15 @@ namespace OutputTests.Helpers;
 public static class ResultTestHelper
 {
     
-    public static void CheckSuccess<T>(ValueResult<T> result, T expectedValue)
+    public static void CheckSuccess<T>(ContentResult<T> result, T expectedValue)
     {
         CheckSuccess(result);
-        Assert.Equal(expectedValue, result.Value);
+        Assert.Equal(expectedValue, result.Content);
     }
-    public static void CheckFailure<T>(ValueResult<T> result, FailureType expectedFailureType, string expectedErrorMessage)
+    public static void CheckFailure<T>(ContentResult<T> result, FailureType expectedFailureType, string expectedErrorMessage)
     {
         CheckFailure((ResultStatus) result, expectedFailureType, expectedErrorMessage);
-        Assert.ThrowsAny<Exception>(() => result.Value);
+        Assert.ThrowsAny<Exception>(() => result.Content);
     }
     
     public static void CheckSuccess(ResultStatus result)
