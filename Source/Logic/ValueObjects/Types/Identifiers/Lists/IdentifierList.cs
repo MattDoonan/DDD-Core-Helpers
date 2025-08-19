@@ -3,9 +3,8 @@ using ValueObjects.Types.Identifiers.Base;
 
 namespace ValueObjects.Types.Identifiers.Lists;
 
-public class IdentifierList<TValue, T>(List<T> values) : IIdentifierList<TValue, T>
-    where TValue : IComparable<TValue>, IEquatable<TValue>
-    where T : class, IIdentifier<TValue, T>
+public class IdentifierList<T>(List<T> values) : IIdentifierList<T>
+    where T : class, IIdentifier
 {
     public List<T> Values { get; } = values;
 
@@ -24,14 +23,6 @@ public class IdentifierList<TValue, T>(List<T> values) : IIdentifierList<TValue,
         return Result.Pass();
     }
 
-    public Result Add(TValue identifier)
-    {
-        var newIdentifierResult = T.Create(identifier);
-        return newIdentifierResult.IsSuccessful 
-            ? Add(newIdentifierResult) 
-            : newIdentifierResult;
-    }
-
     public Result Remove(T identifier)
     {
        var removed = Values.Remove(identifier); 
@@ -42,12 +33,7 @@ public class IdentifierList<TValue, T>(List<T> values) : IIdentifierList<TValue,
 
     public Result<T> Get(T identifier)
     {
-        return Get(identifier.Value);
-    }
-    
-    public Result<T> Get(TValue value)
-    {
-        var existingItem = Values.FirstOrDefault(id => id.Value.Equals(value));
+        var existingItem = Values.FirstOrDefault(id => id.Equals(identifier));
         return existingItem == null
             ? Result.Fail<T>("the identifier does not exist in the list")
             : Result.Pass(existingItem);
