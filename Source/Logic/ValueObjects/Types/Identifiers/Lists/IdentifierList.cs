@@ -1,5 +1,4 @@
 ﻿using Outputs.Results;
-using ValueObjects.Results;
 using ValueObjects.Types.Identifiers.Base;
 
 namespace ValueObjects.Types.Identifiers.Lists;
@@ -23,6 +22,14 @@ public class IdentifierList<TValue, T>(List<T> values) : IIdentifierList<TValue,
         }
         Values.Add(identifier);
         return Result.Pass();
+    }
+
+    public Result Add(TValue identifier)
+    {
+        var newIdentifierResult = T.Create(identifier);
+        return newIdentifierResult.IsSuccessful 
+            ? Add(newIdentifierResult) 
+            : newIdentifierResult;
     }
 
     public Result Remove(T identifier)

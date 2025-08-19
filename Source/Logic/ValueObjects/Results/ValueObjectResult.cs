@@ -1,7 +1,6 @@
 ﻿using Outputs.ObjectTypes;
 using Outputs.Results;
 using Outputs.Results.Abstract;
-using Outputs.Results.Interfaces;
 
 namespace ValueObjects.Results;
 
@@ -53,6 +52,11 @@ public class ValueObjectResult<T> : ContentResult<T>
     }
     
     public static implicit operator Result<T>(ValueObjectResult<T> result)
+    {
+        return Result.Create(result);
+    }
+    
+    public static implicit operator Result(ValueObjectResult<T> result)
     {
         return Result.Create(result);
     }

@@ -1,6 +1,4 @@
-﻿using Outputs.Results.Abstract;
-
-namespace Outputs.Results.Interfaces;
+﻿namespace Outputs.Results.Interfaces;
 
 public interface IResultStatusBase<out TResult> 
     where TResult : IResultStatus

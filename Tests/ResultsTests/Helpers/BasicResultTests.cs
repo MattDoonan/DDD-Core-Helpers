@@ -1,6 +1,4 @@
-﻿using Outputs.Results.Abstract;
-using Outputs.Results.Interfaces;
-using Xunit;
+﻿using Xunit;
 
 namespace OutputTests.Helpers;
 

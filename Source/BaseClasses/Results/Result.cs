@@ -110,7 +110,7 @@ public class Result : BasicResult<Result>, IAdvancedResult<Result>
     }
 }
 
-public class Result<T> : BasicValueResult<T, Result>
+public class Result<T> : AdvancedContentResultBase<T, Result>
 {
     private Result(T value) : base(value)
     {

@@ -1,6 +1,4 @@
-﻿using Outputs.ObjectTypes;
-
-namespace ValueObjects.Types.Regular.Base;
+﻿namespace ValueObjects.Types.Regular.Base;
 
 public abstract class ValueObjectBase<TValue>(TValue value) : IValue<ValueObjectBase<TValue>>
     where TValue : IComparable<TValue>, IEquatable<TValue>

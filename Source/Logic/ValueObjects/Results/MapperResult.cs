@@ -1,6 +1,4 @@
-﻿
-using Outputs.Results;
-using Outputs.Results.Abstract;
+﻿using Outputs.Results.Abstract;
 using Outputs.Results.Interfaces;
 
 namespace ValueObjects.Results;
@@ -45,7 +43,7 @@ public class MapperResult : BasicResult<MapperResult>, IResultStatusBase<MapperR
     }
 }
 
-public class MapperResult<T> :  BasicValueResult<T, MapperResult>
+public class MapperResult<T> :  BasicContentResultBase<T, MapperResult>
 {
     private MapperResult(T value) : base(value)
     {
