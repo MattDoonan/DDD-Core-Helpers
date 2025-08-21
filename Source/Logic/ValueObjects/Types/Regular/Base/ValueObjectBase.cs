@@ -1,7 +1,7 @@
 ﻿namespace ValueObjects.Types.Regular.Base;
 
 public abstract class ValueObjectBase<TValue>(TValue value) : IValue<ValueObjectBase<TValue>>
-    where TValue : IComparable<TValue>, IEquatable<TValue>
+    where TValue : IComparable, IComparable<TValue>, IEquatable<TValue>
 {
     public TValue Value { get; } = value;
 

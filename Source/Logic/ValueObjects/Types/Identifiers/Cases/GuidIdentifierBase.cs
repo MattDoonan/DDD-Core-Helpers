@@ -3,7 +3,7 @@ using ValueObjects.Types.Identifiers.Base;
 
 namespace ValueObjects.Types.Identifiers.Cases;
 
-public abstract class GuidIdentifierBase<T>(Guid value) : IdentifierBase<Guid, T>(value), IGuiIdentifier<T>
+public abstract class GuidIdentifierBase<T>(Guid value) : IdentifierBase<Guid>(value), IGuiIdentifier<T>
     where T : class, IIdentifier<Guid, T>
 {
     

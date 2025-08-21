@@ -3,10 +3,10 @@ using ValueObjects.Types.Identifiers.Base;
 
 namespace ValueObjects.Types.Identifiers.Lists;
 
-public class IdentifierList<T>(List<T> values) : IIdentifierList<T>
+public class IdentifierList<T>(params T[] values) : IIdentifierList<T>
     where T : class, IIdentifier
 {
-    public List<T> Values { get; } = values;
+    public List<T> Values { get; } = values.ToList();
 
     public IdentifierList() : this([])
     {

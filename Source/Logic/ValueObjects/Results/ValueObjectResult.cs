@@ -1,6 +1,6 @@
-﻿using Outputs.ObjectTypes;
-using Outputs.Results;
+﻿using Outputs.Results;
 using Outputs.Results.Abstract;
+using ValueObjects.Types.Regular.Base;
 
 namespace ValueObjects.Results;
 

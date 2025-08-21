@@ -1,5 +1,4 @@
-﻿using Outputs.ObjectTypes;
-using ValueObjects.Results;
+﻿using ValueObjects.Results;
 using ValueObjects.Types.Regular.Base;
 
 namespace ValueObjects.Types.Regular.Enums;

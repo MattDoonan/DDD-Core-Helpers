@@ -7,11 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\BaseClasses\BaseClasses.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Types\" />
+        <ProjectReference Include="..\..\BaseResults\BaseResults.csproj" />
+        <ProjectReference Include="..\ValueObjects\ValueObjects.csproj" />
     </ItemGroup>
 
 </Project>

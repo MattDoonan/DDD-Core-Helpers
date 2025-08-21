@@ -1,5 +1,4 @@
-﻿using Outputs.ObjectTypes;
-using Outputs.Results.Abstract;
+﻿using Outputs.Results.Abstract;
 using Outputs.Results.Interfaces;
 
 namespace Outputs.Results;
@@ -59,7 +58,6 @@ public class Result : BasicResult<Result>, IAdvancedResult<Result>
     }
     
     public static Result<T> Pass<T>(T value)
-        where T : class, IValueObject
     {
         return Result<T>.Pass(value);
     }

@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueObjects", "Source\Logi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logic", "Logic", "{7711BCC4-1476-46C7-8CFE-4EFB357A45D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseClasses", "Source\BaseClasses\BaseClasses.csproj", "{C20B9EBE-C43C-49E9-85DA-44EFDF2793E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseResults", "Source\BaseResults\BaseResults.csproj", "{C20B9EBE-C43C-49E9-85DA-44EFDF2793E1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Source\Logic\Entities\Entities.csproj", "{6FF01221-9F28-4C6A-BEE8-86A3EC1D420A}"
 EndProject
