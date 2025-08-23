@@ -16,7 +16,7 @@ public class ServiceResult : CoreResult<ServiceResult>, IResultFactory<ServiceRe
     {
     }
     
-    private ServiceResult(FailureType failureType, string because) : base(failureType, because)
+    private ServiceResult(FailureType failureType, string because) : base(failureType, FailedLayer.Service, because)
     {
     }
     
@@ -30,9 +30,61 @@ public class ServiceResult : CoreResult<ServiceResult>, IResultFactory<ServiceRe
         return new ServiceResult(FailureType.Generic, because);
     }
     
-    public static ServiceResult RemoveValue(IResultStatus status)
+    public static ServiceResult DomainViolation(string because = "")
+    {
+        return new ServiceResult(FailureType.DomainViolation, because);
+    }
+    
+    public static ServiceResult NotAllowed(string because = "")
+    {
+        return new ServiceResult(FailureType.NotAllowed, because);
+    }
+    
+    public static ServiceResult<T> Pass<T>(T value)
+    {
+        return ServiceResult<T>.Pass(value);
+    }
+
+    public static ServiceResult<T> Fail<T>(string because = "")
+    {
+        return ServiceResult<T>.Fail(FailureType.Generic, because);
+    }
+    
+    public static ServiceResult<T> DomainViolation<T>(string because = "")
+    {
+        return ServiceResult<T>.Fail(FailureType.DomainViolation, because);
+    }
+    
+    public static ServiceResult<T> NotAllowed<T>(string because = "")
+    {
+        return ServiceResult<T>.Fail(FailureType.NotAllowed, because);
+    }
+    
+    public static ServiceResult RemoveValue<T>(ServiceResult<T> status)
     {
         return new ServiceResult(status);
+    }
+    
+    internal static ServiceResult Create(IResultStatus result)
+    {
+        if (result.FailedLayer == FailedLayer.None)
+        {
+            return new ServiceResult(result)
+            {
+                FailedLayer = FailedLayer.Service
+            };   
+        }
+        return new ServiceResult(result);
+    }
+    
+    public static implicit operator UseCaseResult(ServiceResult result)
+    {
+        return UseCaseResult.Create(result);
+    }
+    
+    public UseCaseResult ToUseCaseResult()
+    {
+        return this;
     }
 }
 
@@ -43,11 +95,6 @@ public class ServiceResult<T> : CoreResult<T, ServiceResult>
     }
     
     private ServiceResult(FailureType failureType, string because) : base(failureType, FailedLayer.Service, because)
-    {
-    }
-    
-    
-    private ServiceResult(IResultStatus result) : base(result)
     {
     }
     
@@ -67,6 +114,13 @@ public class ServiceResult<T> : CoreResult<T, ServiceResult>
     
     internal static ServiceResult<T> Create(ITypedResult<T> result)
     {
+        if (result.FailedLayer == FailedLayer.None)
+        {
+            return new ServiceResult<T>(result)
+            {
+                FailedLayer = FailedLayer.Service
+            };   
+        }
         return new ServiceResult<T>(result);
     }
     
@@ -75,40 +129,31 @@ public class ServiceResult<T> : CoreResult<T, ServiceResult>
         return Pass(value);
     }
     
-    public static implicit operator ServiceResult<T>(MapperResult<T> result)
+    public static implicit operator UseCaseResult<T>(ServiceResult<T> result)
     {
-        return Create(result);
+        return UseCaseResult<T>.Create(result);
+    }
+    
+    public static implicit operator UseCaseResult(ServiceResult<T> result)
+    {
+        return UseCaseResult.Create(result);
+    }
+    
+    public UseCaseResult<T> ToUseCaseTypedResult()
+    {
+        return this;
+    }
+    
+    public UseCaseResult ToUseCaseResult()
+    {
+        return this;
     }
 }
 
 public static class ServiceResultExtensions
 {
-    public static ServiceResult<T> AsServiceResult<T>(this T value)
+    public static ServiceResult<T> AsTypedServiceResult<T>(this T value)
     {
         return value;
-    }
-    
-    public static ServiceResult<T> ToServiceResult<T>(this EntityResult<T> result)
-        where T : IEntity
-    {
-        return result;
-    }
-    
-    public static ServiceResult<T> ToServiceResult<T>(this ValueObjectResult<T> result)
-        where T : IValueObject
-    {
-        return result;
-    }
-    
-    public static ServiceResult<T> ToServiceResult<T>(this MapperResult<T> result)
-        where T : IValueObject
-    {
-        return result;
-    }
-    
-    public static ServiceResult<T> ToServiceResult<T>(this RepoResult<T> result)
-        where T : IAggregateRoot
-    {
-        return result;
     }
 }

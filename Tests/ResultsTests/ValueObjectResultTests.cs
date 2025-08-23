@@ -59,7 +59,7 @@ public class ValueObjectResultTests : BasicValueResultTests
     {
         const string errorMessage = "I want it to fail";
         var valueObjectResult = ValueObjectResult.Fail<TestValueObject>(errorMessage);
-        var convertedResult = valueObjectResult.ToResult();
+        var convertedResult = valueObjectResult.ToTypedResult();
         Assert.IsType<Result<TestValueObject>>(convertedResult);
         ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
     }

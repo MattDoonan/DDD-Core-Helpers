@@ -8,7 +8,6 @@ namespace Outputs.Results.Advanced;
 
 public class RepoResult
 {
-    
     public static RepoResult<T> Pass<T>(T value)
         where T : IAggregateRoot
     {
@@ -57,7 +56,7 @@ public class RepoResult<T> : TypedResult<T>
     {
     }
     
-    private RepoResult(ITypedResult<T> result) : base(result)
+    private RepoResult(EntityResult<T> result) : base((ITypedResult<T>) result)
     {
     }
     
@@ -71,8 +70,15 @@ public class RepoResult<T> : TypedResult<T>
         return new RepoResult<T>(failureType, because);
     }
     
-    internal static RepoResult<T> Create(ITypedResult<T> result)
+    private static RepoResult<T> Create(EntityResult<T> result)
     {
+        if (result.FailedLayer == FailedLayer.None)
+        {
+            return new RepoResult<T>(result)
+            {
+                FailedLayer = FailedLayer.Infrastructure
+            };   
+        }
         return new RepoResult<T>(result);
     }
     
@@ -90,17 +96,53 @@ public class RepoResult<T> : TypedResult<T>
     {
         return ServiceResult<T>.Create(result);
     }
+    
+    public static implicit operator ServiceResult(RepoResult<T> result)
+    {
+        return ServiceResult.Create(result);
+    }
+    
+    public ServiceResult<T> ToServiceTypedResult()
+    {
+        return this;
+    }
+    
+    public ServiceResult ToServiceResult()
+    {
+        return this;
+    }
+    
+    public static implicit operator UseCaseResult<T>(RepoResult<T> result)
+    {
+        return UseCaseResult<T>.Create(result);
+    }
+    
+    public static implicit operator UseCaseResult(RepoResult<T> result)
+    {
+        return UseCaseResult.Create(result);
+    }
+    
+    public UseCaseResult<T> ToUseCaseTypedResult()
+    {
+        return this;
+    }
+    
+    public UseCaseResult ToUseCaseResult()
+    {
+        return this;
+    }
+
 }
 
 public static class RepoResultExtensions
 {
-    public static RepoResult<T> AsRepoResult<T>(this T value)
+    public static RepoResult<T> AsTypedRepoResult<T>(this T value)
         where T : IAggregateRoot
     {
         return value;
     }
     
-    public static RepoResult<T> ToRepoResult<T>(this EntityResult<T> result)
+    public static RepoResult<T> ToTypedRepoResult<T>(this EntityResult<T> result)
         where T : IAggregateRoot
     {
         return result;

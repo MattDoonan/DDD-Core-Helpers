@@ -8,9 +8,13 @@ public abstract class ResultStatus : IResultStatus
 {
     public bool IsSuccessful => !IsFailure;
     public bool IsFailure { get; }
-    public List<string> ErrorMessages { get; } = [];
+    
+    protected List<string> Errors { get; } = [];
+
+    public IReadOnlyList<string> ErrorMessages => Errors.AsReadOnly();
+
     public FailureType FailureType { get; }
-    public FailedLayer FailedLayer { get; }
+    public FailedLayer FailedLayer { get; protected init; }
     public string MainError => this.MainErrorMessage();
 
     protected ResultStatus(FailureType failureType, string failureMessageStarter, string because) 
@@ -35,7 +39,7 @@ public abstract class ResultStatus : IResultStatus
         FailureType = result.FailureType;
         FailedLayer = result.FailedLayer;
         IsFailure = result.IsFailure;
-        ErrorMessages.AddRange(result.ErrorMessages);
+        Errors.AddRange(result.ErrorMessages);
     }
     
     private ResultStatus(
@@ -55,7 +59,7 @@ public abstract class ResultStatus : IResultStatus
         }
         if (ResultErrorMessage.TryCreate(failureMessageStarter, because, out var errorMessage))
         {
-            ErrorMessages.Add(errorMessage);
+            Errors.Add(errorMessage);
         }
     }
     

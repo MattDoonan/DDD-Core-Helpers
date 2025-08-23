@@ -47,20 +47,70 @@ public class ValueObjectResult<T> : TypedResult<T>
         return Pass(value);
     }
     
+    public static implicit operator MapperResult<T>(ValueObjectResult<T> result)
+    {
+        return MapperResult<T>.Create(result);
+    }
+    
+    public static implicit operator MapperResult(ValueObjectResult<T> result)
+    {
+        return MapperResult.Create(result);
+    }
+    
+    public MapperResult<T> AsTypedMapperResult()
+    {
+        return this;
+    }
+    
+    public MapperResult AsMapperResult()
+    {
+        return this;
+    }
+    
     public static implicit operator ServiceResult<T>(ValueObjectResult<T> result)
     {
         return ServiceResult<T>.Create(result);
     }
     
-    public static implicit operator MapperResult<T>(ValueObjectResult<T> result)
+    public static implicit operator ServiceResult(ValueObjectResult<T> result)
     {
-        return MapperResult<T>.Create(result);
+        return ServiceResult.Create(result);
+    }
+    
+    public ServiceResult<T> ToServiceTypedResult()
+    {
+        return this;
+    }
+    
+    public ServiceResult ToServiceResult()
+    {
+        return this;
+    }
+    
+    public static implicit operator UseCaseResult<T>(ValueObjectResult<T> result)
+    {
+        return UseCaseResult<T>.Create(result);
+    }
+    
+    public static implicit operator UseCaseResult(ValueObjectResult<T> result)
+    {
+        return UseCaseResult.Create(result);
+    }
+    
+    public UseCaseResult<T> ToUseCaseTypedResult()
+    {
+        return this;
+    }
+    
+    public UseCaseResult ToUseCaseResult()
+    {
+        return this;
     }
 }
 
 public static class ValueObjectResultExtensions
 {
-    public static ValueObjectResult<T> AsValueObjectResult<T>(this T value)
+    public static ValueObjectResult<T> AsTypedValueObjectResult<T>(this T value)
         where T : IValueObject
     {
         return value;

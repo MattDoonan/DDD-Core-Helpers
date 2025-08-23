@@ -110,7 +110,7 @@ public class EntityResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var mapperResult = EntityResult.Fail<TestEntityResult>(errorMessage);
-        var result = mapperResult.ToResult();
+        var result = mapperResult.ToTypedResult();
         Assert.IsType<Result<TestEntityResult>>(result);
         ResultTestHelper.CheckFailure(result, FailureType.Entity, $"{FailureType.Entity.ToMessage<TestEntityResult>()} because {errorMessage}");
     }

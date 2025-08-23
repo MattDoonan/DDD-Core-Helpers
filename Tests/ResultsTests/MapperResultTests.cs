@@ -92,7 +92,7 @@ public class MapperResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var mapperResult = MapperResult.Fail<int>(errorMessage);
-        var result = mapperResult.ToResult();
+        var result = mapperResult.ToTypedResult();
         Assert.IsType<Result<int>>(result);
         ResultTestHelper.CheckFailure(result, FailureType.Mapper, $"{FailureType.Mapper.ToMessage<int>()} because {errorMessage}");
     }

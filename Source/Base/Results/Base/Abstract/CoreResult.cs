@@ -26,6 +26,18 @@ public abstract class CoreResult<TStatusResult> : ResultStatus
     {
         return isSuccessful ? TStatusResult.Pass() : TStatusResult.Fail();;
     }
+
+    public static TStatusResult RemoveValue<T>(CoreResult<T, TStatusResult> result)
+    {
+        if (result.IsSuccessful)
+        {
+            return TStatusResult.Pass();
+        }
+        var newResult = TStatusResult.Fail();
+        newResult.Errors.Clear();
+        newResult.Errors.AddRange(result.ErrorMessages);
+        return newResult;
+    }
     
     public static TStatusResult Merge(params IResultStatus[] results)
     {
@@ -37,7 +49,7 @@ public abstract class CoreResult<TStatusResult> : ResultStatus
     
     private static TStatusResult CreateResult(TStatusResult result, IResultStatus[] results)
     {
-        result.ErrorMessages.AddRange(results.SelectMany(r => r.ErrorMessages));
+        result.Errors.AddRange(results.SelectMany(r => r.ErrorMessages));
         return result;
     }
 }
@@ -53,10 +65,6 @@ public abstract class CoreResult<T, TResult> : TypedResult<T>
     {
     }
 
-    protected CoreResult(IResultStatus valueResult) : base(valueResult)
-    {
-    }
-
     protected CoreResult(FailureType failureType, string because) : base(failureType, because)
     {
     }
@@ -67,7 +75,7 @@ public abstract class CoreResult<T, TResult> : TypedResult<T>
     
     public TResult RemoveValue()
     {
-        return TResult.RemoveValue(this);
+        return CoreResult<TResult>.RemoveValue(this);
     }
     
     public static implicit operator TResult(CoreResult<T, TResult> result)

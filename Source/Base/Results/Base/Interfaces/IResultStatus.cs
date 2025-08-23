@@ -5,7 +5,7 @@ namespace Outputs.Results.Base.Interfaces;
 public interface IResultFailure
 {
     public bool IsFailure { get; }
-    public List<string> ErrorMessages { get; }
+    public IReadOnlyList<string> ErrorMessages { get; }
 }
 
 public interface IResultStatus : IResultFailure

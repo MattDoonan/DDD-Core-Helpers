@@ -119,11 +119,6 @@ public class Result<T> : CoreResult<T, Result>
     {
     }
     
-    
-    private Result(IResultStatus result) : base(result)
-    {
-    }
-    
     private Result(ITypedResult<T> result) : base(result)
     {
     }
@@ -152,20 +147,15 @@ public class Result<T> : CoreResult<T, Result>
     {
         return Pass(value);
     }
-    
-    public static implicit operator Result<T>(Result result)
-    {
-        if (result.IsSuccessful)
-        {
-            throw new InvalidOperationException(
-                "Cannot implicitly convert a successful Result to a typed Result<T>. Use an explicit constructor or method instead.");
-        }
-        return new Result<T>(result);
-    }
 }
 
 public static class ResultExtensions
 {
+    public static Result<T> AsResult<T>(this T value)
+    {
+        return value;
+    }
+    
     public static Result<T> ToTypedResult<T>(this ITypedResult<T> result)
     {
         return Result<T>.Create(result);

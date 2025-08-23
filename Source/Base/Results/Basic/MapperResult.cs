@@ -40,9 +40,29 @@ public class MapperResult : CoreResult<MapperResult>, IResultFactory<MapperResul
         return MapperResult<T>.Fail(because);
     }
 
-    public static MapperResult RemoveValue(IResultStatus status)
+    internal static MapperResult Create(IResultStatus status)
     {
         return new MapperResult(status);
+    }
+    
+    public static implicit operator ServiceResult(MapperResult result)
+    {
+        return ServiceResult.Create(result);
+    }
+    
+    public ServiceResult ToServiceResult()
+    {
+        return this;
+    }
+    
+    public static implicit operator UseCaseResult(MapperResult result)
+    {
+        return UseCaseResult.Create(result);
+    }
+    
+    public UseCaseResult ToUseCaseResult()
+    {
+        return this;
     }
 }
 
@@ -79,24 +99,52 @@ public class MapperResult<T> : CoreResult<T, MapperResult>
     {
         return Pass(value);
     }
+    
+    public static implicit operator ServiceResult(MapperResult<T> result)
+    {
+        return ServiceResult.Create(result);
+    }
+    
+    public static implicit operator ServiceResult<T>(MapperResult<T> result)
+    {
+        return ServiceResult<T>.Create(result);
+    }
+    
+    public ServiceResult<T> ToServiceTypedResult()
+    {
+        return this;
+    }
+    
+    public ServiceResult ToServiceResult()
+    {
+        return this;
+    }
+    
+    public static implicit operator UseCaseResult<T>(MapperResult<T> result)
+    {
+        return UseCaseResult<T>.Create(result);
+    }
+    
+    public static implicit operator UseCaseResult(MapperResult<T> result)
+    {
+        return UseCaseResult.Create(result);
+    }
+    
+    public UseCaseResult<T> ToUseCaseTypedResult()
+    {
+        return this;
+    }
+    
+    public UseCaseResult ToUseCaseResult()
+    {
+        return this;
+    }
 }
 
 public static class MapperResultExtensions
 {
-    public static MapperResult<T> AsMapperResult<T>(this T value)
+    public static MapperResult<T> AsTypedMapperResult<T>(this T value)
     {
         return value;
-    }
-    
-    public static MapperResult<T> AsMapperResult<T>(this EntityResult<T> result)
-        where T : IEntity
-    {
-        return result;
-    }
-    
-    public static MapperResult<T> AsMapperResult<T>(this ValueObjectResult<T> result)
-        where T : IValueObject
-    {
-        return result;
     }
 }

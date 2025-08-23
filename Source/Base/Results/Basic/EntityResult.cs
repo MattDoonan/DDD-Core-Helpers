@@ -46,6 +46,36 @@ public class EntityResult : CoreResult<EntityResult>, IResultFactory<EntityResul
     {
         return new EntityResult(status);
     }
+    
+    public static implicit operator MapperResult(EntityResult result)
+    {
+        return MapperResult.Create(result);
+    }
+    
+    public MapperResult AsMapperResult()
+    {
+        return this;
+    }
+    
+    public static implicit operator ServiceResult(EntityResult result)
+    {
+        return ServiceResult.Create(result);
+    }
+    
+    public ServiceResult ToServiceResult()
+    {
+        return this;
+    }
+    
+    public static implicit operator UseCaseResult(EntityResult result)
+    {
+        return UseCaseResult.Create(result);
+    }
+    
+    public UseCaseResult ToUseCaseResult()
+    {
+        return this;
+    }
 }
 
 public class EntityResult<T> : CoreResult<T, EntityResult>
@@ -74,20 +104,70 @@ public class EntityResult<T> : CoreResult<T, EntityResult>
         return Pass(value);
     }
     
+    public static implicit operator MapperResult<T>(EntityResult<T> result)
+    {
+        return MapperResult<T>.Create(result);
+    }
+    
+    public static implicit operator MapperResult(EntityResult<T> result)
+    {
+        return MapperResult.Create(result);
+    }
+    
+    public MapperResult<T> AsTypedMapperResult()
+    {
+        return this;
+    }
+    
+    public MapperResult AsMapperResult()
+    {
+        return this;
+    }
+    
     public static implicit operator ServiceResult<T>(EntityResult<T> result)
     {
         return ServiceResult<T>.Create(result);
     }
     
-    public static implicit operator MapperResult<T>(EntityResult<T> result)
+    public static implicit operator ServiceResult(EntityResult<T> result)
     {
-        return MapperResult<T>.Create(result);
+        return ServiceResult.Create(result);
+    }
+    
+    public ServiceResult<T> ToServiceTypedResult()
+    {
+        return this;
+    }
+    
+    public ServiceResult ToServiceResult()
+    {
+        return this;
+    }
+    
+    public static implicit operator UseCaseResult<T>(EntityResult<T> result)
+    {
+        return UseCaseResult<T>.Create(result);
+    }
+    
+    public static implicit operator UseCaseResult(EntityResult<T> result)
+    {
+        return UseCaseResult.Create(result);
+    }
+    
+    public UseCaseResult<T> ToUseCaseTypedResult()
+    {
+        return this;
+    }
+    
+    public UseCaseResult ToUseCaseResult()
+    {
+        return this;
     }
 }
 
 public static class EntityResultExtensions
 {
-    public static EntityResult<T> AsEntityResult<T>(this T value)
+    public static EntityResult<T> AsTypedEntityResult<T>(this T value)
         where T : IAggregateRoot
     {
         return value;

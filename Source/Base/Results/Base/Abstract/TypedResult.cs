@@ -39,15 +39,6 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
         }
     }
     
-    protected TypedResult(IResultStatus valueResult) : base(valueResult)
-    {
-        if (valueResult.IsSuccessful)
-        {
-            throw new  InvalidOperationException($"Cannot access {typeof(T).Name} Value when the result is a failure");
-        }
-        _hasGotOutput = false;
-    }
-    
     protected TypedResult(FailureType failureType, string because) : base(failureType, failureType.ToMessage<T>(), because)
     {
         _hasGotOutput = false;
@@ -58,7 +49,7 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
         _hasGotOutput = false;
     }
 
-    public string GetTypeOf()
+    public string GetOutputType()
     {
         return typeof(T).Name;
     }
