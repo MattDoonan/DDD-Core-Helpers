@@ -58,6 +58,13 @@ public class ResponseTests : BasicResultTests
         ResultTestHelper.Equivalent(result, copiedResult);
     }
 
+    public override void GivenIHaveASuccessfulResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        var result = Response.Pass();    
+        var copiedResult = Response.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
         const int value = 10;
@@ -110,7 +117,15 @@ public class ResponseTests : BasicResultTests
         var copiedResult = Response.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }
-    
+
+    public override void GivenIHaveASuccessfulResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        const long value = 10;
+        var result = Response.Pass(value);    
+        var copiedResult = Response.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
     [Fact]
     public void WhenICantFindTheValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {

@@ -78,4 +78,12 @@ public class ValueObjectResultTests : BasicValueResultTests
         var copiedResult = ValueObjectResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }
+
+    public override void GivenIHaveASuccessfulResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        var result = ValueObjectResult.Pass(obj);    
+        var copiedResult = ValueObjectResult.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
+    }
 }

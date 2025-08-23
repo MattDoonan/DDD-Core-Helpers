@@ -78,7 +78,7 @@ public class RepoResult<T> : TypedResult<T>
     
     internal static RepoResult<T> Create(ITypedResult<T> result)
     {
-        if (result.FailedLayer == FailedLayer.None)
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.None })
         {
             return new RepoResult<T>(result)
             {

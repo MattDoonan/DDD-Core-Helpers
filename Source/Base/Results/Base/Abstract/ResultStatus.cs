@@ -61,6 +61,14 @@ public abstract class ResultStatus : IResultStatus
         {
             Errors.Add(errorMessage);
         }
+        if (failureType is FailureType.None)
+        {
+            throw new ArgumentException("The failure type cannot be None for a failed result");
+        }
+        if (failureLayer is FailedLayer.None)
+        {
+            throw new ArgumentException("The failed layer cannot be None for a failed result");
+        }
     }
     
     public bool OperationTimedOut => FailureType is FailureType.OperationTimeout;

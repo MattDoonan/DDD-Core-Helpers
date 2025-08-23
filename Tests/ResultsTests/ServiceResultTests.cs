@@ -58,6 +58,13 @@ public class ServiceResultTests : BasicResultTests
         ResultTestHelper.Equivalent(result, copiedResult);
     }
 
+    public override void GivenIHaveASuccessfulResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        var result = ServiceResult.Pass();    
+        var copiedResult = ServiceResult.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
         const int value = 10;
@@ -110,7 +117,15 @@ public class ServiceResultTests : BasicResultTests
         var copiedResult = ServiceResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }
-    
+
+    public override void GivenIHaveASuccessfulResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        const byte value = 20;
+        var result = ServiceResult.Pass(value);    
+        var copiedResult = ServiceResult.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
     [Fact]
     public void WhenIHaveADomainViolation_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {

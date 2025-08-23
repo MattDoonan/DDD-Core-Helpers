@@ -24,5 +24,8 @@ public abstract class BasicResultTests : BasicValueResultTests
     
     [Fact]
     public abstract void GivenIHaveAFailureResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully();
+    
+    [Fact]
+    public abstract void GivenIHaveASuccessfulResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully();
 
 }

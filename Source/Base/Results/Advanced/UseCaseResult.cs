@@ -50,7 +50,7 @@ public class UseCaseResult : CoreResult<UseCaseResult>, IResultFactory<UseCaseRe
     
     internal static UseCaseResult Create(IResultStatus result)
     {
-        if (result.FailedLayer == FailedLayer.None)
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.None })
         {
             return new UseCaseResult(result)
             {
@@ -87,7 +87,7 @@ public class UseCaseResult<T> : CoreResult<T, UseCaseResult>
     
     internal static UseCaseResult<T> Create(ITypedResult<T> result)
     {
-        if (result.FailedLayer == FailedLayer.None)
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.None })
         {
             return new UseCaseResult<T>(result)
             {

@@ -72,7 +72,7 @@ public class ServiceResult : CoreResult<ServiceResult>, IResultFactory<ServiceRe
     
     internal static ServiceResult Create(IResultStatus result)
     {
-        if (result.FailedLayer == FailedLayer.None)
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.None })
         {
             return new ServiceResult(result)
             {
@@ -119,7 +119,7 @@ public class ServiceResult<T> : CoreResult<T, ServiceResult>
     
     internal static ServiceResult<T> Create(ITypedResult<T> result)
     {
-        if (result.FailedLayer == FailedLayer.None)
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.None })
         {
             return new ServiceResult<T>(result)
             {

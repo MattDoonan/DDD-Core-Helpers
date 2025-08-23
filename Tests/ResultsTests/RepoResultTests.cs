@@ -79,6 +79,14 @@ public class RepoResultTests : BasicValueResultTests
         ResultTestHelper.Equivalent(result, copiedResult);
     }
 
+    public override void GivenIHaveASuccessfulResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        var obj = new TestRepoResult(TestId.Create(1).Output);
+        var result = RepoResult.Pass(obj);    
+        var copiedResult = RepoResult.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
     [Fact]
     public void WhenICantFindTheValue_ThatIsMeantToHaveAValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {

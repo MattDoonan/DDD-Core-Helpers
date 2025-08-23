@@ -110,6 +110,13 @@ public class Response : CoreResult<Response>, IResultFactory<Response>
 
     internal static Response Create(IResultStatus result)
     {
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.None })
+        {
+            return new Response(result)
+            {
+                FailedLayer = FailedLayer.Infrastructure
+            };   
+        }
         return new Response(result);
     }
 }
@@ -140,7 +147,7 @@ public class Response<T>  : CoreResult<T, Response>
     
     internal static Response<T> Create(ITypedResult<T> result)
     {
-        if (result.FailedLayer == FailedLayer.None)
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.None })
         {
             return new Response<T>(result)
             {

@@ -58,6 +58,13 @@ public class UseCaseResultTests : BasicResultTests
         ResultTestHelper.Equivalent(result, copiedResult);
     }
 
+    public override void GivenIHaveASuccessfulResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        var result = UseCaseResult.Pass();    
+        var copiedResult = UseCaseResult.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
         const string value = "Test";
@@ -107,6 +114,14 @@ public class UseCaseResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = UseCaseResult.Fail<string>(errorMessage);
+        var copiedResult = UseCaseResult.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
+    public override void GivenIHaveASuccessfulResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        const byte value = 20;
+        var result = UseCaseResult.Pass(value);    
         var copiedResult = UseCaseResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }

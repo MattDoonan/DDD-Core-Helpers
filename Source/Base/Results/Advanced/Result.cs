@@ -33,6 +33,21 @@ public class Result : CoreResult<Result>, IResultFactory<Result>
         return new Result(failureType, FailedLayer.Unknown, because);
     }
     
+    public static Result Fail(FailedLayer failedLayer, string because)
+    {
+        return new Result(FailureType.Generic, failedLayer, because);
+    }
+    
+    public static Result Fail(FailureType failureType, FailedLayer failedLayer, string because)
+    {
+        return new Result(failureType, failedLayer, because);
+    }
+    
+    public static Result Copy(Result result)
+    {
+        return Create(result);
+    }
+    
     internal static Result Create(IResultStatus result)
     {
         return new Result(result);

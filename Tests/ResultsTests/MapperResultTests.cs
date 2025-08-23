@@ -60,6 +60,13 @@ public class MapperResultTests : BasicResultTests
         ResultTestHelper.Equivalent(result, copiedResult);
     }
 
+    public override void GivenIHaveASuccessfulResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        var result = MapperResult.Pass();    
+        var copiedResult = MapperResult.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
         const int value = 10;
@@ -109,6 +116,14 @@ public class MapperResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<int>(errorMessage);
+        var copiedResult = MapperResult.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
+    public override void GivenIHaveASuccessfulResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        const string value = "Hi";
+        var result = MapperResult.Pass(value);    
         var copiedResult = MapperResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }
