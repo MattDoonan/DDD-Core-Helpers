@@ -1,8 +1,6 @@
-﻿using Outputs.ObjectTypes;
-using Outputs.Results.Base.Abstract;
+﻿using Outputs.Results.Base.Abstract;
 using Outputs.Results.Base.Enums;
 using Outputs.Results.Base.Interfaces;
-using Outputs.Results.Basic;
 
 namespace Outputs.Results.Advanced;
 

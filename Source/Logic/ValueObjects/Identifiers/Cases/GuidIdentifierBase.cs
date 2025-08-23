@@ -1,5 +1,4 @@
-﻿using Outputs.Results;
-using Outputs.Results.Basic;
+﻿using Outputs.Results.Basic;
 using ValueObjects.Identifiers.Base;
 
 namespace ValueObjects.Identifiers.Cases;

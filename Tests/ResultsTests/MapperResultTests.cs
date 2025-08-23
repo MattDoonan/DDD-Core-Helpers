@@ -1,5 +1,4 @@
-﻿using Outputs.Results;
-using Outputs.Results.Advanced;
+﻿using Outputs.Results.Advanced;
 using Outputs.Results.Base.Enums;
 using Outputs.Results.Basic;
 using OutputTests.Helpers;
@@ -134,5 +133,164 @@ public class MapperResultTests : BasicResultTests
         int? value = null;
         var result = MapperResult.Pass(value);
         ResultTestHelper.CheckSuccess(result, value);  
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedResponse()
+    {
+        const string value = "Hi";
+        var result = MapperResult.Pass(value);    
+        var convertedResult = result.ToTypedResponse();
+        ResultTestHelper.CheckSuccess(convertedResult, value);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedResponse()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = MapperResult.Fail<byte>(errorMessage);    
+        var convertedResult = result.ToTypedResponse();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Mapper, $"{FailureType.Mapper.ToMessage<byte>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAResponse()
+    {
+        const string value = "Hi";
+        var result = MapperResult.Pass(value);    
+        var convertedResult = result.ToResponse();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAResponse()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = MapperResult.Fail<string>(errorMessage);    
+        var convertedResult = result.ToResponse();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Mapper, $"{FailureType.Mapper.ToMessage<string>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_Then_ItCanBeConvertedToAResponse()
+    {
+        var result = MapperResult.Pass();    
+        var convertedResult = result.ToResponse();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToAResponse()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = MapperResult.Fail(errorMessage);    
+        var convertedResult = result.ToResponse();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Mapper, $"{FailureType.Mapper.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedServiceResult()
+    {
+        const string value = "Hi";
+        var result = MapperResult.Pass(value);    
+        var convertedResult = result.ToTypedServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult, value);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = MapperResult.Fail<short>(errorMessage);    
+        var convertedResult = result.ToTypedServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Mapper, $"{FailureType.Mapper.ToMessage<short>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAServiceResult()
+    {
+        const string value = "Hi";
+        var result = MapperResult.Pass(value);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = MapperResult.Fail<string>(errorMessage);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Mapper, $"{FailureType.Mapper.ToMessage<string>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_Then_ItCanBeConvertedToAServiceResult()
+    {
+        var result = MapperResult.Pass();    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToAServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = MapperResult.Fail(errorMessage);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Mapper, $"{FailureType.Mapper.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedUseCaseResult()
+    {
+        const string value = "Hi";
+        var result = MapperResult.Pass(value);    
+        var convertedResult = result.ToTypedUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult, value);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = MapperResult.Fail<long>(errorMessage);    
+        var convertedResult = result.ToTypedUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Mapper, $"{FailureType.Mapper.ToMessage<long>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        const string value = "Hi";
+        var result = MapperResult.Pass(value);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = MapperResult.Fail<int>(errorMessage);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Mapper, $"{FailureType.Mapper.ToMessage<int>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        var result = MapperResult.Pass();    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = MapperResult.Fail(errorMessage);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Mapper, $"{FailureType.Mapper.ToMessage()} because {errorMessage}");
     }
 }

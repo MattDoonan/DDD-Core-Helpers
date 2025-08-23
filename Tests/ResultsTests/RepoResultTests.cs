@@ -118,4 +118,76 @@ public class RepoResultTests : BasicValueResultTests
         var result = RepoResult.OperationTimout<TestRepoResult>(errorMessage);
         ResultTestHelper.CheckFailure(result, FailureType.OperationTimeout, FailedLayer.Infrastructure, $"{FailureType.OperationTimeout.ToMessage<TestRepoResult>()} because {errorMessage}");
     }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedServiceResult()
+    {
+        var obj = new TestRepoResult(TestId.Create(1).Output);
+        var result = RepoResult.Pass(obj);    
+        var convertedResult = result.ToTypedServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = RepoResult.Fail<TestRepoResult>(errorMessage);    
+        var convertedResult = result.ToTypedServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<TestRepoResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAServiceResult()
+    {
+        var obj = new TestRepoResult(TestId.Create(1).Output);
+        var result = RepoResult.Pass(obj);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = RepoResult.Fail<TestRepoResult>(errorMessage);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<TestRepoResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedUseCaseResult()
+    {
+        var obj = new TestRepoResult(TestId.Create(1).Output);
+        var result = RepoResult.Pass(obj);    
+        var convertedResult = result.ToTypedUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = RepoResult.Fail<TestRepoResult>(errorMessage);    
+        var convertedResult = result.ToTypedUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<TestRepoResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        var obj = new TestRepoResult(TestId.Create(1).Output);
+        var result = RepoResult.Pass(obj);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = RepoResult.Fail<TestRepoResult>(errorMessage);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<TestRepoResult>()} because {errorMessage}");
+    }
 }

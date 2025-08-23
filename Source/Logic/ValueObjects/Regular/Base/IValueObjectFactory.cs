@@ -1,5 +1,4 @@
 ﻿using Outputs.ObjectTypes;
-using Outputs.Results;
 using Outputs.Results.Basic;
 
 namespace ValueObjects.Regular.Base;

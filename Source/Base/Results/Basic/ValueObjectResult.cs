@@ -73,12 +73,12 @@ public class ValueObjectResult<T> : TypedResult<T>
         return MapperResult.Create(result);
     }
     
-    public MapperResult<T> AsTypedMapperResult()
+    public MapperResult<T> ToTypedMapperResult()
     {
         return this;
     }
     
-    public MapperResult AsMapperResult()
+    public MapperResult ToMapperResult()
     {
         return this;
     }

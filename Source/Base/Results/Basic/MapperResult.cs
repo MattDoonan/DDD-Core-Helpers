@@ -1,5 +1,4 @@
-﻿using Outputs.ObjectTypes;
-using Outputs.Results.Advanced;
+﻿using Outputs.Results.Advanced;
 using Outputs.Results.Base.Abstract;
 using Outputs.Results.Base.Enums;
 using Outputs.Results.Base.Interfaces;
@@ -53,6 +52,16 @@ public class MapperResult : CoreResult<MapperResult>, IResultFactory<MapperResul
     internal static MapperResult Create(IResultStatus status)
     {
         return new MapperResult(status);
+    }
+    
+    public static implicit operator Response(MapperResult result)
+    {
+        return Response.Create(result);
+    }
+    
+    public ServiceResult ToResponse()
+    {
+        return this;
     }
     
     public static implicit operator ServiceResult(MapperResult result)

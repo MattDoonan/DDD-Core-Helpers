@@ -1,5 +1,4 @@
-﻿using Outputs.Results;
-using Outputs.Results.Advanced;
+﻿using Outputs.Results.Advanced;
 using Outputs.Results.Base.Enums;
 using Outputs.Results.Basic;
 using OutputTests.Helpers;
@@ -60,15 +59,13 @@ public class ValueObjectResultTests : BasicValueResultTests
         ResultTestHelper.CheckSuccess(convertedResult, obj);
     }
 
-    public override void
-        GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
+    public override void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
     {
         const string errorMessage = "I want it to fail";
         var valueObjectResult = ValueObjectResult.Fail<TestValueObject>(errorMessage);
         var convertedResult = valueObjectResult.ToTypedResult();
         Assert.IsType<Result<TestValueObject>>(convertedResult);
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject,
-            $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
     }
 
     public override void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -85,5 +82,149 @@ public class ValueObjectResultTests : BasicValueResultTests
         var result = ValueObjectResult.Pass(obj);    
         var copiedResult = ValueObjectResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedMapperResult()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        var result = ValueObjectResult.Pass(obj);    
+        var convertedResult = result.ToTypedMapperResult();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedMapperResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
+        var convertedResult = result.ToTypedMapperResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAMapperResult()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        var result = ValueObjectResult.Pass(obj);    
+        var convertedResult = result.ToMapperResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAMapperResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
+        var convertedResult = result.ToMapperResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedResponse()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        var result = ValueObjectResult.Pass(obj);    
+        var convertedResult = result.ToTypedResponse();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedResponse()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
+        var convertedResult = result.ToTypedResponse();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAResponse()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        var result = ValueObjectResult.Pass(obj);    
+        var convertedResult = result.ToResponse();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAResponse()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
+        var convertedResult = result.ToResponse();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedServiceResult()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        var result = ValueObjectResult.Pass(obj);    
+        var convertedResult = result.ToTypedServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
+        var convertedResult = result.ToTypedServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAServiceResult()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        var result = ValueObjectResult.Pass(obj);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedUseCaseResult()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        var result = ValueObjectResult.Pass(obj);    
+        var convertedResult = result.ToTypedUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
+        var convertedResult = result.ToTypedUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        var result = ValueObjectResult.Pass(obj);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
     }
 }

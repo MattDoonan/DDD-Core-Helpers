@@ -63,7 +63,17 @@ public class EntityResult : CoreResult<EntityResult>, IResultFactory<EntityResul
         return MapperResult.Create(result);
     }
     
-    public MapperResult AsMapperResult()
+    public MapperResult ToMapperResult()
+    {
+        return this;
+    }
+    
+    public static implicit operator Response(EntityResult result)
+    {
+        return Response.Create(result);
+    }
+    
+    public Response ToResponse()
     {
         return this;
     }
@@ -134,12 +144,12 @@ public class EntityResult<T> : CoreResult<T, EntityResult>
         return MapperResult.Create(result);
     }
     
-    public MapperResult<T> AsTypedMapperResult()
+    public MapperResult<T> ToTypedMapperResult()
     {
         return this;
     }
     
-    public MapperResult AsMapperResult()
+    public MapperResult ToMapperResult()
     {
         return this;
     }

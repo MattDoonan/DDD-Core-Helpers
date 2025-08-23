@@ -189,4 +189,110 @@ public class ResponseTests : BasicResultTests
         var result = Response.OperationTimout<int>(errorMessage);
         ResultTestHelper.CheckFailure(result, FailureType.OperationTimeout, FailedLayer.Infrastructure, $"{FailureType.OperationTimeout.ToMessage<int>()} because {errorMessage}");
     }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedServiceResult()
+    {
+        const long value = 10;
+        var result = Response.Pass(value);    
+        var convertedResult = result.ToTypedServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult, value);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = Response.Fail<string>(errorMessage);    
+        var convertedResult = result.ToTypedServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAServiceResult()
+    {
+        const long value = 10;
+        var result = Response.Pass(value);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = Response.Fail<string>(errorMessage);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_Then_ItCanBeConvertedToAServiceResult()
+    {
+        var result = Response.Pass();    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToAServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = Response.Fail(errorMessage);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedUseCaseResult()
+    {
+        const long value = 10;
+        var result = Response.Pass(value);    
+        var convertedResult = result.ToTypedUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult, value);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = Response.Fail<string>(errorMessage);    
+        var convertedResult = result.ToTypedUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        const long value = 10;
+        var result = Response.Pass(value);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = Response.Fail<string>(errorMessage);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        var result = Response.Pass();    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = Response.Fail(errorMessage);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+    }
 }

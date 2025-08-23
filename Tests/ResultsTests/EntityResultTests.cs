@@ -1,5 +1,4 @@
 ﻿using Entities.AggregateRoot;
-using Outputs.Results;
 using Outputs.Results.Advanced;
 using Outputs.Results.Base.Enums;
 using Outputs.Results.Basic;
@@ -144,5 +143,235 @@ public class EntityResultTests : BasicResultTests
         var result = EntityResult.Pass(value);    
         var copiedResult = EntityResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedMapperResult()
+    {
+        var obj = new TestEntityResult(TestId.Create(1).Output);
+        var result = EntityResult.Pass(obj);    
+        var convertedResult = result.ToTypedMapperResult();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedMapperResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
+        var convertedResult = result.ToTypedMapperResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage<TestEntityResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAMapperResult()
+    {
+        var obj = new TestEntityResult(TestId.Create(1).Output);
+        var result = EntityResult.Pass(obj);    
+        var convertedResult = result.ToMapperResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAMapperResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
+        var convertedResult = result.ToMapperResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage<TestEntityResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_Then_ItCanBeConvertedToAMapperResult()
+    {
+        var result = EntityResult.Pass();    
+        var convertedResult = result.ToMapperResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToAMapperResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail(errorMessage);    
+        var convertedResult = result.ToMapperResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulAggregateRootResult_WithAValue_Then_ItCanBeConvertedToATypedRepoResult()
+    {
+        var obj = new TestEntityResult(TestId.Create(1).Output);
+        var result = EntityResult.Pass(obj);    
+        var convertedResult = result.ToTypedRepoResult();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureAggregateRootResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToARepoResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
+        var convertedResult = result.ToTypedRepoResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage<TestEntityResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedResponse()
+    {
+        var obj = new TestEntityResult(TestId.Create(1).Output);
+        var result = EntityResult.Pass(obj);    
+        var convertedResult = result.ToTypedResponse();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedResponse()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
+        var convertedResult = result.ToTypedResponse();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage<TestEntityResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAResponse()
+    {
+        var obj = new TestEntityResult(TestId.Create(1).Output);
+        var result = EntityResult.Pass(obj);    
+        var convertedResult = result.ToResponse();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAResponse()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
+        var convertedResult = result.ToResponse();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage<TestEntityResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_Then_ItCanBeConvertedToAResponse()
+    {
+        var result = EntityResult.Pass();    
+        var convertedResult = result.ToResponse();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToAResponse()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail(errorMessage);    
+        var convertedResult = result.ToResponse();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedServiceResult()
+    {
+        var obj = new TestEntityResult(TestId.Create(1).Output);
+        var result = EntityResult.Pass(obj);    
+        var convertedResult = result.ToTypedServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
+        var convertedResult = result.ToTypedServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage<TestEntityResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAServiceResult()
+    {
+        var obj = new TestEntityResult(TestId.Create(1).Output);
+        var result = EntityResult.Pass(obj);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage<TestEntityResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_Then_ItCanBeConvertedToAServiceResult()
+    {
+        var result = EntityResult.Pass();    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToAServiceResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail(errorMessage);    
+        var convertedResult = result.ToServiceResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedUseCaseResult()
+    {
+        var obj = new TestEntityResult(TestId.Create(1).Output);
+        var result = EntityResult.Pass(obj);    
+        var convertedResult = result.ToTypedUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
+        var convertedResult = result.ToTypedUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage<TestEntityResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        var obj = new TestEntityResult(TestId.Create(1).Output);
+        var result = EntityResult.Pass(obj);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage<TestEntityResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        var result = EntityResult.Pass();    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToAUseCaseResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail(errorMessage);    
+        var convertedResult = result.ToUseCaseResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Entity, $"{FailureType.Entity.ToMessage()} because {errorMessage}");
     }
 }
