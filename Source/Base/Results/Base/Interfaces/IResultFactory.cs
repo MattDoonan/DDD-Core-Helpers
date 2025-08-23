@@ -1,4 +1,4 @@
-﻿namespace Outputs.Results.Base.Interfaces;
+﻿namespace Base.Results.Base.Interfaces;
 
 public interface IResultFactory<out TResult> 
     where TResult : IResultStatus

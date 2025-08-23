@@ -4,6 +4,15 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>Logic.Entities</RootNamespace>
+        <PackageId>DDDCoreHelpers.Entities</PackageId>
+        <PackageTags>DDD Domain Entities</PackageTags>
+        <Version>1.0.0</Version>
+        <Authors>MattDoonan</Authors>
+        <PackageDescription>This package creates different types of Entities</PackageDescription>
+        <PackageProjectUrl>https://github.com/MattDoonan/DDD-Core-Helpers</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/MattDoonan/DDD-Core-Helpers</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>

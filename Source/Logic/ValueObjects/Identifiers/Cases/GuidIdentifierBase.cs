@@ -1,7 +1,7 @@
-﻿using Outputs.Results.Basic;
-using ValueObjects.Identifiers.Base;
+﻿using Base.Results.Basic;
+using Logic.ValueObjects.Identifiers.Base;
 
-namespace ValueObjects.Identifiers.Cases;
+namespace Logic.ValueObjects.Identifiers.Cases;
 
 public abstract class GuidIdentifierBase<T>(Guid value) : IdentifierBase<Guid>(value), IGuiIdentifier<T>
     where T : class, IIdentifier<Guid, T>

@@ -1,9 +1,9 @@
 ﻿using System.Numerics;
-using Outputs.ObjectTypes;
-using Outputs.Results.Basic;
-using ValueObjects.Regular.Base;
+using Base.ObjectTypes;
+using Base.Results.Basic;
+using Logic.ValueObjects.Regular.Base;
 
-namespace ValueObjects.Regular.Numbers;
+namespace Logic.ValueObjects.Regular.Numbers;
 
 public interface IIncrementalValueObject<in TValue, T> : IValueObject
     where TValue : INumber<TValue>

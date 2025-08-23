@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
-using ValueObjects.AggregateRootIdentifiers.Base;
-using ValueObjects.Identifiers.Cases;
+using Logic.ValueObjects.AggregateRootIdentifiers.Base;
+using Logic.ValueObjects.Identifiers.Cases;
 
-namespace ValueObjects.AggregateRootIdentifiers.Cases;
+namespace Logic.ValueObjects.AggregateRootIdentifiers.Cases;
 
 public class NumberAggregateRootIdBase<TValue, T>(TValue value) : NumberIdentifierBase<TValue, T>(value)
     where TValue : INumber<TValue>, IComparable<TValue>, IEquatable<TValue>

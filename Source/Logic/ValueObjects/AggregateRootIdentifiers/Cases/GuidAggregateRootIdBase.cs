@@ -1,7 +1,7 @@
-﻿using ValueObjects.AggregateRootIdentifiers.Base;
-using ValueObjects.Identifiers.Cases;
+﻿using Logic.ValueObjects.AggregateRootIdentifiers.Base;
+using Logic.ValueObjects.Identifiers.Cases;
 
-namespace ValueObjects.AggregateRootIdentifiers.Cases;
+namespace Logic.ValueObjects.AggregateRootIdentifiers.Cases;
 
 public class GuidAggregateRootIdBase<T>(Guid value) : GuidIdentifierBase<T>(value)
     where T : class, IAggregateRootId<Guid, T>

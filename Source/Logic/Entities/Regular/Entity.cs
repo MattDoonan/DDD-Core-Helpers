@@ -1,6 +1,6 @@
-﻿using Outputs.ObjectTypes;
+﻿using Base.ObjectTypes;
 
-namespace Entities.Regular;
+namespace Logic.Entities.Regular;
 
 public abstract class Entity<TId>(TId id) : IEntity<TId>
     where TId : IIdentifier

@@ -1,6 +1,6 @@
-﻿using Outputs.Results.Advanced;
-using Outputs.Results.Base.Enums;
-using Outputs.Results.Basic;
+﻿using Base.Results.Advanced;
+using Base.Results.Base.Enums;
+using Base.Results.Basic;
 using OutputTests.Helpers;
 using Xunit;
 

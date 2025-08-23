@@ -1,4 +1,4 @@
-﻿namespace ValueObjects.Regular.Base;
+﻿namespace Logic.ValueObjects.Regular.Base;
 
 public abstract class ValueObjectBase<TValue>(TValue value) : IValue<ValueObjectBase<TValue>>
     where TValue : IComparable, IComparable<TValue>, IEquatable<TValue>

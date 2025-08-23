@@ -1,9 +1,9 @@
-﻿using Outputs.ObjectTypes;
-using ValueObjects.Identifiers.Base;
-using ValueObjects.Identifiers.Lists;
-using ValueObjects.Regular.Strings;
+﻿using Base.ObjectTypes;
+using Logic.ValueObjects.Identifiers.Base;
+using Logic.ValueObjects.Identifiers.Lists;
+using Logic.ValueObjects.Regular.Strings;
 
-namespace ValueObjects.Identifiers.Cases;
+namespace Logic.ValueObjects.Identifiers.Cases;
 
 public class StringIdentifierBase<T>(string value): StringValueObjectBase<T>(value), IIdentifier
     where T : class, IIdentifier<string, T>

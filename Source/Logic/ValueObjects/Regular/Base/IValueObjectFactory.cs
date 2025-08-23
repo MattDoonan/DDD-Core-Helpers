@@ -1,7 +1,7 @@
-﻿using Outputs.ObjectTypes;
-using Outputs.Results.Basic;
+﻿using Base.ObjectTypes;
+using Base.Results.Basic;
 
-namespace ValueObjects.Regular.Base;
+namespace Logic.ValueObjects.Regular.Base;
 
 public interface IValueObjectFactory<TIn, TOut> 
     where TOut : class, IValueObject

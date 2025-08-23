@@ -1,8 +1,8 @@
-﻿using Outputs.Results.Advanced;
-using Outputs.Results.Base.Enums;
-using Outputs.Results.Base.Interfaces;
+﻿using Base.Results.Advanced;
+using Base.Results.Base.Enums;
+using Base.Results.Base.Interfaces;
 
-namespace Outputs.Results.Base.Abstract;
+namespace Base.Results.Base.Abstract;
 
 public abstract class CoreResult<TStatusResult> : ResultStatus
     where TStatusResult : CoreResult<TStatusResult>, IResultFactory<TStatusResult>

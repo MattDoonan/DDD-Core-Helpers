@@ -5,6 +5,15 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>ValueObjects</AssemblyName>
         <Nullable>enable</Nullable>
+        <RootNamespace>Logic.ValueObjects</RootNamespace>
+        <PackageId>DDDCoreHelpers.ValueObjects</PackageId>
+        <PackageTags>DDD Domain Value Objects</PackageTags>
+        <Version>1.0.0</Version>
+        <Authors>MattDoonan</Authors>
+        <PackageDescription>This package creates different types of Value Objects</PackageDescription>
+        <PackageProjectUrl>https://github.com/MattDoonan/DDD-Core-Helpers</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/MattDoonan/DDD-Core-Helpers</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>

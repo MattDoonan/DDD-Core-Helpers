@@ -1,6 +1,6 @@
-﻿using Outputs.ObjectTypes;
+﻿using Base.ObjectTypes;
 
-namespace Entities.Regular;
+namespace Logic.Entities.Regular;
 
 public interface IEntity<out TId> : IEntity
     where TId : IIdentifier

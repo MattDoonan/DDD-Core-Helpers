@@ -1,7 +1,7 @@
-﻿using Outputs.Results.Basic;
-using ValueObjects.Regular.Base;
+﻿using Base.Results.Basic;
+using Logic.ValueObjects.Regular.Base;
 
-namespace ValueObjects.Regular.Strings;
+namespace Logic.ValueObjects.Regular.Strings;
 
 public abstract class StringValueObjectBase<T>(string value) : ValueObjectBase<string>(value)
     where T : class, IValueObject<string, T>

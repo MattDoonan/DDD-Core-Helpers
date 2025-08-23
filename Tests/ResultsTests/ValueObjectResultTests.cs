@@ -1,9 +1,9 @@
-﻿using Outputs.Results.Advanced;
-using Outputs.Results.Base.Enums;
-using Outputs.Results.Basic;
+﻿using Base.Results.Advanced;
+using Base.Results.Base.Enums;
+using Base.Results.Basic;
+using Logic.ValueObjects.Regular.Base;
+using Logic.ValueObjects.Regular.Numbers;
 using OutputTests.Helpers;
-using ValueObjects.Regular.Base;
-using ValueObjects.Regular.Numbers;
 using Xunit;
 
 namespace OutputTests;

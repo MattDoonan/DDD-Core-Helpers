@@ -1,7 +1,7 @@
-﻿using Outputs.Results.Basic;
-using ValueObjects.Regular.Base;
+﻿using Base.Results.Basic;
+using Logic.ValueObjects.Regular.Base;
 
-namespace ValueObjects.Mappers;
+namespace Logic.ValueObjects.Mappers;
 
 public interface IValueToValueObjectMapper<in TValue, T>  
     where TValue : IComparable<TValue>, IEquatable<TValue>

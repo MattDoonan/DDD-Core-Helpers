@@ -1,10 +1,10 @@
-﻿using Outputs.ObjectTypes;
-using Outputs.Results.Advanced;
-using Outputs.Results.Base.Abstract;
-using Outputs.Results.Base.Enums;
-using Outputs.Results.Base.Interfaces;
+﻿using Base.ObjectTypes;
+using Base.Results.Advanced;
+using Base.Results.Base.Abstract;
+using Base.Results.Base.Enums;
+using Base.Results.Base.Interfaces;
 
-namespace Outputs.Results.Basic;
+namespace Base.Results.Basic;
 
 public static class ValueObjectResult
 {

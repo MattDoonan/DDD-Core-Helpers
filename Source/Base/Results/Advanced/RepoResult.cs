@@ -1,10 +1,10 @@
-﻿using Outputs.ObjectTypes;
-using Outputs.Results.Base.Abstract;
-using Outputs.Results.Base.Enums;
-using Outputs.Results.Base.Interfaces;
-using Outputs.Results.Basic;
+﻿using Base.ObjectTypes;
+using Base.Results.Base.Abstract;
+using Base.Results.Base.Enums;
+using Base.Results.Base.Interfaces;
+using Base.Results.Basic;
 
-namespace Outputs.Results.Advanced;
+namespace Base.Results.Advanced;
 
 public static class RepoResult
 {

@@ -1,7 +1,7 @@
-﻿using Outputs.Results.Base.Enums;
-using Outputs.Results.Base.Interfaces;
+﻿using Base.Results.Base.Enums;
+using Base.Results.Base.Interfaces;
 
-namespace Outputs.Results.Base.Abstract;
+namespace Base.Results.Base.Abstract;
 
 public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
 {

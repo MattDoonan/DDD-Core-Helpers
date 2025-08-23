@@ -1,7 +1,7 @@
-﻿using Outputs.ObjectTypes;
-using Outputs.Results.Advanced;
+﻿using Base.ObjectTypes;
+using Base.Results.Advanced;
 
-namespace ValueObjects.Identifiers.Lists;
+namespace Logic.ValueObjects.Identifiers.Lists;
 
 public class IdentifierList<T>(params T[] values) : IIdentifierList<T>
     where T : class, IIdentifier

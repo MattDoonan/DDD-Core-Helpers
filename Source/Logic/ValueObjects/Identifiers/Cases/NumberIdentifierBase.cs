@@ -1,10 +1,10 @@
 ﻿using System.Numerics;
-using Outputs.ObjectTypes;
-using ValueObjects.Identifiers.Base;
-using ValueObjects.Identifiers.Lists;
-using ValueObjects.Regular.Numbers;
+using Base.ObjectTypes;
+using Logic.ValueObjects.Identifiers.Base;
+using Logic.ValueObjects.Identifiers.Lists;
+using Logic.ValueObjects.Regular.Numbers;
 
-namespace ValueObjects.Identifiers.Cases;
+namespace Logic.ValueObjects.Identifiers.Cases;
 
 public class NumberIdentifierBase<TValue, T>(TValue value) : NumberValueObjectBase<TValue, T>(value), IIdentifier
     where TValue : INumber<TValue>, IComparable<TValue>, IEquatable<TValue>

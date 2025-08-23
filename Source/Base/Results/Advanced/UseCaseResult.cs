@@ -1,8 +1,8 @@
-﻿using Outputs.Results.Base.Abstract;
-using Outputs.Results.Base.Enums;
-using Outputs.Results.Base.Interfaces;
+﻿using Base.Results.Base.Abstract;
+using Base.Results.Base.Enums;
+using Base.Results.Base.Interfaces;
 
-namespace Outputs.Results.Advanced;
+namespace Base.Results.Advanced;
 
 public class UseCaseResult : CoreResult<UseCaseResult>, IResultFactory<UseCaseResult>
 {

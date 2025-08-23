@@ -1,8 +1,8 @@
-﻿using Outputs.Results.Basic;
-using ValueObjects.Regular.Base;
-using ValueObjects.Regular.Enums;
+﻿using Base.Results.Basic;
+using Logic.ValueObjects.Regular.Base;
+using Logic.ValueObjects.Regular.Enums;
 
-namespace ValueObjects.Mappers;
+namespace Logic.ValueObjects.Mappers;
 
 public interface IEnumValueObjectMapper<out TEnum, TConvert, T> 
     where TEnum :  Enum, IComparable<TEnum>, IEquatable<TEnum>

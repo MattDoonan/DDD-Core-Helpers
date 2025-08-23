@@ -1,3 +1,3 @@
-﻿namespace Outputs.ObjectTypes;
+﻿namespace Base.ObjectTypes;
 
 public interface IIdentifier : IValueObject;

@@ -1,7 +1,7 @@
-﻿using Entities.Regular;
-using Outputs.ObjectTypes;
+﻿using Base.ObjectTypes;
+using Logic.Entities.Regular;
 
-namespace Entities.AggregateRoot;
+namespace Logic.Entities.AggregateRoot;
 
 public interface IAggregateRoot<out TId> : IEntity<TId>, IAggregateRoot
     where TId : IAggregateRootId;

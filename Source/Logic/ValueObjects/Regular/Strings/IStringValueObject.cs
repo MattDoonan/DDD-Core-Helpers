@@ -1,8 +1,8 @@
-﻿using Outputs.ObjectTypes;
-using Outputs.Results.Basic;
-using ValueObjects.Regular.Base;
+﻿using Base.ObjectTypes;
+using Base.Results.Basic;
+using Logic.ValueObjects.Regular.Base;
 
-namespace ValueObjects.Regular.Strings;
+namespace Logic.ValueObjects.Regular.Strings;
 
 public interface IStringValueObject<T> : IValueObject
     where T : class, IValueObject<string, T>
