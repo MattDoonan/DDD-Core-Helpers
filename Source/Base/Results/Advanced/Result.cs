@@ -33,26 +33,6 @@ public class Result : CoreResult<Result>, IResultFactory<Result>
         return new Result(failureType, FailedLayer.Unknown, because);
     }
     
-    public static Result Timeout(string because = "")
-    {
-        return Fail(FailureType.OperationTimout, because);
-    }
-    
-    public static Result InvalidRequest(string because = "")
-    {
-        return Fail(FailureType.InvalidRequest, because);
-    }
-
-    public static Result RemoveValue(IResultStatus status)
-    {
-        return new Result(status);
-    }
-    
-    public static Result Copy(Result result)
-    {
-        return new Result(result);
-    }
-    
     internal static Result Create(IResultStatus result)
     {
         return new Result(result);
@@ -63,44 +43,29 @@ public class Result : CoreResult<Result>, IResultFactory<Result>
         return Result<T>.Pass(value);
     }
     
-    public static Result<T> Fail<T>(FailureType failureType, string because = "")
-    {
-        return Result<T>.Fail(failureType, because);
-    }
-    
     public static Result<T> Copy<T>(Result<T> result)
     {
         return Result<T>.Create(result);
     }
     
-    public static Result<T> NotFound<T>(string because = "")
-    {
-        return Result<T>.Fail(FailureType.NotFound, because);
-    }
-    
-    public static Result<T> AlreadyExists<T>(string because = "")
-    {
-        return Result<T>.Fail(FailureType.AlreadyExists, because);
-    }
-    
-    public static Result<T> Timeout<T>(string because = "")
-    {
-        return Result<T>.Fail(FailureType.OperationTimout, because);
-    }
-    
-    public static Result<T> InvalidRequest<T>(string because = "")
-    {
-        return Result<T>.Fail(FailureType.InvalidRequest, because);
-    }
-    
     public static Result<T> Fail<T>(string because = "")
     {
-        return Result<T>.Fail(FailureType.Generic, because);
+        return Result<T>.Fail(FailureType.Generic, FailedLayer.Unknown, because);
     }
-
-    public static Result RemoveValue<T>(Result<T> status)
+    
+    public static Result<T> Fail<T>(FailureType failureType, string because = "")
     {
-        return new Result(status);
+        return Result<T>.Fail(failureType, FailedLayer.Unknown, because);
+    }
+    
+    public static Result<T> Fail<T>(FailedLayer failedLayer, string because = "")
+    {
+        return Result<T>.Fail(FailureType.Generic, failedLayer, because);
+    }
+    
+    public static Result<T> Fail<T>(FailureType failureType, FailedLayer failedLayer, string because = "")
+    {
+        return Result<T>.Fail(failureType, failedLayer, because);
     }
     
     internal static Result<T> Create<T>(ITypedResult<T> result)
@@ -115,7 +80,7 @@ public class Result<T> : CoreResult<T, Result>
     {
     }
     
-    private Result(FailureType failureType, string because) : base(failureType, because)
+    private Result(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
     {
     }
     
@@ -127,10 +92,10 @@ public class Result<T> : CoreResult<T, Result>
     {
         return new Result<T>(value);
     }
-
-    internal static Result<T> Fail(FailureType failureType, string because = "")
+    
+    internal static Result<T> Fail(FailureType failureType, FailedLayer failedLayer, string because = "")
     {
-        return new Result<T>(failureType, because);
+        return new Result<T>(failureType, failedLayer, because);
     }
     
     internal static Result<T> Create(ITypedResult<T> result)

@@ -41,6 +41,12 @@ public class EntityResult : CoreResult<EntityResult>, IResultFactory<EntityResul
     {
         return EntityResult<T>.Fail(because);
     }
+    
+    public static EntityResult<T> Copy<T>(EntityResult<T> result)
+        where T : IEntity
+    {
+        return EntityResult<T>.Create(result);
+    }
 
     public static EntityResult RemoveValue(IResultStatus status)
     {
@@ -89,6 +95,10 @@ public class EntityResult<T> : CoreResult<T, EntityResult>
     {
     }
     
+    private EntityResult(ITypedResult<T> result) : base(result)
+    {
+    }
+    
     internal static EntityResult<T> Pass(T value)
     {
         return new EntityResult<T>(value);
@@ -97,6 +107,11 @@ public class EntityResult<T> : CoreResult<T, EntityResult>
     internal static EntityResult<T> Fail(string because = "")
     {
         return new EntityResult<T>(FailureType.Entity, because);
+    }
+    
+    internal static EntityResult<T> Create(ITypedResult<T> result)
+    {
+        return new EntityResult<T>(result);
     }
     
     public static implicit operator EntityResult<T>(T value)

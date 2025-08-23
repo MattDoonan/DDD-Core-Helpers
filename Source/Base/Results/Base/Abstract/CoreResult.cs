@@ -26,17 +26,20 @@ public abstract class CoreResult<TStatusResult> : ResultStatus
     {
         return isSuccessful ? TStatusResult.Pass() : TStatusResult.Fail();;
     }
-
-    public static TStatusResult RemoveValue<T>(CoreResult<T, TStatusResult> result)
+    
+    public TStatusResult Copy()
     {
-        if (result.IsSuccessful)
-        {
-            return TStatusResult.Pass();
-        }
-        var newResult = TStatusResult.Fail();
-        newResult.Errors.Clear();
-        newResult.Errors.AddRange(result.ErrorMessages);
-        return newResult;
+        return CopyResultValues(this);
+    }
+    
+    public static TStatusResult CreateCopy(TStatusResult result)
+    {
+        return CopyResultValues(result);
+    }
+
+    public static TStatusResult RemoveValue<T>(CoreResult<T, TStatusResult> typedResult)
+    {
+        return CopyResultValues(typedResult);
     }
     
     public static TStatusResult Merge(params IResultStatus[] results)
@@ -51,6 +54,20 @@ public abstract class CoreResult<TStatusResult> : ResultStatus
     {
         result.Errors.AddRange(results.SelectMany(r => r.ErrorMessages));
         return result;
+    }
+
+    private static TStatusResult CopyResultValues(CoreResult<TStatusResult> result)
+    {
+        if (result.IsSuccessful)
+        {
+            return TStatusResult.Pass();
+        }
+        var newResult = TStatusResult.Fail();
+        newResult.Errors.Clear();
+        newResult.Errors.AddRange(result.ErrorMessages);
+        newResult.FailedLayer  = result.FailedLayer;
+        newResult.FailureType = result.FailureType;
+        return newResult;
     }
 }
 

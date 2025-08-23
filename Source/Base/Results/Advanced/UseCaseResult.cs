@@ -38,6 +38,11 @@ public class UseCaseResult : CoreResult<UseCaseResult>, IResultFactory<UseCaseRe
         return UseCaseResult<T>.Fail(FailureType.Generic, because);
     }
     
+    public static ServiceResult<T> Copy<T>(ServiceResult<T> result)
+    {
+        return ServiceResult<T>.Create(result);
+    }
+    
     internal static UseCaseResult Create(IResultStatus result)
     {
         if (result.FailedLayer == FailedLayer.None)

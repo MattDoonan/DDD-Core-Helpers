@@ -65,6 +65,11 @@ public class ServiceResult : CoreResult<ServiceResult>, IResultFactory<ServiceRe
         return new ServiceResult(status);
     }
     
+    public static ServiceResult<T> Copy<T>(ServiceResult<T> result)
+    {
+        return ServiceResult<T>.Create(result);
+    }
+    
     internal static ServiceResult Create(IResultStatus result)
     {
         if (result.FailedLayer == FailedLayer.None)

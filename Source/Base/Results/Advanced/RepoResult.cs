@@ -43,6 +43,12 @@ public class RepoResult
     {
         return RepoResult<T>.Fail(FailureType.OperationTimout, because);
     }
+    
+    public static RepoResult<T> Copy<T>(RepoResult<T> result)
+        where T : IAggregateRoot
+    {
+        return RepoResult<T>.Create(result);
+    }
 }
 
 public class RepoResult<T> : TypedResult<T>
@@ -56,7 +62,7 @@ public class RepoResult<T> : TypedResult<T>
     {
     }
     
-    private RepoResult(EntityResult<T> result) : base((ITypedResult<T>) result)
+    private RepoResult(ITypedResult<T> result) : base( result)
     {
     }
     
@@ -70,7 +76,7 @@ public class RepoResult<T> : TypedResult<T>
         return new RepoResult<T>(failureType, because);
     }
     
-    private static RepoResult<T> Create(EntityResult<T> result)
+    internal static RepoResult<T> Create(ITypedResult<T> result)
     {
         if (result.FailedLayer == FailedLayer.None)
         {

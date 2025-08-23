@@ -13,8 +13,8 @@ public abstract class ResultStatus : IResultStatus
 
     public IReadOnlyList<string> ErrorMessages => Errors.AsReadOnly();
 
-    public FailureType FailureType { get; }
-    public FailedLayer FailedLayer { get; protected init; }
+    public FailureType FailureType { get; protected set; }
+    public FailedLayer FailedLayer { get; protected set; }
     public string MainError => this.MainErrorMessage();
 
     protected ResultStatus(FailureType failureType, string failureMessageStarter, string because) 

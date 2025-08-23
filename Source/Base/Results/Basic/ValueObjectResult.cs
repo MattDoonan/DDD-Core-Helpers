@@ -2,6 +2,7 @@
 using Outputs.Results.Advanced;
 using Outputs.Results.Base.Abstract;
 using Outputs.Results.Base.Enums;
+using Outputs.Results.Base.Interfaces;
 
 namespace Outputs.Results.Basic;
 
@@ -18,6 +19,12 @@ public static class ValueObjectResult
     {
         return ValueObjectResult<T>.Fail(because);
     }
+    
+    public static ValueObjectResult<T> Copy<T>(ValueObjectResult<T> result)
+        where T : class, IValueObject
+    {
+        return ValueObjectResult<T>.Create(result);
+    }
 }
 
 
@@ -31,6 +38,10 @@ public class ValueObjectResult<T> : TypedResult<T>
     private ValueObjectResult(FailureType failureType, string because) : base(failureType, because)
     {
     }
+    
+    private ValueObjectResult(ITypedResult<T> result) : base(result)
+    {
+    }
 
     internal static ValueObjectResult<T> Pass(T value)
     {
@@ -40,6 +51,11 @@ public class ValueObjectResult<T> : TypedResult<T>
     internal static ValueObjectResult<T> Fail(string because = "")
     {
         return new ValueObjectResult<T>(FailureType.ValueObject, because);
+    }
+    
+    internal static ValueObjectResult<T> Create(ITypedResult<T> result)
+    {
+        return new ValueObjectResult<T>(result);
     }
     
     public static implicit operator ValueObjectResult<T>(T value)
