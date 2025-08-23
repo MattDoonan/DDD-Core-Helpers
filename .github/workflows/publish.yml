@@ -54,7 +54,9 @@ jobs:
         run: dotnet pack --configuration Release --no-build -o ./artifacts
 
       - name: Publish to GitHub Packages
-        run: | 
-          dotnet nuget push "./artifacts/*.nupkg" \
-          --api-key ${{ secrets.PUBLISH_PACKAGES_TOKEN }} \
-          --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+        run: |
+          for file in ./artifacts/*.nupkg; do
+            dotnet nuget push "$file" \
+            --api-key ${{ secrets.PUBLISH_PACKAGES_TOKEN }} \
+            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+          done 
