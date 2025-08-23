@@ -1,7 +1,8 @@
 ﻿using Outputs.Results;
-using Outputs.Results.Abstract;
+using Outputs.Results.Advanced;
+using Outputs.Results.Base.Enums;
+using Outputs.Results.Basic;
 using OutputTests.Helpers;
-using ValueObjects.Results;
 using Xunit;
 
 namespace OutputTests;
@@ -82,7 +83,7 @@ public class MapperResultTests : BasicResultTests
     {
         const int value = 10;
         var mapperResult = MapperResult.Pass(value);
-        var result = mapperResult.ToResult();
+        var result = mapperResult.ToTypedResult();
         Assert.IsType<Result<int>>(result);
         ResultTestHelper.CheckSuccess(result, value);
     }

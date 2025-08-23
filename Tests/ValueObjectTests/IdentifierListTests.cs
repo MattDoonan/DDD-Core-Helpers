@@ -1,6 +1,7 @@
-﻿using ValueObjects.Results;
-using ValueObjects.Types.Identifiers.Base;
-using ValueObjects.Types.Identifiers.Lists;
+﻿using Outputs.Results;
+using Outputs.Results.Basic;
+using ValueObjects.Identifiers.Base;
+using ValueObjects.Identifiers.Lists;
 using Xunit;
 
 namespace ValueObjectTests;
@@ -20,7 +21,7 @@ public class IdentifierListTests
     public void Add_NewIdentifier_ShouldPass()
     {
         var list = new IdentifierList<TestValueObjectBase>();
-        var identifier = TestValueObjectBase.Create("A").Content;
+        var identifier = TestValueObjectBase.Create("A").Output;
 
         var result = list.Add(identifier);
 
@@ -32,7 +33,7 @@ public class IdentifierListTests
     public void Add_ExistingIdentifier_ShouldFail()
     {
         var list = new IdentifierList<TestValueObjectBase>();
-        var identifier = TestValueObjectBase.Create("A").Content;
+        var identifier = TestValueObjectBase.Create("A").Output;
         list.Add(identifier);
 
         var result = list.Add(identifier);
@@ -45,7 +46,7 @@ public class IdentifierListTests
     public void Remove_ExistingIdentifier_ShouldPass()
     {
         var list = new IdentifierList<TestValueObjectBase>();
-        var identifier = TestValueObjectBase.Create("A").Content;
+        var identifier = TestValueObjectBase.Create("A").Output;
         list.Add(identifier);
 
         var result = list.Remove(identifier);
@@ -58,7 +59,7 @@ public class IdentifierListTests
     public void Remove_NonExistingIdentifier_ShouldFail()
     {
         var list = new IdentifierList<TestValueObjectBase>();
-        var identifier = TestValueObjectBase.Create("A").Content;
+        var identifier = TestValueObjectBase.Create("A").Output;
 
         var result = list.Remove(identifier);
 
@@ -70,20 +71,20 @@ public class IdentifierListTests
     public void Get_ExistingIdentifier_ShouldPass()
     {
         var list = new IdentifierList<TestValueObjectBase>();
-        var identifier = TestValueObjectBase.Create("A").Content;
+        var identifier = TestValueObjectBase.Create("A").Output;
         list.Add(identifier);
 
         var result = list.Get(identifier);
 
         Assert.True(result.IsSuccessful);
-        Assert.Equal(identifier, result.Content);
+        Assert.Equal(identifier, result.Output);
     }
 
     [Fact]
     public void Get_NonExistingIdentifier_ShouldFail()
     {
         var list = new IdentifierList<TestValueObjectBase>();
-        var identifier = TestValueObjectBase.Create("A").Content;
+        var identifier = TestValueObjectBase.Create("A").Output;
 
         var result = list.Get(identifier);
 
@@ -94,9 +95,9 @@ public class IdentifierListTests
     [Fact]
     public void OrderAsc_UnorderedList_ShouldBeSortedAscending()
     {
-        var c = TestValueObjectBase.Create("C").Content;
-        var a = TestValueObjectBase.Create("A").Content;
-        var b = TestValueObjectBase.Create("B").Content;
+        var c = TestValueObjectBase.Create("C").Output;
+        var a = TestValueObjectBase.Create("A").Output;
+        var b = TestValueObjectBase.Create("B").Output;
         var list = new IdentifierList<TestValueObjectBase>(c, b, a);
 
         list.OrderAsc();
@@ -107,9 +108,9 @@ public class IdentifierListTests
     [Fact]
     public void OrderDesc_UnorderedList_ShouldBeSortedDescending()
     {
-        var a = TestValueObjectBase.Create("A").Content;
-        var b = TestValueObjectBase.Create("B").Content;
-        var c = TestValueObjectBase.Create("C").Content;
+        var a = TestValueObjectBase.Create("A").Output;
+        var b = TestValueObjectBase.Create("B").Output;
+        var c = TestValueObjectBase.Create("C").Output;
         var list = new IdentifierList<TestValueObjectBase>(a, b, c);
 
         list.OrderDesc();

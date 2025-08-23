@@ -1,6 +1,7 @@
-﻿using ValueObjects.Results;
-using ValueObjects.Types.Regular.Base;
-using ValueObjects.Types.Regular.Enums;
+﻿using Outputs.Results;
+using Outputs.Results.Basic;
+using ValueObjects.Regular.Base;
+using ValueObjects.Regular.Enums;
 
 namespace ValueObjects.Mappers;
 

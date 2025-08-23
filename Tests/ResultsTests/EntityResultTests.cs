@@ -1,10 +1,10 @@
-﻿using Entities.Results;
-using Entities.Types.AggregateRoot;
+﻿using Entities.AggregateRoot;
 using Outputs.Results;
-using Outputs.Results.Abstract;
+using Outputs.Results.Advanced;
+using Outputs.Results.Base.Enums;
+using Outputs.Results.Basic;
 using OutputTests.Helpers;
-using ValueObjects.Results;
-using ValueObjects.Types.AggregateRootIdentifiers.Base;
+using ValueObjects.AggregateRootIdentifiers.Base;
 using Xunit;
 
 namespace OutputTests;
@@ -63,7 +63,7 @@ public class EntityResultTests : BasicResultTests
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully()
     {
-        var value = new TestEntityResult(TestId.Create(1).Content);
+        var value = new TestEntityResult(TestId.Create(1).Output);
         var mapperResult = EntityResult.Pass(value);
         var result = mapperResult.RemoveValue();
         Assert.IsType<EntityResult>(result);
@@ -72,7 +72,7 @@ public class EntityResultTests : BasicResultTests
 
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
-        var value = new TestEntityResult(TestId.Create(1).Content);
+        var value = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(value);
         ResultTestHelper.CheckSuccess(result, value);    
     }
@@ -92,16 +92,16 @@ public class EntityResultTests : BasicResultTests
 
     public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
     {
-        var value = new TestEntityResult(TestId.Create(1).Content);
+        var value = new TestEntityResult(TestId.Create(1).Output);
         EntityResult<TestEntityResult> convertedResult = value;
         ResultTestHelper.CheckSuccess(convertedResult, value);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
     {
-        var value = new TestEntityResult(TestId.Create(1).Content);
+        var value = new TestEntityResult(TestId.Create(1).Output);
         var mapperResult = EntityResult.Pass(value);
-        var result = mapperResult.ToResult();
+        var result = mapperResult.ToTypedResult();
         Assert.IsType<Result<TestEntityResult>>(result);
         ResultTestHelper.CheckSuccess(result, value);
     }

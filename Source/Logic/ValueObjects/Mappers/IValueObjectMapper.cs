@@ -1,5 +1,6 @@
-﻿using ValueObjects.Results;
-using ValueObjects.Types.Regular.Base;
+﻿using Outputs.Results;
+using Outputs.Results.Basic;
+using ValueObjects.Regular.Base;
 
 namespace ValueObjects.Mappers;
 

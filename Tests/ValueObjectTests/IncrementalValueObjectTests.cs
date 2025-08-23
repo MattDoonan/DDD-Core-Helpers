@@ -1,6 +1,7 @@
-﻿using ValueObjects.Results;
-using ValueObjects.Types.Regular.Base;
-using ValueObjects.Types.Regular.Numbers;
+﻿using Outputs.Results;
+using Outputs.Results.Basic;
+using ValueObjects.Regular.Base;
+using ValueObjects.Regular.Numbers;
 using Xunit;
 
 namespace ValueObjectTests;
@@ -22,8 +23,8 @@ public class IncrementalValueObjectTests
     [InlineData(-1f, 0f)]
     public void Next_InstanceMethodInput_ShouldReturnNextValue(float input, float expected)
     {
-        var obj = TestIncrementalValueObject.Create(input).Content;
-        var result = obj.Next().Content;
+        var obj = TestIncrementalValueObject.Create(input).Output;
+        var result = obj.Next().Output;
         Assert.Equal(expected, result.Value);
     }
 
@@ -33,8 +34,8 @@ public class IncrementalValueObjectTests
     [InlineData(-1f, -2f)]
     public void Previous_InstanceMethodInput_ShouldReturnPreviousValue(float input, float expected)
     {
-        var obj = TestIncrementalValueObject.Create(input).Content;
-        var result = obj.Previous().Content;
+        var obj = TestIncrementalValueObject.Create(input).Output;
+        var result = obj.Previous().Output;
         Assert.Equal(expected, result.Value);
     }
 
@@ -44,7 +45,7 @@ public class IncrementalValueObjectTests
     [InlineData(-3f, -2f)]
     public void Next_StaticMethodInput_ShouldReturnNextValue(float input, float expected)
     {
-        var result = TestIncrementalValueObject.Next(input).Content;
+        var result = TestIncrementalValueObject.Next(input).Output;
         Assert.Equal(expected, result.Value);
     }
 
@@ -54,7 +55,7 @@ public class IncrementalValueObjectTests
     [InlineData(-3f, -4f)]
     public void Previous_StaticMethodInput_ShouldReturnPreviousValue(float input, float expected)
     {
-        var result = TestIncrementalValueObject.Previous(input).Content;
+        var result = TestIncrementalValueObject.Previous(input).Output;
         Assert.Equal(expected, result.Value);
     }
 }

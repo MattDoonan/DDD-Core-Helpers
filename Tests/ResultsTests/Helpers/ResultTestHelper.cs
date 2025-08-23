@@ -1,4 +1,5 @@
-﻿using Outputs.Results.Abstract;
+﻿using Outputs.Results.Base.Abstract;
+using Outputs.Results.Base.Enums;
 using Xunit;
 
 namespace OutputTests.Helpers;
@@ -6,15 +7,15 @@ namespace OutputTests.Helpers;
 public static class ResultTestHelper
 {
     
-    public static void CheckSuccess<T>(ContentResult<T> result, T expectedValue)
+    public static void CheckSuccess<T>(TypedResult<T> result, T expectedValue)
     {
         CheckSuccess(result);
-        Assert.Equal(expectedValue, result.Content);
+        Assert.Equal(expectedValue, result.Output);
     }
-    public static void CheckFailure<T>(ContentResult<T> result, FailureType expectedFailureType, string expectedErrorMessage)
+    public static void CheckFailure<T>(TypedResult<T> result, FailureType expectedFailureType, string expectedErrorMessage)
     {
         CheckFailure((ResultStatus) result, expectedFailureType, expectedErrorMessage);
-        Assert.ThrowsAny<Exception>(() => result.Content);
+        Assert.ThrowsAny<Exception>(() => result.Output);
     }
     
     public static void CheckSuccess(ResultStatus result)

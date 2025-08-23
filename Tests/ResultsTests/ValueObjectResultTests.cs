@@ -1,9 +1,10 @@
 ﻿using Outputs.Results;
-using Outputs.Results.Abstract;
+using Outputs.Results.Advanced;
+using Outputs.Results.Base.Enums;
+using Outputs.Results.Basic;
 using OutputTests.Helpers;
-using ValueObjects.Results;
-using ValueObjects.Types.Regular.Base;
-using ValueObjects.Types.Regular.Numbers;
+using ValueObjects.Regular.Base;
+using ValueObjects.Regular.Numbers;
 using Xunit;
 
 namespace OutputTests;
@@ -20,7 +21,7 @@ public class ValueObjectResultTests : BasicValueResultTests
     
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
-        var obj = TestValueObject.Create(1).Content;
+        var obj = TestValueObject.Create(1).Output;
         var result = ValueObjectResult.Pass(obj);
         ResultTestHelper.CheckSuccess(result, obj);
     }
@@ -40,16 +41,16 @@ public class ValueObjectResultTests : BasicValueResultTests
 
     public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
     {
-        var obj = TestValueObject.Create(1).Content;
+        var obj = TestValueObject.Create(1).Output;
         ValueObjectResult<TestValueObject> convertedResult = obj;
         ResultTestHelper.CheckSuccess(convertedResult, obj);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
     {
-        var obj = TestValueObject.Create(1).Content;
+        var obj = TestValueObject.Create(1).Output;
         var valueObjectResult = ValueObjectResult.Pass(obj);
-        var convertedResult = valueObjectResult.ToResult();
+        var convertedResult = valueObjectResult.ToTypedResult();
         Assert.IsType<Result<TestValueObject>>(convertedResult);
         ResultTestHelper.CheckSuccess(convertedResult, obj);
     }

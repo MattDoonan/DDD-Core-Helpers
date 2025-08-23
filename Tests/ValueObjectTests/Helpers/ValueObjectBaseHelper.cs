@@ -1,5 +1,6 @@
-﻿using ValueObjects.Results;
-using ValueObjects.Types.Regular.Base;
+﻿using Outputs.Results;
+using Outputs.Results.Basic;
+using ValueObjects.Regular.Base;
 using Xunit;
 
 namespace ValueObjectTests.Helpers;
@@ -22,8 +23,8 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     {
         var valueObject = TestValueObjectBase.Create(baseValue);
         Assert.True(valueObject.IsSuccessful);
-        var toString = valueObject.Content.ToString();
-        Assert.Equal($"{valueObject.Content.Value}", toString);
+        var toString = valueObject.Output.ToString();
+        Assert.Equal($"{valueObject.Output.Value}", toString);
     }
     
     public static IEnumerable<object[]> NotEqualObjects =>
@@ -43,7 +44,7 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     {
         var valueObject = TestValueObjectBase.Create(baseValue);
         Assert.True(valueObject.IsSuccessful);
-        var isEqual = valueObject.Content.Equals(input);
+        var isEqual = valueObject.Output.Equals(input);
         Assert.False(isEqual);
     }
     
@@ -52,9 +53,9 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     {
         var valueObject = TestValueObjectBase.Create(baseValue);
         Assert.True(valueObject.IsSuccessful);
-        var isEqual1 = valueObject.Content.Equals(TestValueObjectBase.Create(smallerValue).Content);
+        var isEqual1 = valueObject.Output.Equals(TestValueObjectBase.Create(smallerValue).Output);
         Assert.False(isEqual1);
-        var isEqual2 = valueObject.Content.Equals(TestValueObjectBase.Create(largerValue).Content);
+        var isEqual2 = valueObject.Output.Equals(TestValueObjectBase.Create(largerValue).Output);
         Assert.False(isEqual2);
     }
 
@@ -63,7 +64,7 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     {
         var valueObject = TestValueObjectBase.Create(baseValue);
         Assert.True(valueObject.IsSuccessful);
-        var isEqual = valueObject.Content.Equals(valueObject);
+        var isEqual = valueObject.Output.Equals(valueObject);
         Assert.True(isEqual);
     }
     
@@ -72,7 +73,7 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     {
         var valueObject = TestValueObjectBase.Create(baseValue);
         Assert.True(valueObject.IsSuccessful);
-        var isEqual = valueObject.Content.Equals((object) valueObject.Content);
+        var isEqual = valueObject.Output.Equals((object) valueObject.Output);
         Assert.True(isEqual);
     }
     
@@ -82,15 +83,15 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
         var valueObject = TestValueObjectBase.Create(baseValue);
         Assert.True(valueObject.IsSuccessful);
         TestValueObjectBase? nullObject = null; 
-        var isEqual = valueObject.Content.Equals(nullObject);
+        var isEqual = valueObject.Output.Equals(nullObject);
         Assert.False(isEqual);
     }
     
     [Fact]
     public void CompareTo_Object_WithSameType_ShouldReturnCorrectComparison()
     {
-        var obj1 = TestValueObjectBase.Create(smallerValue).Content;
-        var obj2 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(smallerValue).Output;
+        var obj2 = TestValueObjectBase.Create(baseValue).Output;
         var result = obj1.CompareTo((object)obj2);
         Assert.True(result < 0); 
     }
@@ -98,7 +99,7 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     [Fact]
     public void CompareTo_Object_WithNull_ShouldThrowArgumentException()
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
         var ex = Assert.Throws<ArgumentException>(() => obj1.CompareTo("not a value object"));
         Assert.Contains("Object is not of the correct type", ex.Message);
     }
@@ -106,8 +107,8 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     [Fact]
     public void CompareTo_Typed_ShouldReturnZeroForEqualValues()
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
-        var obj2 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
+        var obj2 = TestValueObjectBase.Create(baseValue).Output;
         var result = obj1.CompareTo(obj2);
         Assert.Equal(0, result);
     }
@@ -115,7 +116,7 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     [Fact]
     public void CompareTo_Typed_ShouldReturnPositiveWhenOtherIsNull()
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
         var result = obj1.CompareTo(null);
         Assert.True(result > 0);
     }
@@ -123,8 +124,8 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     [Fact]
     public void CompareTo_Typed_ShouldReturnNegativeWhenValueIsLess()
     {
-        var obj1 = TestValueObjectBase.Create(smallerValue).Content;
-        var obj2 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(smallerValue).Output;
+        var obj2 = TestValueObjectBase.Create(baseValue).Output;
         var result = obj1.CompareTo(obj2);
         Assert.True(result < 0);
     }
@@ -132,8 +133,8 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     [Fact]
     public void CompareTo_Typed_ShouldReturnPositiveWhenValueIsGreater()
     {
-        var obj1 = TestValueObjectBase.Create(largerValue).Content;
-        var obj2 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(largerValue).Output;
+        var obj2 = TestValueObjectBase.Create(baseValue).Output;
         var result = obj1.CompareTo(obj2);
         Assert.True(result > 0);
     }
@@ -142,46 +143,46 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     [Fact]
     public void EqualsEqualityOperator_ShouldReturnTrueForSameValues()
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
-        var obj2 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
+        var obj2 = TestValueObjectBase.Create(baseValue).Output;
         Assert.True(obj1 == obj2);
     }
     
     [Fact]
     public void EqualsEqualityOperator_ShouldReturnFalseForDifferentValues()
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
-        var obj2 = TestValueObjectBase.Create(smallerValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
+        var obj2 = TestValueObjectBase.Create(smallerValue).Output;
         Assert.False(obj1 == obj2);
     }
     
     [Fact]
     public void NotEqualsEqualityOperator_ShouldReturnTrueForDifferentValues()
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
-        var obj2 = TestValueObjectBase.Create(smallerValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
+        var obj2 = TestValueObjectBase.Create(smallerValue).Output;
         Assert.True(obj1 != obj2);
     }
     
     [Fact]
     public void NotEqualsEqualityOperator_ShouldReturnFalseForSameValues()
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
-        var obj2 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
+        var obj2 = TestValueObjectBase.Create(baseValue).Output;
         Assert.False(obj1 != obj2);
     }
     
     [Fact]
     public void EqualsEqualityOperator_ShouldReturnFalseForNullValue()
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
         Assert.False(obj1 == null!);
     }
     
     [Fact]
     public void NotEqualsEqualityOperator_ShouldReturnTrueForNullValue()
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
         Assert.True(obj1 != null!);
     }
     
@@ -199,29 +200,29 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     [Theory, MemberData(nameof(EqualityDifferentType))]
     public void EqualsEqualityOperator_ShouldReturnFalseForDifferentTypeValue(object compare)
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
         Assert.False(obj1 == compare);
     }
     
     [Theory, MemberData(nameof(EqualityDifferentType))]
     public void NotEqualsEqualityOperator_ShouldReturnTrueForDifferentTypeValue(object compare)
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
         Assert.True(obj1 != compare);
     }
     
     [Fact]
     public void GetHasCode_Should_EqualValueHashCode()
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
         Assert.Equal(obj1.GetHashCode(), baseValue.GetHashCode());
     }
     
     [Fact]
     public void GetHasCode_OfSameObject_Should_Equal()
     {
-        var obj1 = TestValueObjectBase.Create(baseValue).Content;
-        var obj2 = TestValueObjectBase.Create(baseValue).Content;
+        var obj1 = TestValueObjectBase.Create(baseValue).Output;
+        var obj2 = TestValueObjectBase.Create(baseValue).Output;
         Assert.Equal(obj1.GetHashCode(), obj1.GetHashCode());
         Assert.Equal(obj1.GetHashCode(), obj2.GetHashCode());
     }
@@ -229,9 +230,9 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     [Fact]
     public void LessThanOrEqual_Should_ReturnCorrectBoolean()
     {
-        var a = TestValueObjectBase.Create(smallerValue).Content;
-        var b = TestValueObjectBase.Create(baseValue).Content;
-        var c = TestValueObjectBase.Create(smallerValue).Content;
+        var a = TestValueObjectBase.Create(smallerValue).Output;
+        var b = TestValueObjectBase.Create(baseValue).Output;
+        var c = TestValueObjectBase.Create(smallerValue).Output;
 
         Assert.True(a <= b);
         Assert.True(a <= c);
@@ -241,9 +242,9 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     [Fact]
     public void GreaterThanOrEqual_Should_ReturnCorrectBoolean()
     {
-        var a = TestValueObjectBase.Create(largerValue).Content;
-        var b = TestValueObjectBase.Create(baseValue).Content;
-        var c = TestValueObjectBase.Create(largerValue).Content;
+        var a = TestValueObjectBase.Create(largerValue).Output;
+        var b = TestValueObjectBase.Create(baseValue).Output;
+        var c = TestValueObjectBase.Create(largerValue).Output;
 
         Assert.True(a >= b);
         Assert.True(a >= c);
@@ -253,8 +254,8 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     [Fact]
     public void LessThan_Should_ReturnCorrectBoolean()
     {
-        var a = TestValueObjectBase.Create(baseValue).Content;
-        var b = TestValueObjectBase.Create(largerValue).Content;
+        var a = TestValueObjectBase.Create(baseValue).Output;
+        var b = TestValueObjectBase.Create(largerValue).Output;
 
         Assert.True(a < b);
         Assert.False(b < a);
@@ -263,8 +264,8 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     [Fact]
     public void GreaterThan_Should_ReturnCorrectBoolean()
     {
-        var a = TestValueObjectBase.Create(baseValue).Content;
-        var b = TestValueObjectBase.Create(smallerValue).Content;
+        var a = TestValueObjectBase.Create(baseValue).Output;
+        var b = TestValueObjectBase.Create(smallerValue).Output;
 
         Assert.True(a > b);
         Assert.False(b > a);

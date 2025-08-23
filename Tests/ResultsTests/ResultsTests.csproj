@@ -11,7 +11,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Source\Logic\Entities\Entities.csproj" />
       <ProjectReference Include="..\..\Source\Logic\ValueObjects\ValueObjects.csproj" />
-      <ProjectReference Include="..\..\Source\BaseResults\BaseResults.csproj" />
+      <ProjectReference Include="..\..\Source\Base\Base.csproj" />
     </ItemGroup>
 
     <ItemGroup>
