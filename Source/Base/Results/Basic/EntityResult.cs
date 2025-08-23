@@ -139,6 +139,26 @@ public class EntityResult<T> : CoreResult<T, EntityResult>
         return this;
     }
     
+    public static implicit operator Response<T>(EntityResult<T> result)
+    {
+        return Response<T>.Create(result);
+    }
+    
+    public static implicit operator Response(EntityResult<T> result)
+    {
+        return Response.Create(result);
+    }
+    
+    public Response<T> ToTypedResponse()
+    {
+        return this;
+    }
+    
+    public Response ToResponse()
+    {
+        return this;
+    }
+    
     public static implicit operator ServiceResult<T>(EntityResult<T> result)
     {
         return ServiceResult<T>.Create(result);
@@ -149,7 +169,7 @@ public class EntityResult<T> : CoreResult<T, EntityResult>
         return ServiceResult.Create(result);
     }
     
-    public ServiceResult<T> ToServiceTypedResult()
+    public ServiceResult<T> ToTypedServiceResult()
     {
         return this;
     }
@@ -169,7 +189,7 @@ public class EntityResult<T> : CoreResult<T, EntityResult>
         return UseCaseResult.Create(result);
     }
     
-    public UseCaseResult<T> ToUseCaseTypedResult()
+    public UseCaseResult<T> ToTypedUseCaseResult()
     {
         return this;
     }

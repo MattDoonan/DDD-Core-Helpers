@@ -83,6 +83,26 @@ public class ValueObjectResult<T> : TypedResult<T>
         return this;
     }
     
+    public static implicit operator Response<T>(ValueObjectResult<T> result)
+    {
+        return Response<T>.Create(result);
+    }
+    
+    public static implicit operator Response(ValueObjectResult<T> result)
+    {
+        return Response.Create(result);
+    }
+    
+    public Response<T> ToTypedResponse()
+    {
+        return this;
+    }
+    
+    public Response ToResponse()
+    {
+        return this;
+    }
+    
     public static implicit operator ServiceResult<T>(ValueObjectResult<T> result)
     {
         return ServiceResult<T>.Create(result);
@@ -93,7 +113,7 @@ public class ValueObjectResult<T> : TypedResult<T>
         return ServiceResult.Create(result);
     }
     
-    public ServiceResult<T> ToServiceTypedResult()
+    public ServiceResult<T> ToTypedServiceResult()
     {
         return this;
     }
@@ -113,7 +133,7 @@ public class ValueObjectResult<T> : TypedResult<T>
         return UseCaseResult.Create(result);
     }
     
-    public UseCaseResult<T> ToUseCaseTypedResult()
+    public UseCaseResult<T> ToTypedUseCaseResult()
     {
         return this;
     }

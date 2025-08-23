@@ -144,7 +144,7 @@ public class ServiceResult<T> : CoreResult<T, ServiceResult>
         return UseCaseResult.Create(result);
     }
     
-    public UseCaseResult<T> ToUseCaseTypedResult()
+    public UseCaseResult<T> ToTypedUseCaseResult()
     {
         return this;
     }

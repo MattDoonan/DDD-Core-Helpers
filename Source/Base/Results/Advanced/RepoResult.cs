@@ -108,7 +108,7 @@ public class RepoResult<T> : TypedResult<T>
         return ServiceResult.Create(result);
     }
     
-    public ServiceResult<T> ToServiceTypedResult()
+    public ServiceResult<T> ToTypedServiceResult()
     {
         return this;
     }
@@ -128,7 +128,7 @@ public class RepoResult<T> : TypedResult<T>
         return UseCaseResult.Create(result);
     }
     
-    public UseCaseResult<T> ToUseCaseTypedResult()
+    public UseCaseResult<T> ToTypedUseCaseResult()
     {
         return this;
     }

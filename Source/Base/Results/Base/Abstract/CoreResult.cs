@@ -1,4 +1,5 @@
-﻿using Outputs.Results.Base.Enums;
+﻿using Outputs.Results.Advanced;
+using Outputs.Results.Base.Enums;
 using Outputs.Results.Base.Interfaces;
 
 namespace Outputs.Results.Base.Abstract;
@@ -25,6 +26,11 @@ public abstract class CoreResult<TStatusResult> : ResultStatus
     public static implicit operator CoreResult<TStatusResult>(bool isSuccessful)
     {
         return isSuccessful ? TStatusResult.Pass() : TStatusResult.Fail();;
+    }
+    
+    public Result ToResult()
+    {
+        return Result.Create(this);
     }
     
     public TStatusResult Copy()
@@ -56,7 +62,7 @@ public abstract class CoreResult<TStatusResult> : ResultStatus
         return result;
     }
 
-    private static TStatusResult CopyResultValues(CoreResult<TStatusResult> result)
+    private static TStatusResult CopyResultValues(IResultStatus result)
     {
         if (result.IsSuccessful)
         {
@@ -88,6 +94,16 @@ public abstract class CoreResult<T, TResult> : TypedResult<T>
     
     protected CoreResult(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
     {
+    }
+    
+    public Result<T> ToTypedResult()
+    {
+        return Result.Create(this);
+    }
+    
+    public Result ToResult()
+    {
+        return Result.Create(this);
     }
     
     public TResult RemoveValue()

@@ -105,6 +105,26 @@ public class MapperResult<T> : CoreResult<T, MapperResult>
         return Pass(value);
     }
     
+    public static implicit operator Response<T>(MapperResult<T> result)
+    {
+        return Response<T>.Create(result);
+    }
+    
+    public static implicit operator Response(MapperResult<T> result)
+    {
+        return Response.Create(result);
+    }
+    
+    public Response<T> ToTypedResponse()
+    {
+        return this;
+    }
+    
+    public Response ToResponse()
+    {
+        return this;
+    }
+    
     public static implicit operator ServiceResult(MapperResult<T> result)
     {
         return ServiceResult.Create(result);
@@ -115,7 +135,7 @@ public class MapperResult<T> : CoreResult<T, MapperResult>
         return ServiceResult<T>.Create(result);
     }
     
-    public ServiceResult<T> ToServiceTypedResult()
+    public ServiceResult<T> ToTypedServiceResult()
     {
         return this;
     }
@@ -135,7 +155,7 @@ public class MapperResult<T> : CoreResult<T, MapperResult>
         return UseCaseResult.Create(result);
     }
     
-    public UseCaseResult<T> ToUseCaseTypedResult()
+    public UseCaseResult<T> ToTypedUseCaseResult()
     {
         return this;
     }
