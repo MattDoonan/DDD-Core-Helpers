@@ -1,0 +1,59 @@
+﻿name: CI & Publish NuGet Package
+
+on:
+  push:
+    branches: ["**"]       
+    tags:
+      - "v*"              
+  pull_request:            
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    outputs:
+      test-status: ${{ steps.test.outcome }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run unit tests
+        id: test
+        run: dotnet test --configuration Release --no-build --verbosity normal
+
+  publish:
+    needs: build-and-test          
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')  
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --no-build -o ./artifacts
+
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push "./artifacts/*.nupkg" \
+          --api-key ${{ secrets.PUBLISH_PACKAGES_TOKEN }} \
+          --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
