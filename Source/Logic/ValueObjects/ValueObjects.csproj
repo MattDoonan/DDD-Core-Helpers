@@ -6,7 +6,7 @@
         <AssemblyName>ValueObjects</AssemblyName>
         <Nullable>enable</Nullable>
         <RootNamespace>Logic.ValueObjects</RootNamespace>
-        <PackageId>DDDCoreHelpers.ValueObjects</PackageId>
+        <PackageId>DDDCoreHelpers</PackageId>
         <PackageTags>DDD Domain Value Objects</PackageTags>
         <Version>1.0.0</Version>
         <Authors>MattDoonan</Authors>

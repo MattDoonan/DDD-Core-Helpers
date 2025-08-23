@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>Logic.Entities</RootNamespace>
-        <PackageId>DDDCoreHelpers.Entities</PackageId>
+        <PackageId>DDDCoreHelpers</PackageId>
         <PackageTags>DDD Domain Entities</PackageTags>
         <Version>1.0.0</Version>
         <Authors>MattDoonan</Authors>

@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>Base</RootNamespace>
-        <PackageId>DDDCoreHelpers.Results</PackageId>
+        <PackageId>DDDCoreHelpers</PackageId>
         <PackageTags>DDD Domain Results</PackageTags>
         <Version>1.0.0</Version>
         <Authors>MattDoonan</Authors>
