@@ -9,11 +9,16 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
     {
         get
         {
-            if (_output == null || !_hasGotOutput)
+            if (_output is not null && _hasGotOutput)
             {
-                throw new InvalidOperationException($"Cannot access the output of type {typeof(T).Name} when the result is an error" );
+                return _output;
             }
-            return _output;
+            var type = typeof(T);
+            if (type.IsValueType && Nullable.GetUnderlyingType(type) is null || !_hasGotOutput)
+            {
+                throw new InvalidOperationException($"Cannot access the output of type {type.Name} when the result is a failure");
+            }
+            return default!;
         }
     }
     

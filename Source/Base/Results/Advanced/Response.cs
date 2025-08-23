@@ -28,6 +28,26 @@ public class Response : CoreResult<Response>, IResultFactory<Response>
         return new Response(FailureType.Generic, because);
     }
     
+    public static Response NotFound(string because = "")
+    {
+        return new Response(FailureType.NotFound, because);
+    }
+    
+    public static Response AlreadyExists(string because = "")
+    {
+        return new Response(FailureType.AlreadyExists, because);
+    }
+    
+    public static Response InvalidRequest(string because = "")
+    {
+        return new Response(FailureType.InvalidRequest, because);
+    }
+    
+    public static Response OperationTimout(string because = "")
+    {
+        return new Response(FailureType.OperationTimeout, because);
+    }
+    
     public static Response<T> Pass<T>(T value)
     {
         return Response<T>.Pass(value);
@@ -55,7 +75,12 @@ public class Response : CoreResult<Response>, IResultFactory<Response>
     
     public static Response<T> OperationTimout<T>(string because = "")
     {
-        return Response<T>.Fail(FailureType.OperationTimout, because);
+        return Response<T>.Fail(FailureType.OperationTimeout, because);
+    }
+    
+    public static Response Copy(Response result)
+    {
+        return Create(result);
     }
     
     public static Response<T> Copy<T>(Response<T> result)

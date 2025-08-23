@@ -5,7 +5,7 @@ public enum FailureType
     None,
     
     Generic,
-    OperationTimout,
+    OperationTimeout,
     InvalidRequest,
     
     DomainViolation,
@@ -28,7 +28,7 @@ public static class FailureTypeExtensions
         {
             FailureType.None  => "Result was successful",
             FailureType.Generic => "Result was a failure",
-            FailureType.OperationTimout => "Operation timed out",
+            FailureType.OperationTimeout => "Operation timed out",
             FailureType.InvalidRequest => "Invalid request",
             FailureType.DomainViolation => "The application's business logic was violated",
             FailureType.NotAllowed => "Operation not permitted",
@@ -48,7 +48,7 @@ public static class FailureTypeExtensions
         {
             FailureType.None  => $"Result retrieving {objectName} was successful",
             FailureType.Generic => $"Failed to get {objectName}",
-            FailureType.OperationTimout => $"Operation for {objectName} timed out",
+            FailureType.OperationTimeout => $"Operation for {objectName} timed out",
             FailureType.InvalidRequest => $"Invalid request to retrieve {objectName}",
             FailureType.DomainViolation => $"The application's business logic was violated trying to retrieve {objectName}",
             FailureType.NotAllowed => $"Operation to get {objectName} is not permitted",
@@ -60,5 +60,4 @@ public static class FailureTypeExtensions
             _ => $"Unknown failure to retrieve {objectName}"
         };
     }
-    
 }

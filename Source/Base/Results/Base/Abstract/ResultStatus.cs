@@ -63,6 +63,21 @@ public abstract class ResultStatus : IResultStatus
         }
     }
     
+    public bool OperationTimedOut => FailureType is FailureType.OperationTimeout;
+    public bool IsAnInvalidRequest => FailureType is FailureType.InvalidRequest;
+    public bool IsADomainViolation => FailureType is FailureType.DomainViolation;
+    public bool IsNotAllowed => FailureType is FailureType.NotAllowed;
+    public bool IsValueObjectFailure => FailureType is FailureType.ValueObject;
+    public bool IsMapperFailure => FailureType is FailureType.Mapper;
+    public bool IsEntityFailure => FailureType is FailureType.Entity;
+    public bool IsNotFound => FailureType is FailureType.NotFound;
+    public bool DoesAlreadyExists => FailureType is FailureType.AlreadyExists;
+    
+    public bool IsFailureType(FailureType failureType)
+    {
+        return FailureType == failureType;
+    }
+    
     public void LogMessage()
     {
         Console.WriteLine(GetErrorMessages());

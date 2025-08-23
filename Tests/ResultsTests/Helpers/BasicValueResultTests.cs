@@ -21,5 +21,7 @@ public abstract class BasicValueResultTests
     
     [Fact]
     public abstract void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully();
-
+    
+    [Fact]
+    public abstract void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully();
 }

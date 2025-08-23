@@ -60,9 +60,9 @@ public class ServiceResult : CoreResult<ServiceResult>, IResultFactory<ServiceRe
         return ServiceResult<T>.Fail(FailureType.NotAllowed, because);
     }
     
-    public static ServiceResult RemoveValue<T>(ServiceResult<T> status)
+    public static ServiceResult Copy(ServiceResult result)
     {
-        return new ServiceResult(status);
+        return Create(result);
     }
     
     public static ServiceResult<T> Copy<T>(ServiceResult<T> result)

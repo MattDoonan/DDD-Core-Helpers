@@ -70,6 +70,14 @@ public class EntityResultTests : BasicResultTests
         ResultTestHelper.CheckSuccess(result);
     }
 
+    public override void GivenIHaveAFailureResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail(errorMessage);
+        var copiedResult = EntityResult.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
         var value = new TestEntityResult(TestId.Create(1).Output);
@@ -113,5 +121,13 @@ public class EntityResultTests : BasicResultTests
         var result = mapperResult.ToTypedResult();
         Assert.IsType<Result<TestEntityResult>>(result);
         ResultTestHelper.CheckFailure(result, FailureType.Entity, $"{FailureType.Entity.ToMessage<TestEntityResult>()} because {errorMessage}");
+    }
+
+    public override void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail<TestEntityResult>(errorMessage);
+        var copiedResult = EntityResult.Copy(result);
+        ResultTestHelper.Equivalent(result, copiedResult);
     }
 }

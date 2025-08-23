@@ -44,6 +44,11 @@ public class MapperResult : CoreResult<MapperResult>, IResultFactory<MapperResul
     {
         return MapperResult<T>.Create(result);
     }
+    
+    public static MapperResult Copy(MapperResult result)
+    {
+        return Create(result);
+    }
 
     internal static MapperResult Create(IResultStatus status)
     {

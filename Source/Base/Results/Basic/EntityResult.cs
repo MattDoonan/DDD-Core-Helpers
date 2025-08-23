@@ -42,6 +42,11 @@ public class EntityResult : CoreResult<EntityResult>, IResultFactory<EntityResul
         return EntityResult<T>.Fail(because);
     }
     
+    public static EntityResult Copy(EntityResult result)
+    {
+        return new EntityResult(result);
+    }
+    
     public static EntityResult<T> Copy<T>(EntityResult<T> result)
         where T : IEntity
     {

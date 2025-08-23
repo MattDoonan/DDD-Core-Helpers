@@ -21,5 +21,8 @@ public abstract class BasicResultTests : BasicValueResultTests
     
     [Fact]
     public abstract void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully();
+    
+    [Fact]
+    public abstract void GivenIHaveAFailureResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully();
 
 }

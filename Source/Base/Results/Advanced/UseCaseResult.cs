@@ -38,9 +38,14 @@ public class UseCaseResult : CoreResult<UseCaseResult>, IResultFactory<UseCaseRe
         return UseCaseResult<T>.Fail(FailureType.Generic, because);
     }
     
-    public static ServiceResult<T> Copy<T>(ServiceResult<T> result)
+    public static UseCaseResult Copy(UseCaseResult result)
     {
-        return ServiceResult<T>.Create(result);
+        return Create(result);
+    }
+    
+    public static UseCaseResult<T> Copy<T>(UseCaseResult<T> result)
+    {
+        return UseCaseResult<T>.Create(result);
     }
     
     internal static UseCaseResult Create(IResultStatus result)
@@ -56,7 +61,7 @@ public class UseCaseResult : CoreResult<UseCaseResult>, IResultFactory<UseCaseRe
     }
 }
 
-public class UseCaseResult<T> : CoreResult<T, ServiceResult>
+public class UseCaseResult<T> : CoreResult<T, UseCaseResult>
 {
     private UseCaseResult(T value) : base(value)
     {

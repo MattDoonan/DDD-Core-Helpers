@@ -6,7 +6,7 @@ using Outputs.Results.Basic;
 
 namespace Outputs.Results.Advanced;
 
-public class RepoResult
+public static class RepoResult
 {
     public static RepoResult<T> Pass<T>(T value)
         where T : IAggregateRoot
@@ -41,7 +41,7 @@ public class RepoResult
     public static RepoResult<T> OperationTimout<T>(string because = "")
         where T : IAggregateRoot
     {
-        return RepoResult<T>.Fail(FailureType.OperationTimout, because);
+        return RepoResult<T>.Fail(FailureType.OperationTimeout, because);
     }
     
     public static RepoResult<T> Copy<T>(RepoResult<T> result)
