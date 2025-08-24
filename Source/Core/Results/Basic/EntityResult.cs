@@ -1,5 +1,5 @@
-﻿using Core.Enitities.AggregateRoot;
-using Core.Enitities.Regular;
+﻿using Core.Entities.AggregateRoot;
+using Core.Entities.Regular;
 using Core.Results.Advanced;
 using Core.Results.Base.Abstract;
 using Core.Results.Base.Enums;

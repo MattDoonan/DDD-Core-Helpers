@@ -1,4 +1,4 @@
-﻿using Core.Enitities.AggregateRoot;
+﻿using Core.Entities.AggregateRoot;
 using Core.Results.Base.Abstract;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;

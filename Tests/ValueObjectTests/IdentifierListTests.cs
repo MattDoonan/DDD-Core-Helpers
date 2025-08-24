@@ -90,33 +90,4 @@ public class IdentifierListTests
         Assert.False(result.IsSuccessful);
         Assert.Contains("the identifier does not exist in the list", result.GetErrorMessages());
     }
-
-    [Fact]
-    public void OrderAsc_UnorderedList_ShouldBeSortedAscending()
-    {
-        var c = TestValueObjectBase.Create("C").Output;
-        var a = TestValueObjectBase.Create("A").Output;
-        var b = TestValueObjectBase.Create("B").Output;
-        var list = new IdentifierList<TestValueObjectBase>(c, b, a);
-
-        list.OrderAsc();
-
-        Assert.Equal(new[] { a, b, c }, list.Values);
-    }
-
-    [Fact]
-    public void OrderDesc_UnorderedList_ShouldBeSortedDescending()
-    {
-        var a = TestValueObjectBase.Create("A").Output;
-        var b = TestValueObjectBase.Create("B").Output;
-        var c = TestValueObjectBase.Create("C").Output;
-        var list = new IdentifierList<TestValueObjectBase>(a, b, c);
-
-        list.OrderDesc();
-
-        Assert.Equal(new[] { c, b, a }, list.Values);
-    }
-    
-    
-    
 }

@@ -1,6 +1,6 @@
 ﻿using Core.ValueObjects.Identifiers.Base;
 
-namespace Core.Enitities.Regular;
+namespace Core.Entities.Regular;
 
 public interface IEntity;
 public interface IEntity<out TId> : IEntity
