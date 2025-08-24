@@ -56,6 +56,6 @@ jobs:
       - name: Publish to GitHub Packages
         run: |
           dotnet nuget push "./artifacts/*.nupkg" \
-          --api-key ${{ secrets.PUBLISH_PACKAGES_TOKEN }} \
-          --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+          --api-key ${{ secrets.PUBLISH_NUGET_PACKAGES_TOKEN }} \
+          --source https://api.nuget.org/v3/index.json
           --skip-duplicate
