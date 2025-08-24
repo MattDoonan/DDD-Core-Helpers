@@ -57,5 +57,5 @@ jobs:
         run: |
           dotnet nuget push "./artifacts/*.nupkg" \
           --api-key ${{ secrets.PUBLISH_NUGET_PACKAGES_TOKEN }} \
-          --source https://api.nuget.org/v3/index.json
+          --source https://api.nuget.org/v3/index.json \
           --skip-duplicate
