@@ -1,5 +1,5 @@
 ﻿using Base.Results.Basic;
-using Logic.ValueObjects.Regular.Base;
+using Base.ValueObjects.Regular.Base;
 using Xunit;
 
 namespace ValueObjectTests.Helpers;

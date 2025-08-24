@@ -1,6 +1,6 @@
 ﻿using Base.Results.Basic;
-using Logic.ValueObjects.Identifiers.Base;
-using Logic.ValueObjects.Identifiers.Lists;
+using Base.ValueObjects.Identifiers.Base;
+using Base.ValueObjects.Identifiers.Lists;
 using Xunit;
 
 namespace ValueObjectTests;

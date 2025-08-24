@@ -9,9 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Source\Logic\Entities\Entities.csproj" />
-      <ProjectReference Include="..\..\Source\Logic\ValueObjects\ValueObjects.csproj" />
-      <ProjectReference Include="..\..\Source\Base\Base.csproj" />
+      <ProjectReference Include="..\..\Source\Core\Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>

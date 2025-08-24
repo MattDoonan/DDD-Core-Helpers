@@ -1,8 +1,8 @@
 ﻿using Base.Results.Advanced;
 using Base.Results.Base.Enums;
 using Base.Results.Basic;
-using Logic.ValueObjects.Regular.Base;
-using Logic.ValueObjects.Regular.Numbers;
+using Base.ValueObjects.Regular.Base;
+using Base.ValueObjects.Regular.Numbers;
 using OutputTests.Helpers;
 using Xunit;
 
@@ -135,7 +135,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToTypedResponse();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, FailedLayer.Infrastructure, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
     }
     
     [Fact]
@@ -153,7 +153,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToResponse();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, FailedLayer.Infrastructure, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
     }
     
     [Fact]
@@ -171,7 +171,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToTypedServiceResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, FailedLayer.Service, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
     }
     
     [Fact]
@@ -189,7 +189,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToServiceResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, FailedLayer.Service, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
     }
     
     [Fact]
@@ -207,7 +207,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToTypedUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, FailedLayer.UseCase, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
     }
     
     [Fact]
@@ -225,6 +225,6 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.ValueObject, FailedLayer.UseCase, $"{FailureType.ValueObject.ToMessage<TestValueObject>()} because {errorMessage}");
     }
 }
