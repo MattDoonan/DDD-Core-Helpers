@@ -1,7 +1,7 @@
-﻿using Base.Results.Basic;
-using Base.ValueObjects.Regular.Base;
+﻿using Core.Results.Basic;
+using Core.ValueObjects.Regular.Base;
 
-namespace Base.ValueObjects.Regular.Enums;
+namespace Core.ValueObjects.Regular.Enums;
 
 public interface IEnumValueObject<in TEnum, TConvert, T> : IValueObject
     where TEnum : Enum, IComparable<TEnum>, IEquatable<TEnum>

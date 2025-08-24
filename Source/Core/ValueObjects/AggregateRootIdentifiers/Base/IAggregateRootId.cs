@@ -1,6 +1,6 @@
-﻿using Base.ValueObjects.Identifiers.Base;
+﻿using Core.ValueObjects.Identifiers.Base;
 
-namespace Base.ValueObjects.AggregateRootIdentifiers.Base;
+namespace Core.ValueObjects.AggregateRootIdentifiers.Base;
 
 public interface IAggregateRootId : IIdentifier;
 

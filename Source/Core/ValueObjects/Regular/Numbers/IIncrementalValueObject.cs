@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
-using Base.Results.Basic;
-using Base.ValueObjects.Regular.Base;
+using Core.Results.Basic;
+using Core.ValueObjects.Regular.Base;
 
-namespace Base.ValueObjects.Regular.Numbers;
+namespace Core.ValueObjects.Regular.Numbers;
 
 public interface IIncrementalValueObject<in TValue, T> : IValueObject
     where TValue : INumber<TValue>

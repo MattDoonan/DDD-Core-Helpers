@@ -1,9 +1,9 @@
-﻿using Base.Results.Advanced;
-using Base.Results.Base.Abstract;
-using Base.Results.Base.Enums;
-using Base.Results.Base.Interfaces;
+﻿using Core.Results.Advanced;
+using Core.Results.Base.Abstract;
+using Core.Results.Base.Enums;
+using Core.Results.Base.Interfaces;
 
-namespace Base.Results.Basic;
+namespace Core.Results.Basic;
 
 public class MapperResult : CoreResult<MapperResult>, IResultFactory<MapperResult>
 {

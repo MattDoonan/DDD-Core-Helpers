@@ -1,7 +1,7 @@
-﻿using Base.Results.Basic;
-using Base.ValueObjects.Regular.Base;
+﻿using Core.Results.Basic;
+using Core.ValueObjects.Regular.Base;
 
-namespace Base.ValueObjects.Mappers;
+namespace Core.ValueObjects.Mappers;
 
 public interface IValueToValueObjectMapper<in TValue, T>  
     where TValue : IComparable<TValue>, IEquatable<TValue>

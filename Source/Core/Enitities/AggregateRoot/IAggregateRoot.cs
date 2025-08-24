@@ -1,7 +1,7 @@
-﻿using Base.Enitities.Regular;
-using Base.ValueObjects.AggregateRootIdentifiers.Base;
+﻿using Core.Enitities.Regular;
+using Core.ValueObjects.AggregateRootIdentifiers.Base;
 
-namespace Base.Enitities.AggregateRoot;
+namespace Core.Enitities.AggregateRoot;
 
 public interface IAggregateRoot : IEntity;
 public interface IAggregateRoot<out TId> : IEntity<TId>, IAggregateRoot

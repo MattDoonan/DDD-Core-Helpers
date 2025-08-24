@@ -1,10 +1,10 @@
-﻿using Base.Enitities.AggregateRoot;
-using Base.Results.Base.Abstract;
-using Base.Results.Base.Enums;
-using Base.Results.Base.Interfaces;
-using Base.Results.Basic;
+﻿using Core.Enitities.AggregateRoot;
+using Core.Results.Base.Abstract;
+using Core.Results.Base.Enums;
+using Core.Results.Base.Interfaces;
+using Core.Results.Basic;
 
-namespace Base.Results.Advanced;
+namespace Core.Results.Advanced;
 
 public static class RepoResult
 {

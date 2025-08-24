@@ -1,7 +1,7 @@
-﻿using Base.Results.Basic;
-using Base.ValueObjects.Regular.Base;
+﻿using Core.Results.Basic;
+using Core.ValueObjects.Regular.Base;
 
-namespace Base.ValueObjects.Identifiers.Base;
+namespace Core.ValueObjects.Identifiers.Base;
 
 public interface IIdentifier : IValueObject;
 

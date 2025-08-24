@@ -1,6 +1,6 @@
-﻿using Base.Results.Basic;
+﻿using Core.Results.Basic;
 
-namespace Base.ValueObjects.Regular.Base;
+namespace Core.ValueObjects.Regular.Base;
 
 public interface IValueObjectFactory<TIn, TOut> 
     where TOut : class, IValueObject

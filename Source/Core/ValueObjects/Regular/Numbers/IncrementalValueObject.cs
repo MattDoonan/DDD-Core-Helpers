@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
-using Base.Results.Basic;
-using Base.ValueObjects.Regular.Base;
+using Core.Results.Basic;
+using Core.ValueObjects.Regular.Base;
 
-namespace Base.ValueObjects.Regular.Numbers;
+namespace Core.ValueObjects.Regular.Numbers;
 
 public class IncrementalValueObject<TValue, T>(TValue value) : NumberValueObjectBase<TValue, T>(value), IIncrementalValueObject<TValue, T>
     where TValue : INumber<TValue>, IComparable<TValue>, IEquatable<TValue>

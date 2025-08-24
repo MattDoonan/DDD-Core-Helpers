@@ -1,6 +1,6 @@
-﻿using Base.Results.Base.Enums;
+﻿using Core.Results.Base.Enums;
 
-namespace Base.Results.Base.Interfaces;
+namespace Core.Results.Base.Interfaces;
 
 public interface IResultFailure
 {

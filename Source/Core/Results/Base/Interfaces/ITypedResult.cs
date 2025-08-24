@@ -1,4 +1,4 @@
-﻿namespace Base.Results.Base.Interfaces;
+﻿namespace Core.Results.Base.Interfaces;
 
 public interface ITypedResult<out T> : IResultStatus
 {

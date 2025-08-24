@@ -1,7 +1,7 @@
-﻿using Base.ValueObjects.Identifiers.Lists;
-using Base.ValueObjects.Regular.Base;
+﻿using Core.ValueObjects.Identifiers.Lists;
+using Core.ValueObjects.Regular.Base;
 
-namespace Base.ValueObjects.Identifiers.Base;
+namespace Core.ValueObjects.Identifiers.Base;
 
 public abstract class IdentifierBase<TValue>(TValue value) : ValueObjectBase<TValue>(value), IIdentifier
     where TValue : IComparable, IComparable<TValue>, IEquatable<TValue>

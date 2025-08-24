@@ -1,6 +1,6 @@
-﻿using Base.ValueObjects.Identifiers.Base;
+﻿using Core.ValueObjects.Identifiers.Base;
 
-namespace Base.Enitities.Regular;
+namespace Core.Enitities.Regular;
 
 public interface IEntity;
 public interface IEntity<out TId> : IEntity

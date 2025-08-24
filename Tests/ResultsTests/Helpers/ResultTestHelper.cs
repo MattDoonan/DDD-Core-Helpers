@@ -1,5 +1,5 @@
-﻿using Base.Results.Base.Abstract;
-using Base.Results.Base.Enums;
+﻿using Core.Results.Base.Abstract;
+using Core.Results.Base.Enums;
 using Xunit;
 
 namespace OutputTests.Helpers;

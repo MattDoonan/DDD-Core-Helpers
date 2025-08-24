@@ -1,8 +1,8 @@
-﻿using Base.Results.Base.Enums;
-using Base.Results.Base.Interfaces;
-using Base.Results.Helpers;
+﻿using Core.Results.Base.Enums;
+using Core.Results.Base.Interfaces;
+using Core.Results.Helpers;
 
-namespace Base.Results.Base.Abstract;
+namespace Core.Results.Base.Abstract;
 
 public abstract class ResultStatus : IResultStatus
 {

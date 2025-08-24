@@ -1,8 +1,8 @@
-﻿using Base.ValueObjects.Identifiers.Base;
-using Base.ValueObjects.Identifiers.Lists;
-using Base.ValueObjects.Regular.Strings;
+﻿using Core.ValueObjects.Identifiers.Base;
+using Core.ValueObjects.Identifiers.Lists;
+using Core.ValueObjects.Regular.Strings;
 
-namespace Base.ValueObjects.Identifiers.Cases;
+namespace Core.ValueObjects.Identifiers.Cases;
 
 public class StringIdentifierBase<T>(string value): StringValueObjectBase<T>(value), IIdentifier
     where T : class, IIdentifier<string, T>

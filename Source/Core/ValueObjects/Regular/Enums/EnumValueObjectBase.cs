@@ -1,8 +1,8 @@
-﻿using Base.Results.Basic;
-using Base.ValueObjects.Mappers;
-using Base.ValueObjects.Regular.Base;
+﻿using Core.Results.Basic;
+using Core.ValueObjects.Mappers;
+using Core.ValueObjects.Regular.Base;
 
-namespace Base.ValueObjects.Regular.Enums;
+namespace Core.ValueObjects.Regular.Enums;
 
 public abstract class EnumValueObjectBase<TEnum, TConvert, T, TMapper>(TEnum value) : ValueObjectBase<TEnum>(value), IEnumValueObject<TEnum, TConvert, T>
     where TEnum : Enum, IComparable<TEnum>, IEquatable<TEnum>

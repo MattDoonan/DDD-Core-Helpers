@@ -1,8 +1,8 @@
-﻿using Base.Enitities.AggregateRoot;
-using Base.Results.Advanced;
-using Base.Results.Base.Enums;
-using Base.Results.Basic;
-using Base.ValueObjects.AggregateRootIdentifiers.Base;
+﻿using Core.Enitities.AggregateRoot;
+using Core.Results.Advanced;
+using Core.Results.Base.Enums;
+using Core.Results.Basic;
+using Core.ValueObjects.AggregateRootIdentifiers.Base;
 using OutputTests.Helpers;
 using Xunit;
 

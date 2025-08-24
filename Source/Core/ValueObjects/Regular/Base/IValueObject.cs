@@ -1,4 +1,4 @@
-﻿namespace Base.ValueObjects.Regular.Base;
+﻿namespace Core.ValueObjects.Regular.Base;
 
 public interface IValueObject;
 

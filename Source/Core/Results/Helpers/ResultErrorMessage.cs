@@ -1,7 +1,7 @@
-﻿using Base.Results.Base.Abstract;
-using Base.Results.Base.Enums;
+﻿using Core.Results.Base.Abstract;
+using Core.Results.Base.Enums;
 
-namespace Base.Results.Helpers;
+namespace Core.Results.Helpers;
 
 public static class ResultErrorMessage
 {

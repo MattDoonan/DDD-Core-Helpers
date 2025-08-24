@@ -1,7 +1,7 @@
-﻿using Base.Results.Advanced;
-using Base.ValueObjects.Identifiers.Base;
+﻿using Core.Results.Advanced;
+using Core.ValueObjects.Identifiers.Base;
 
-namespace Base.ValueObjects.Identifiers.Lists;
+namespace Core.ValueObjects.Identifiers.Lists;
 
 public class IdentifierList<T>(params T[] values) : IIdentifierList<T>
     where T : class, IIdentifier

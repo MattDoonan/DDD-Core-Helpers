@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
-using Base.Results.Basic;
-using Base.ValueObjects.Regular.Base;
+using Core.Results.Basic;
+using Core.ValueObjects.Regular.Base;
 
-namespace Base.ValueObjects.Regular.Numbers;
+namespace Core.ValueObjects.Regular.Numbers;
 
 public abstract class NumberValueObjectBase<TValue, T>(TValue value) : ValueObjectBase<TValue>(value)
     where TValue : INumber<TValue>, IComparable<TValue>, IEquatable<TValue>

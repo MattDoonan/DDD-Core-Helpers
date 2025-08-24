@@ -1,8 +1,8 @@
-﻿using Base.Results.Advanced;
-using Base.Results.Base.Enums;
-using Base.Results.Basic;
-using Base.ValueObjects.Regular.Base;
-using Base.ValueObjects.Regular.Numbers;
+﻿using Core.Results.Advanced;
+using Core.Results.Base.Enums;
+using Core.Results.Basic;
+using Core.ValueObjects.Regular.Base;
+using Core.ValueObjects.Regular.Numbers;
 using OutputTests.Helpers;
 using Xunit;
 

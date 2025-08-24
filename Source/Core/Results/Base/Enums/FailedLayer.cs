@@ -1,4 +1,4 @@
-﻿namespace Base.Results.Base.Enums;
+﻿namespace Core.Results.Base.Enums;
 
 public enum FailedLayer
 {
