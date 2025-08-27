@@ -16,8 +16,8 @@ public class IdentifierList<T>(params T[] values) : IIdentifierList<T>
 
     public EntityResult Add(T identifier)
     {
-        var contains = Get(identifier);
-        if (contains.IsSuccessful)
+        var existingItem = _values.FirstOrDefault(id => id.Equals(identifier));
+        if (existingItem is not null)
         {
             return EntityResult.Fail("the identifier already exists in the list");
         }
@@ -27,18 +27,10 @@ public class IdentifierList<T>(params T[] values) : IIdentifierList<T>
 
     public EntityResult Remove(T identifier)
     {
-       var removed = _values.Remove(identifier); 
-       return removed 
-           ? EntityResult.Pass() 
-           : EntityResult.Fail("the identifier does not exist in the list");
-    }
-
-    public ValueObjectResult<T> Get(T identifier)
-    {
-        var existingItem = _values.FirstOrDefault(id => id.Equals(identifier));
-        return existingItem == null
-            ? ValueObjectResult.Fail<T>("the identifier does not exist in the list")
-            : ValueObjectResult.Pass(existingItem);
+        var removed = _values.Remove(identifier);
+        return removed
+            ? EntityResult.Pass()
+            : EntityResult.Fail("the identifier does not exist in the list");
     }
 
     public void Clear()

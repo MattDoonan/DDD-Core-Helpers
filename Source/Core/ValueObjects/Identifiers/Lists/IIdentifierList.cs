@@ -10,7 +10,6 @@ public interface IIdentifierList<T>
     IReadOnlyCollection<T> Values { get; }
     EntityResult Add(T identifier);
     EntityResult Remove(T identifier);
-    ValueObjectResult<T> Get(T identifier);
     void Clear();
     List<T> Copy();
 

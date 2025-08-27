@@ -65,29 +65,4 @@ public class IdentifierListTests
         Assert.False(result.IsSuccessful);
         Assert.Contains("the identifier does not exist in the list", result.GetErrorMessages());
     }
-
-    [Fact]
-    public void Get_ExistingIdentifier_ShouldPass()
-    {
-        var list = new IdentifierList<TestValueObjectBase>();
-        var identifier = TestValueObjectBase.Create("A").Output;
-        list.Add(identifier);
-
-        var result = list.Get(identifier);
-
-        Assert.True(result.IsSuccessful);
-        Assert.Equal(identifier, result.Output);
-    }
-
-    [Fact]
-    public void Get_NonExistingIdentifier_ShouldFail()
-    {
-        var list = new IdentifierList<TestValueObjectBase>();
-        var identifier = TestValueObjectBase.Create("A").Output;
-
-        var result = list.Get(identifier);
-
-        Assert.False(result.IsSuccessful);
-        Assert.Contains("the identifier does not exist in the list", result.GetErrorMessages());
-    }
 }

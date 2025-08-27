@@ -9,6 +9,6 @@ public class StringIdentifierBase<T>(string value): StringValueObjectBase<T>(val
 {
     public bool IsInList(IIdentifierList<StringIdentifierBase<T>> identifierList)
     {
-        return identifierList.Get(this).IsSuccessful;
+        return identifierList.Values.Contains(this);
     }
 }

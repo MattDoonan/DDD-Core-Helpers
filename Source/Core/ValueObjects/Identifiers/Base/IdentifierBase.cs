@@ -8,6 +8,6 @@ public abstract class IdentifierBase<TValue>(TValue value) : ValueObjectBase<TVa
 {
     public bool IsInList(IIdentifierList<IdentifierBase<TValue>> identifierList)
     {
-        return identifierList.Get(this).IsSuccessful;
+        return identifierList.Values.Contains(this);
     }
 }
