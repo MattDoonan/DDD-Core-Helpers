@@ -134,9 +134,7 @@ public class ResultTests : BasicResultTests
             new object[] { FailureType.InvalidRequest },
             new object[] { FailureType.DomainViolation },
             new object[] { FailureType.NotAllowed },
-            new object[] { FailureType.ValueObject },
-            new object[] { FailureType.Mapper },
-            new object[] { FailureType.Entity },
+            new object[] { FailureType.InvalidInput },
             new object[] { FailureType.NotFound },
             new object[] { FailureType.AlreadyExists },
         };
@@ -156,12 +154,10 @@ public class ResultTests : BasicResultTests
         {
             new object[] { FailureType.Generic, FailedLayer.Unknown },
             new object[] { FailureType.OperationTimeout, FailedLayer.Infrastructure },
-            new object[] { FailureType.InvalidRequest, FailedLayer.Infrastructure },
+            new object[] { FailureType.InvalidRequest, FailedLayer.UseCase },
             new object[] { FailureType.DomainViolation, FailedLayer.Unknown },
             new object[] { FailureType.NotAllowed, FailedLayer.Infrastructure },
-            new object[] { FailureType.ValueObject, FailedLayer.Service },
-            new object[] { FailureType.Mapper, FailedLayer.UseCase },
-            new object[] { FailureType.Entity, FailedLayer.Infrastructure },
+            new object[] { FailureType.InvalidInput, FailedLayer.Service },
             new object[] { FailureType.NotFound, FailedLayer.Unknown },
             new object[] { FailureType.AlreadyExists, FailedLayer.Web },
         };

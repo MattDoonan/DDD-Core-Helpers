@@ -31,12 +31,32 @@ public class MapperResult : CoreResult<MapperResult>, IResultFactory<MapperResul
 
     public static MapperResult Fail(string because = "")
     {
-        return new MapperResult(FailureType.Mapper, because);
+        return new MapperResult(FailureType.Generic, because);
     }
     
     public static MapperResult<T> Fail<T>(string because = "")
     {
-        return MapperResult<T>.Fail(because);
+        return MapperResult<T>.Fail(FailureType.Generic, because);
+    }
+    
+    public static MapperResult DomainViolation(string because = "")
+    {
+        return new MapperResult(FailureType.DomainViolation, because);
+    }
+    
+    public static MapperResult<T> DomainViolation<T>(string because = "")
+    {
+        return MapperResult<T>.Fail(FailureType.DomainViolation, because);
+    }
+    
+    public static MapperResult InvalidInput(string because = "")
+    {
+        return new MapperResult(FailureType.InvalidInput, because);
+    }
+    
+    public static MapperResult<T> InvalidInput<T>(string because = "")
+    {
+        return MapperResult<T>.Fail(FailureType.InvalidInput, because);
     }
     
     public static MapperResult<T> Copy<T>(MapperResult<T> result)
@@ -54,12 +74,12 @@ public class MapperResult : CoreResult<MapperResult>, IResultFactory<MapperResul
         return new MapperResult(status);
     }
     
-    public static implicit operator Response(MapperResult result)
+    public static implicit operator InfraResult(MapperResult result)
     {
-        return Response.Create(result);
+        return InfraResult.Create(result);
     }
     
-    public Response ToResponse()
+    public InfraResult ToInfraResult()
     {
         return this;
     }
@@ -104,9 +124,9 @@ public class MapperResult<T> : CoreResult<T, MapperResult>
         return new MapperResult<T>(value);
     }
 
-    internal static MapperResult<T> Fail(string because = "")
+    internal static MapperResult<T> Fail(FailureType failureType, string because = "")
     {
-        return new MapperResult<T>(FailureType.Mapper, because);
+        return new MapperResult<T>(failureType, because);
     }
     
     internal static MapperResult<T> Create(ITypedResult<T> result)
@@ -119,22 +139,22 @@ public class MapperResult<T> : CoreResult<T, MapperResult>
         return Pass(value);
     }
     
-    public static implicit operator Response<T>(MapperResult<T> result)
+    public static implicit operator InfraResult<T>(MapperResult<T> result)
     {
-        return Response<T>.Create(result);
+        return InfraResult<T>.Create(result);
     }
     
-    public static implicit operator Response(MapperResult<T> result)
+    public static implicit operator InfraResult(MapperResult<T> result)
     {
-        return Response.Create(result);
+        return InfraResult.Create(result);
     }
     
-    public Response<T> ToTypedResponse()
+    public InfraResult<T> ToTypedInfraResult()
     {
         return this;
     }
     
-    public Response ToResponse()
+    public InfraResult ToInfraResult()
     {
         return this;
     }

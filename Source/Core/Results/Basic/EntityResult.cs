@@ -34,13 +34,35 @@ public class EntityResult : CoreResult<EntityResult>, IResultFactory<EntityResul
 
     public static EntityResult Fail(string because = "")
     {
-        return new EntityResult(FailureType.Entity, because);
+        return new EntityResult(FailureType.Generic, because);
     }
     
     public static EntityResult<T> Fail<T>(string because = "")
         where T : IEntity
     {
-        return EntityResult<T>.Fail(because);
+        return EntityResult<T>.Fail(FailureType.Generic, because);
+    }
+    
+    public static EntityResult DomainViolation(string because = "")
+    {
+        return new EntityResult(FailureType.DomainViolation, because);
+    }
+    
+    public static EntityResult<T> DomainViolation<T>(string because = "")
+        where T : IEntity
+    {
+        return EntityResult<T>.Fail(FailureType.DomainViolation, because);
+    }
+    
+    public static EntityResult InvalidInput(string because = "")
+    {
+        return new EntityResult(FailureType.InvalidInput, because);
+    }
+    
+    public static EntityResult<T> InvalidInput<T>(string because = "")
+        where T : IEntity
+    {
+        return EntityResult<T>.Fail(FailureType.InvalidInput, because);
     }
     
     public static EntityResult Copy(EntityResult result)
@@ -69,12 +91,12 @@ public class EntityResult : CoreResult<EntityResult>, IResultFactory<EntityResul
         return this;
     }
     
-    public static implicit operator Response(EntityResult result)
+    public static implicit operator InfraResult(EntityResult result)
     {
-        return Response.Create(result);
+        return InfraResult.Create(result);
     }
     
-    public Response ToResponse()
+    public InfraResult ToInfraResult()
     {
         return this;
     }
@@ -120,9 +142,9 @@ public class EntityResult<T> : CoreResult<T, EntityResult>
         return new EntityResult<T>(value);
     }
 
-    internal static EntityResult<T> Fail(string because = "")
+    internal static EntityResult<T> Fail(FailureType failureType, string because = "")
     {
-        return new EntityResult<T>(FailureType.Entity, because);
+        return new EntityResult<T>(failureType, because);
     }
     
     internal static EntityResult<T> Create(ITypedResult<T> result)
@@ -155,22 +177,22 @@ public class EntityResult<T> : CoreResult<T, EntityResult>
         return this;
     }
     
-    public static implicit operator Response<T>(EntityResult<T> result)
+    public static implicit operator InfraResult<T>(EntityResult<T> result)
     {
-        return Response<T>.Create(result);
+        return InfraResult<T>.Create(result);
     }
     
-    public static implicit operator Response(EntityResult<T> result)
+    public static implicit operator InfraResult(EntityResult<T> result)
     {
-        return Response.Create(result);
+        return InfraResult.Create(result);
     }
     
-    public Response<T> ToTypedResponse()
+    public InfraResult<T> ToTypedInfraResult()
     {
         return this;
     }
     
-    public Response ToResponse()
+    public InfraResult ToInfraResult()
     {
         return this;
     }

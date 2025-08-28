@@ -98,6 +98,11 @@ public class RepoResult<T> : TypedResult<T>
         return Create(result);
     }
     
+    public static implicit operator RepoResult<T>(MapperResult<T> result)
+    {
+        return Create(result);
+    }
+    
     public static implicit operator ServiceResult<T>(RepoResult<T> result)
     {
         return ServiceResult<T>.Create(result);
@@ -149,6 +154,12 @@ public static class RepoResultExtensions
     }
     
     public static RepoResult<T> ToTypedRepoResult<T>(this EntityResult<T> result)
+        where T : IAggregateRoot
+    {
+        return result;
+    }
+    
+    public static RepoResult<T> ToTypedRepoResult<T>(this MapperResult<T> result)
         where T : IAggregateRoot
     {
         return result;

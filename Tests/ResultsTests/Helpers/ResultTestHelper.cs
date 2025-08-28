@@ -75,9 +75,7 @@ public static class ResultTestHelper
         Assert.Equal(FailureType.InvalidRequest == expectedFailureType, result.IsAnInvalidRequest);
         Assert.Equal(FailureType.DomainViolation == expectedFailureType, result.IsADomainViolation);
         Assert.Equal(FailureType.NotAllowed == expectedFailureType, result.IsNotAllowed);
-        Assert.Equal(FailureType.ValueObject == expectedFailureType, result.IsValueObjectFailure);
-        Assert.Equal(FailureType.Mapper == expectedFailureType, result.IsMapperFailure);
-        Assert.Equal(FailureType.Entity == expectedFailureType, result.IsEntityFailure);
+        Assert.Equal(FailureType.InvalidInput == expectedFailureType, result.IsInvalidInput);
         Assert.Equal(FailureType.NotFound == expectedFailureType, result.IsNotFound);
         Assert.Equal(FailureType.AlreadyExists == expectedFailureType, result.DoesAlreadyExists);
         Assert.True(result.IsFailureType(expectedFailureType));

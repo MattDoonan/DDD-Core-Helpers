@@ -17,7 +17,19 @@ public static class ValueObjectResult
     public static ValueObjectResult<T> Fail<T>(string because = "")
         where T : class, IValueObject
     {
-        return ValueObjectResult<T>.Fail(because);
+        return ValueObjectResult<T>.Fail(FailureType.Generic, because);
+    }
+    
+    public static ValueObjectResult<T> DomainViolation<T>(string because = "")
+        where T : class, IValueObject
+    {
+        return ValueObjectResult<T>.Fail(FailureType.DomainViolation, because);
+    }
+    
+    public static ValueObjectResult<T> InvalidInput<T>(string because = "")
+        where T : class, IValueObject
+    {
+        return ValueObjectResult<T>.Fail(FailureType.InvalidInput, because);
     }
     
     public static ValueObjectResult<T> Copy<T>(ValueObjectResult<T> result)
@@ -48,9 +60,9 @@ public class ValueObjectResult<T> : TypedResult<T>
         return new ValueObjectResult<T>(value);
     }
 
-    internal static ValueObjectResult<T> Fail(string because = "")
+    internal static ValueObjectResult<T> Fail(FailureType failureType, string because = "")
     {
-        return new ValueObjectResult<T>(FailureType.ValueObject, because);
+        return new ValueObjectResult<T>(failureType, because);
     }
     
     internal static ValueObjectResult<T> Create(ITypedResult<T> result)
@@ -83,22 +95,22 @@ public class ValueObjectResult<T> : TypedResult<T>
         return this;
     }
     
-    public static implicit operator Response<T>(ValueObjectResult<T> result)
+    public static implicit operator InfraResult<T>(ValueObjectResult<T> result)
     {
-        return Response<T>.Create(result);
+        return InfraResult<T>.Create(result);
     }
     
-    public static implicit operator Response(ValueObjectResult<T> result)
+    public static implicit operator InfraResult(ValueObjectResult<T> result)
     {
-        return Response.Create(result);
+        return InfraResult.Create(result);
     }
     
-    public Response<T> ToTypedResponse()
+    public InfraResult<T> ToTypedInfraResult()
     {
         return this;
     }
     
-    public Response ToResponse()
+    public InfraResult ToInfraResult()
     {
         return this;
     }
