@@ -8,8 +8,8 @@ public interface IIdentifier : IValueObject;
 public interface IGuiIdentifier<T>
     where T : class, IIdentifier
 {
-    ValueObjectResult<T> Create();
-    ValueObjectResult<T> Create(string value);
+    static abstract ValueObjectResult<T> Create();
+    static abstract ValueObjectResult<T> Create(string value);
 }
 
 public interface IIdentifier<TValue, T> : IIdentifier, IValueObject<TValue, T>
