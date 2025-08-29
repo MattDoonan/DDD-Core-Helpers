@@ -146,6 +146,34 @@ public class EntityResultTests : BasicResultTests
     }
     
     [Fact]
+    public void WhenIFailTheResult_BecauseOfADomainViolation_Then_TheResultIsAFailure()
+    {
+        var result = EntityResult.DomainViolation();
+        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, FailureType.DomainViolation.ToMessage());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfADomainViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = EntityResult.DomainViolation<TestEntityResult>();
+        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, FailureType.DomainViolation.ToMessage<TestEntityResult>());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvalidInput_Then_TheResultIsAFailure()
+    {
+        var result = EntityResult.InvalidInput();
+        ResultTestHelper.CheckFailure(result, FailureType.InvalidInput, FailureType.InvalidInput.ToMessage());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvalidInput_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = EntityResult.InvalidInput<TestEntityResult>();
+        ResultTestHelper.CheckFailure(result, FailureType.InvalidInput, FailureType.InvalidInput.ToMessage<TestEntityResult>());    
+    }
+    
+    [Fact]
     public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedMapperResult()
     {
         var obj = new TestEntityResult(TestId.Create(1).Output);

@@ -85,6 +85,20 @@ public class ValueObjectResultTests : BasicValueResultTests
     }
     
     [Fact]
+    public void WhenIFailTheResult_BecauseOfADomainViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = ValueObjectResult.DomainViolation<TestValueObject>();
+        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, FailureType.DomainViolation.ToMessage<TestValueObject>());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvalidInput_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = ValueObjectResult.InvalidInput<TestValueObject>();
+        ResultTestHelper.CheckFailure(result, FailureType.InvalidInput, FailureType.InvalidInput.ToMessage<TestValueObject>());    
+    }
+    
+    [Fact]
     public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedMapperResult()
     {
         var obj = TestValueObject.Create(1).Output;

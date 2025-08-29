@@ -126,6 +126,34 @@ public class MapperResultTests : BasicResultTests
         var copiedResult = MapperResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfADomainViolation_Then_TheResultIsAFailure()
+    {
+        var result = MapperResult.DomainViolation();
+        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, FailureType.DomainViolation.ToMessage());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfADomainViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = MapperResult.DomainViolation<int>();
+        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, FailureType.DomainViolation.ToMessage<int>());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvalidInput_Then_TheResultIsAFailure()
+    {
+        var result = MapperResult.InvalidInput();
+        ResultTestHelper.CheckFailure(result, FailureType.InvalidInput, FailureType.InvalidInput.ToMessage());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvalidInput_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = MapperResult.InvalidInput<int>();
+        ResultTestHelper.CheckFailure(result, FailureType.InvalidInput, FailureType.InvalidInput.ToMessage<int>());    
+    }
 
     [Fact]
     public void WhenIPassTheResult_WithANullableValue_AndThatValueIsNull_Then_TheResultIsSuccessful_AndHasTheNullValue()
