@@ -81,4 +81,9 @@ public abstract class ValueObjectBase<TValue>(TValue value) : IValue<ValueObject
     {
         return a.Value.CompareTo(b.Value) > 0;
     }
+
+    public static implicit operator TValue(ValueObjectBase<TValue> value)
+    {
+        return value.Value;
+    }
 }
