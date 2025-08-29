@@ -9,7 +9,6 @@ public interface IEntityList<T>
     IReadOnlyCollection<T> Entities { get; }
     EntityResult Add(T identifier);
     EntityResult Remove(T identifier);
-    EntityResult<T> Get(T identifier);
     void Clear();
     List<T> Copy();
 }

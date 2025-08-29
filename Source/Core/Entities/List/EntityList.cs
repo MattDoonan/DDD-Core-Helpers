@@ -34,14 +34,6 @@ public class EntityList<T>(params T[] values) : IEntityList<T>
         return EntityResult.Pass();
     }
 
-    public EntityResult<T> Get(T entity)
-    {
-        var existingItem = _entities.FirstOrDefault(e => e.Equals(entity));
-        return existingItem == null
-            ? EntityResult.Fail<T>("the identifier does not exist in the list")
-            : EntityResult.Pass(existingItem);
-    }
-
     public void Clear()
     {
         _entities.Clear();
