@@ -4,13 +4,13 @@ using Core.Results.Base.Interfaces;
 
 namespace Core.Results.Advanced;
 
-public class Result : CoreResult<Result>, IResultFactory<Result>
+public class Result : CoreResult, IResultFactory<Result>
 {
-    private Result(IResultStatus resultStatus) : base(resultStatus)
+    private Result()
     {
     }
     
-    private Result()
+    private Result(ResultStatus resultStatus) : base(resultStatus)
     {
     }
     
@@ -27,7 +27,7 @@ public class Result : CoreResult<Result>, IResultFactory<Result>
     {
         return new Result(FailureType.Generic, FailedLayer.Unknown, because);
     }
-    
+
     public static Result Fail(FailureType failureType, string because)
     {
         return new Result(failureType, FailedLayer.Unknown, because);
@@ -45,10 +45,10 @@ public class Result : CoreResult<Result>, IResultFactory<Result>
     
     public static Result Copy(Result result)
     {
-        return Create(result);
+        return new Result(result);
     }
     
-    internal static Result Create(IResultStatus result)
+    internal static Result Create(ResultStatus result)
     {
         return new Result(result);
     }
@@ -82,14 +82,9 @@ public class Result : CoreResult<Result>, IResultFactory<Result>
     {
         return Result<T>.Fail(failureType, failedLayer, because);
     }
-    
-    internal static Result<T> Create<T>(ITypedResult<T> result)
-    {
-        return Result<T>.Create(result);
-    }
 }
 
-public class Result<T> : CoreResult<T, Result>
+public class Result<T> : TypedResult<T>
 {
     private Result(T value) : base(value)
     {
@@ -101,6 +96,15 @@ public class Result<T> : CoreResult<T, Result>
     
     private Result(ITypedResult<T> result) : base(result)
     {
+    }
+    
+    private Result(IResultStatus result) : base(result)
+    {
+    }
+    
+    public Result RemoveType()
+    {
+        return Result.Create(this);
     }
     
     internal static Result<T> Pass(T value)
@@ -118,32 +122,18 @@ public class Result<T> : CoreResult<T, Result>
         return new Result<T>(result);
     }
     
-    public static implicit operator Result(Result<T> result)
-    {
-        return result.RemoveValue();
-    }
-    
     public static implicit operator Result<T>(T value)
     {
         return Pass(value);
     }
-}
-
-public static class ResultExtensions
-{
-    public static Result<T> AsResult<T>(this T value)
+    
+    public static implicit operator Result(Result<T> result)
     {
-        return value;
+        return result.RemoveType();
     }
     
-    public static Result<T> ToTypedResult<T>(this ITypedResult<T> result)
+    public static implicit operator Result<T>(CoreResult result)
     {
-        return Result<T>.Create(result);
+        return new Result<T>(result);
     }
-    
-    public static Result ToResult(this IResultStatus result)
-    {
-        return Result.Create(result);
-    }
-
 }

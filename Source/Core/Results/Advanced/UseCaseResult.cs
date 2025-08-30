@@ -1,16 +1,16 @@
-﻿using Core.Results.Base.Abstract;
+﻿using Core.Results.Advanced.Abstract;
+using Core.Results.Advanced.Interfaces;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
 
 namespace Core.Results.Advanced;
 
-public class UseCaseResult : CoreResult<UseCaseResult>, IResultFactory<UseCaseResult>
+public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
 {
-    private UseCaseResult(IResultStatus resultStatus) : base(resultStatus)
+    private UseCaseResult()
     {
     }
-    
-    private UseCaseResult()
+    private UseCaseResult(IResultConvertable resultStatus) : base(resultStatus)
     {
     }
     
@@ -48,7 +48,7 @@ public class UseCaseResult : CoreResult<UseCaseResult>, IResultFactory<UseCaseRe
         return UseCaseResult<T>.Create(result);
     }
     
-    internal static UseCaseResult Create(IResultStatus result)
+    internal static UseCaseResult Create(IResultConvertable result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -61,7 +61,7 @@ public class UseCaseResult : CoreResult<UseCaseResult>, IResultFactory<UseCaseRe
     }
 }
 
-public class UseCaseResult<T> : CoreResult<T, UseCaseResult>
+public class UseCaseResult<T> : ResultConvertable<T>
 {
     private UseCaseResult(T value) : base(value)
     {
@@ -71,8 +71,17 @@ public class UseCaseResult<T> : CoreResult<T, UseCaseResult>
     {
     }
 
-    private UseCaseResult(ITypedResult<T> result) : base(result)
+    private UseCaseResult(IResultConvertable<T> result) : base(result)
     {
+    }
+    
+    private UseCaseResult(IResultConvertable result) : base(result)
+    {
+    }
+    
+    public UseCaseResult RemoveType()
+    {
+        return UseCaseResult.Create(this);
     }
     
     internal static UseCaseResult<T> Pass(T value)
@@ -85,7 +94,7 @@ public class UseCaseResult<T> : CoreResult<T, UseCaseResult>
         return new UseCaseResult<T>(failureType, because);
     }
     
-    internal static UseCaseResult<T> Create(ITypedResult<T> result)
+    internal static UseCaseResult<T> Create(IResultConvertable<T> result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -101,12 +110,14 @@ public class UseCaseResult<T> : CoreResult<T, UseCaseResult>
     {
         return Pass(value);
     }
-}
-
-public static class UseCaseResultExtensions
-{
-    public static UseCaseResult<T> AsTypedUseCaseResult<T>(this T value)
+    
+    public static implicit operator UseCaseResult(UseCaseResult<T> result)
     {
-        return value;
+        return result.RemoveType();
+    }
+    
+    public static implicit operator UseCaseResult<T>(ResultConvertable result)
+    {
+        return new UseCaseResult<T>(result);
     }
 }

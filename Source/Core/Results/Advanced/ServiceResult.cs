@@ -1,16 +1,17 @@
-﻿using Core.Results.Base.Abstract;
+﻿using Core.Results.Advanced.Abstract;
+using Core.Results.Advanced.Interfaces;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
 
 namespace Core.Results.Advanced;
 
-public class ServiceResult : CoreResult<ServiceResult>, IResultFactory<ServiceResult>
+public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
 {
-     private ServiceResult(IResultStatus resultStatus) : base(resultStatus)
+    private ServiceResult()
     {
     }
     
-    private ServiceResult()
+     private ServiceResult(IUseCaseConvertable resultStatus) : base(resultStatus)
     {
     }
     
@@ -68,7 +69,7 @@ public class ServiceResult : CoreResult<ServiceResult>, IResultFactory<ServiceRe
         return ServiceResult<T>.Create(result);
     }
     
-    internal static ServiceResult Create(IResultStatus result)
+    internal static ServiceResult Create(IUseCaseConvertable result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -79,19 +80,9 @@ public class ServiceResult : CoreResult<ServiceResult>, IResultFactory<ServiceRe
         }
         return new ServiceResult(result);
     }
-    
-    public static implicit operator UseCaseResult(ServiceResult result)
-    {
-        return UseCaseResult.Create(result);
-    }
-    
-    public UseCaseResult ToUseCaseResult()
-    {
-        return this;
-    }
 }
 
-public class ServiceResult<T> : CoreResult<T, ServiceResult>
+public class ServiceResult<T> : UseCaseConvertable<T>
 {
     private ServiceResult(T value) : base(value)
     {
@@ -101,8 +92,17 @@ public class ServiceResult<T> : CoreResult<T, ServiceResult>
     {
     }
     
-    private ServiceResult(ITypedResult<T> result) : base(result)
+    private ServiceResult(IUseCaseConvertable<T> result) : base(result)
     {
+    }
+    
+    private ServiceResult(IUseCaseConvertable result) : base(result)
+    {
+    }
+    
+    public ServiceResult RemoveType()
+    {
+        return ServiceResult.Create(this);
     }
     
     internal static ServiceResult<T> Pass(T value)
@@ -115,7 +115,7 @@ public class ServiceResult<T> : CoreResult<T, ServiceResult>
         return new ServiceResult<T>(failureType, because);
     }
     
-    internal static ServiceResult<T> Create(ITypedResult<T> result)
+    internal static ServiceResult<T> Create(IUseCaseConvertable<T> result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -132,31 +132,13 @@ public class ServiceResult<T> : CoreResult<T, ServiceResult>
         return Pass(value);
     }
     
-    public static implicit operator UseCaseResult<T>(ServiceResult<T> result)
+    public static implicit operator ServiceResult(ServiceResult<T> result)
     {
-        return UseCaseResult<T>.Create(result);
+        return result.RemoveType();
     }
     
-    public static implicit operator UseCaseResult(ServiceResult<T> result)
+    public static implicit operator ServiceResult<T>(UseCaseConvertable result)
     {
-        return UseCaseResult.Create(result);
-    }
-    
-    public UseCaseResult<T> ToTypedUseCaseResult()
-    {
-        return this;
-    }
-    
-    public UseCaseResult ToUseCaseResult()
-    {
-        return this;
-    }
-}
-
-public static class ServiceResultExtensions
-{
-    public static ServiceResult<T> AsTypedServiceResult<T>(this T value)
-    {
-        return value;
+        return new ServiceResult<T>(result);
     }
 }

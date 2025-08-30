@@ -31,7 +31,6 @@ public abstract class ResultStatus : IResultStatus
     
     protected ResultStatus() : this(false)
     {
-        
     }
     
     protected ResultStatus(IResultStatus result)

@@ -31,6 +31,16 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
         _hasGotOutput  = true;
     }
     
+    protected TypedResult(IResultStatus result) : base(result)
+    {
+        if (result.IsSuccessful)
+        {
+            throw new InvalidOperationException("Cannot implicitly convert a successful Result to a typed Result. Use an explicit constructor or method instead.");
+        }
+        _hasGotOutput = false;
+    }
+
+    
     protected TypedResult(ITypedResult<T> valueResult) : base(valueResult)
     {
         if (valueResult.IsSuccessful)

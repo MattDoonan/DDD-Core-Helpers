@@ -83,7 +83,14 @@ public class ValueObjectResultTests : BasicValueResultTests
         var copiedResult = ValueObjectResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }
-    
+
+    public override void WhenIHaveAValue_Then_ItCanBeImplicitlyConvertedIntoAResult()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        ValueObjectResult<TestValueObject> result = obj;
+        ResultTestHelper.CheckSuccess(result, obj);
+    }
+
     [Fact]
     public void WhenIFailTheResult_BecauseOfADomainViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
@@ -96,6 +103,42 @@ public class ValueObjectResultTests : BasicValueResultTests
     {
         var result = ValueObjectResult.InvalidInput<TestValueObject>();
         ResultTestHelper.CheckFailure(result, FailureType.InvalidInput, FailureType.InvalidInput.ToMessage<TestValueObject>());    
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToATypedEntityResult()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        var result = ValueObjectResult.Pass(obj);    
+        var convertedResult = result.ToTypedEntityResult();
+        ResultTestHelper.CheckSuccess(convertedResult, obj);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToATypedEntityResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
+        var convertedResult = result.ToTypedEntityResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage<TestValueObject>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_Then_ItCanBeConvertedToAEntityResult()
+    {
+        var obj = TestValueObject.Create(1).Output;
+        var result = ValueObjectResult.Pass(obj);    
+        var convertedResult = result.ToEntityResult();
+        ResultTestHelper.CheckSuccess(convertedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToAEntityResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
+        var convertedResult = result.ToEntityResult();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage<TestValueObject>()} because {errorMessage}");
     }
     
     [Fact]

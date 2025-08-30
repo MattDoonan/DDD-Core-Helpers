@@ -1,58 +1,116 @@
 ﻿using Core.Entities.AggregateRoot;
-using Core.Results.Base.Abstract;
+using Core.Results.Advanced.Abstract;
+using Core.Results.Advanced.Interfaces;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
-using Core.Results.Basic;
 
 namespace Core.Results.Advanced;
 
-public static class RepoResult
+public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
 {
+    
+    private RepoResult()
+    {
+    }
+    private RepoResult(IServiceConvertable resultStatus) : base(resultStatus)
+    {
+    }
+    
+    private RepoResult(FailureType failureType, string because) : base(failureType, FailedLayer.Infrastructure, because)
+    {
+    }
+    
+    public static RepoResult Pass()
+    {
+        return new RepoResult();
+    }
+
+    public static RepoResult Fail(string because = "")
+    {
+        return new RepoResult(FailureType.Generic, because);
+    }
+
+    public static RepoResult Copy(RepoResult result)
+    {
+        return new RepoResult(result);
+    }
+
+    public static RepoResult NotFound(string because = "")
+    {
+        return new RepoResult(FailureType.NotFound, because);
+    }
+    
+    public static RepoResult AlreadyExists(string because = "")
+    {
+        return new RepoResult(FailureType.AlreadyExists, because);
+    }
+    
+    public static RepoResult InvalidRequest(string because = "")
+    {
+        return new RepoResult(FailureType.InvalidRequest, because);
+    }
+    
+    public static RepoResult OperationTimeout(string because = "")
+    {
+        return new RepoResult(FailureType.OperationTimeout, because);
+    }
+
+    internal static RepoResult Create(IServiceConvertable result)
+    {
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
+        {
+            return new RepoResult(result)
+            {
+                FailedLayer = FailedLayer.Infrastructure
+            };   
+        }
+        return new RepoResult(result);
+    }
+    
     public static RepoResult<T> Pass<T>(T value)
         where T : IAggregateRoot
     {
         return RepoResult<T>.Pass(value);
     }
     
-    public static RepoResult<T> Fail<T>(string because = "")
+    public static RepoResult<IEnumerable<T>> Pass<T>(IEnumerable<T> value)
         where T : IAggregateRoot
+    {
+        return RepoResult<IEnumerable<T>>.Pass(value);
+    }
+    
+    public static RepoResult<T> Fail<T>(string because = "")
     {
         return RepoResult<T>.Fail(FailureType.Generic, because);
     }
     
     public static RepoResult<T> NotFound<T>(string because = "")
-        where T : IAggregateRoot
     {
         return RepoResult<T>.Fail(FailureType.NotFound, because);
     }
     
     public static RepoResult<T> AlreadyExists<T>(string because = "")
-        where T : IAggregateRoot
     {
         return RepoResult<T>.Fail(FailureType.AlreadyExists, because);
     }
     
     public static RepoResult<T> InvalidRequest<T>(string because = "")
-        where T : IAggregateRoot
     {
         return RepoResult<T>.Fail(FailureType.InvalidRequest, because);
     }
     
-    public static RepoResult<T> OperationTimout<T>(string because = "")
-        where T : IAggregateRoot
+    public static RepoResult<T> OperationTimeout<T>(string because = "")
     {
         return RepoResult<T>.Fail(FailureType.OperationTimeout, because);
     }
     
     public static RepoResult<T> Copy<T>(RepoResult<T> result)
-        where T : IAggregateRoot
     {
         return RepoResult<T>.Create(result);
     }
 }
 
-public class RepoResult<T> : TypedResult<T>
-    where T : IAggregateRoot
+public class RepoResult<T> : ServiceConvertable<T>
 {
     private RepoResult(T value) : base(value)
     {
@@ -62,8 +120,17 @@ public class RepoResult<T> : TypedResult<T>
     {
     }
     
-    private RepoResult(ITypedResult<T> result) : base( result)
+    private RepoResult(IServiceConvertable<T> result) : base(result)
     {
+    }
+    
+    private RepoResult(IServiceConvertable result) : base(result)
+    {
+    }
+    
+    public RepoResult RemoveType()
+    {
+        return RepoResult.Create(this);
     }
     
     internal static RepoResult<T> Pass(T value)
@@ -76,7 +143,7 @@ public class RepoResult<T> : TypedResult<T>
         return new RepoResult<T>(failureType, because);
     }
     
-    internal static RepoResult<T> Create(ITypedResult<T> result)
+    internal static RepoResult<T> Create(IServiceConvertable<T> result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -93,75 +160,13 @@ public class RepoResult<T> : TypedResult<T>
         return Pass(value);
     }
     
-    public static implicit operator RepoResult<T>(EntityResult<T> result)
+    public static implicit operator RepoResult(RepoResult<T> result)
     {
-        return Create(result);
+        return result.RemoveType();
     }
     
-    public static implicit operator RepoResult<T>(MapperResult<T> result)
+    public static implicit operator RepoResult<T>(ServiceConvertable result)
     {
-        return Create(result);
-    }
-    
-    public static implicit operator ServiceResult<T>(RepoResult<T> result)
-    {
-        return ServiceResult<T>.Create(result);
-    }
-    
-    public static implicit operator ServiceResult(RepoResult<T> result)
-    {
-        return ServiceResult.Create(result);
-    }
-    
-    public ServiceResult<T> ToTypedServiceResult()
-    {
-        return this;
-    }
-    
-    public ServiceResult ToServiceResult()
-    {
-        return this;
-    }
-    
-    public static implicit operator UseCaseResult<T>(RepoResult<T> result)
-    {
-        return UseCaseResult<T>.Create(result);
-    }
-    
-    public static implicit operator UseCaseResult(RepoResult<T> result)
-    {
-        return UseCaseResult.Create(result);
-    }
-    
-    public UseCaseResult<T> ToTypedUseCaseResult()
-    {
-        return this;
-    }
-    
-    public UseCaseResult ToUseCaseResult()
-    {
-        return this;
-    }
-
-}
-
-public static class RepoResultExtensions
-{
-    public static RepoResult<T> AsTypedRepoResult<T>(this T value)
-        where T : IAggregateRoot
-    {
-        return value;
-    }
-    
-    public static RepoResult<T> ToTypedRepoResult<T>(this EntityResult<T> result)
-        where T : IAggregateRoot
-    {
-        return result;
-    }
-    
-    public static RepoResult<T> ToTypedRepoResult<T>(this MapperResult<T> result)
-        where T : IAggregateRoot
-    {
-        return result;
+        return new RepoResult<T>(result);
     }
 }

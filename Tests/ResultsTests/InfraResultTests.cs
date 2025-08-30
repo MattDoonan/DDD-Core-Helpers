@@ -45,7 +45,7 @@ public class InfraResultTests : BasicResultTests
     {
         const int value = 10;    
         var mapperResult = InfraResult.Pass(value);
-        var result = mapperResult.RemoveValue();
+        var result = mapperResult.RemoveType();
         Assert.IsType<InfraResult>(result);
         ResultTestHelper.CheckSuccess(result);
     }
@@ -63,6 +63,24 @@ public class InfraResultTests : BasicResultTests
         var result = InfraResult.Pass();    
         var copiedResult = InfraResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
+    public override void GivenIHaveAFailureResult_WithoutAValue_ThenICanConvertItIntoATypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = InfraResult.Fail(errorMessage);
+        InfraResult<int> convertedResult = result;
+        ResultTestHelper.Equivalent(result, convertedResult);
+        Assert.ThrowsAny<Exception>(() => convertedResult.Output);
+    }
+
+    public override void GivenIHaveASuccessfulResult_WithoutAValue_WhenIConvertItIntoATypedResult_Then_AnErrorIsThrown()
+    {
+        var result = InfraResult.Pass();
+        Assert.ThrowsAny<Exception>(() =>
+        {
+            InfraResult<int> _ = result;
+        });
     }
 
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
@@ -124,6 +142,13 @@ public class InfraResultTests : BasicResultTests
         var result = InfraResult.Pass(value);    
         var copiedResult = InfraResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
+    public override void WhenIHaveAValue_Then_ItCanBeImplicitlyConvertedIntoAResult()
+    {
+        const int value = 1;
+        InfraResult<int> result = value;
+        ResultTestHelper.CheckSuccess(result, value);
     }
 
     [Fact]

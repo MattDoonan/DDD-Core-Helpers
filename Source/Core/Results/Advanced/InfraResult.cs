@@ -1,16 +1,17 @@
-﻿using Core.Results.Base.Abstract;
+﻿using Core.Results.Advanced.Abstract;
+using Core.Results.Advanced.Interfaces;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
 
 namespace Core.Results.Advanced;
 
-public class InfraResult : CoreResult<InfraResult>, IResultFactory<InfraResult>
+public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
 {
-    private InfraResult(IResultStatus resultStatus) : base(resultStatus)
+    private InfraResult()
     {
     }
     
-    private InfraResult()
+    private InfraResult(IRepoConvertable resultStatus) : base(resultStatus)
     {
     }
     
@@ -26,6 +27,11 @@ public class InfraResult : CoreResult<InfraResult>, IResultFactory<InfraResult>
     public static InfraResult Fail(string because = "")
     {
         return new InfraResult(FailureType.Generic, because);
+    }
+    
+    public static InfraResult Copy(InfraResult result)
+    {
+        return Create(result);
     }
     
     public static InfraResult NotFound(string because = "")
@@ -78,37 +84,12 @@ public class InfraResult : CoreResult<InfraResult>, IResultFactory<InfraResult>
         return InfraResult<T>.Fail(FailureType.OperationTimeout, because);
     }
     
-    public static InfraResult Copy(InfraResult result)
-    {
-        return Create(result);
-    }
-    
     public static InfraResult<T> Copy<T>(InfraResult<T> result)
     {
         return InfraResult<T>.Create(result);
     }
-    
-    public static implicit operator ServiceResult(InfraResult result)
-    {
-        return ServiceResult.Create(result);
-    }
-    
-    public ServiceResult ToServiceResult()
-    {
-        return this;
-    }
-    
-    public static implicit operator UseCaseResult(InfraResult result)
-    {
-        return UseCaseResult.Create(result);
-    }
-    
-    public UseCaseResult ToUseCaseResult()
-    {
-        return this;
-    }
 
-    internal static InfraResult Create(IResultStatus result)
+    internal static InfraResult Create(IRepoConvertable result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -121,7 +102,7 @@ public class InfraResult : CoreResult<InfraResult>, IResultFactory<InfraResult>
     }
 }
 
-public class InfraResult<T>  : CoreResult<T, InfraResult>
+public class InfraResult<T> : RepoConvertable<T>
 {
     private InfraResult(T value) : base(value)
     {
@@ -131,8 +112,17 @@ public class InfraResult<T>  : CoreResult<T, InfraResult>
     {
     }
     
-    private InfraResult(ITypedResult<T> result) : base( result)
+    private InfraResult(IRepoConvertable<T> result) : base(result)
     {
+    }
+    
+    private InfraResult(IRepoConvertable result) : base(result)
+    {
+    }
+    
+    public InfraResult RemoveType()
+    {
+        return InfraResult.Create(this);
     }
     
     internal static InfraResult<T> Pass(T value)
@@ -145,7 +135,7 @@ public class InfraResult<T>  : CoreResult<T, InfraResult>
         return new InfraResult<T>(failureType, because);
     }
     
-    internal static InfraResult<T> Create(ITypedResult<T> result)
+    internal static InfraResult<T> Create(IRepoConvertable<T> result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -162,43 +152,13 @@ public class InfraResult<T>  : CoreResult<T, InfraResult>
         return Pass(value);
     }
     
-    public static implicit operator ServiceResult<T>(InfraResult<T> result)
+    public static implicit operator InfraResult(InfraResult<T> result)
     {
-        return ServiceResult<T>.Create(result);
+        return result.RemoveType();
     }
     
-    public static implicit operator ServiceResult(InfraResult<T> result)
+    public static implicit operator InfraResult<T>(RepoConvertable result)
     {
-        return ServiceResult.Create(result);
-    }
-    
-    public ServiceResult<T> ToTypedServiceResult()
-    {
-        return this;
-    }
-    
-    public ServiceResult ToServiceResult()
-    {
-        return this;
-    }
-    
-    public static implicit operator UseCaseResult<T>(InfraResult<T> result)
-    {
-        return UseCaseResult<T>.Create(result);
-    }
-    
-    public static implicit operator UseCaseResult(InfraResult<T> result)
-    {
-        return UseCaseResult.Create(result);
-    }
-    
-    public UseCaseResult<T> ToTypedUseCaseResult()
-    {
-        return this;
-    }
-    
-    public UseCaseResult ToUseCaseResult()
-    {
-        return this;
+        return new InfraResult<T>(result);
     }
 }

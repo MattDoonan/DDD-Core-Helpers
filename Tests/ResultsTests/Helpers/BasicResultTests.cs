@@ -27,5 +27,10 @@ public abstract class BasicResultTests : BasicValueResultTests
     
     [Fact]
     public abstract void GivenIHaveASuccessfulResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully();
+    [Fact]
+    public abstract void GivenIHaveAFailureResult_WithoutAValue_ThenICanConvertItIntoATypedResult();
+    
+    [Fact]
+    public abstract void GivenIHaveASuccessfulResult_WithoutAValue_WhenIConvertItIntoATypedResult_Then_AnErrorIsThrown();
 
 }

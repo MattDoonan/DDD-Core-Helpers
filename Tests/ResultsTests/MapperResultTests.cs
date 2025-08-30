@@ -46,7 +46,7 @@ public class MapperResultTests : BasicResultTests
     {
         const int value = 10;    
         var mapperResult = MapperResult.Pass(value);
-        var result = mapperResult.RemoveValue();
+        var result = mapperResult.RemoveType();
         Assert.IsType<MapperResult>(result);
         ResultTestHelper.CheckSuccess(result);
     }
@@ -64,6 +64,24 @@ public class MapperResultTests : BasicResultTests
         var result = MapperResult.Pass();    
         var copiedResult = MapperResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
+    public override void GivenIHaveAFailureResult_WithoutAValue_ThenICanConvertItIntoATypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = MapperResult.Fail(errorMessage);
+        MapperResult<int> convertedResult = result;
+        ResultTestHelper.Equivalent(result, convertedResult);
+        Assert.ThrowsAny<Exception>(() => convertedResult.Output);
+    }
+
+    public override void GivenIHaveASuccessfulResult_WithoutAValue_WhenIConvertItIntoATypedResult_Then_AnErrorIsThrown()
+    {
+        var result = MapperResult.Pass();
+        Assert.ThrowsAny<Exception>(() =>
+        {
+            MapperResult<int> _ = result;
+        });
     }
 
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
@@ -126,7 +144,14 @@ public class MapperResultTests : BasicResultTests
         var copiedResult = MapperResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }
-    
+
+    public override void WhenIHaveAValue_Then_ItCanBeImplicitlyConvertedIntoAResult()
+    {
+        const int value = 1;
+        MapperResult<int> result = value;
+        ResultTestHelper.CheckSuccess(result, value);
+    }
+
     [Fact]
     public void WhenIFailTheResult_BecauseOfADomainViolation_Then_TheResultIsAFailure()
     {

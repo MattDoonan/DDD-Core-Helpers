@@ -45,7 +45,7 @@ public class UseCaseResultTests : BasicResultTests
     {
         const string value = "Test";    
         var useCaseResult = UseCaseResult.Pass(value);
-        var result = useCaseResult.RemoveValue();
+        var result = useCaseResult.RemoveType();
         Assert.IsType<UseCaseResult>(result);
         ResultTestHelper.CheckSuccess(result);
     }
@@ -63,6 +63,24 @@ public class UseCaseResultTests : BasicResultTests
         var result = UseCaseResult.Pass();    
         var copiedResult = UseCaseResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
+    public override void GivenIHaveAFailureResult_WithoutAValue_ThenICanConvertItIntoATypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = UseCaseResult.Fail(errorMessage);
+        UseCaseResult<int> convertedResult = result;
+        ResultTestHelper.Equivalent(result, convertedResult);
+        Assert.ThrowsAny<Exception>(() => convertedResult.Output);
+    }
+
+    public override void GivenIHaveASuccessfulResult_WithoutAValue_WhenIConvertItIntoATypedResult_Then_AnErrorIsThrown()
+    {
+        var result = UseCaseResult.Pass();
+        Assert.ThrowsAny<Exception>(() =>
+        {
+            UseCaseResult<int> _ = result;
+        });
     }
 
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
@@ -124,5 +142,12 @@ public class UseCaseResultTests : BasicResultTests
         var result = UseCaseResult.Pass(value);    
         var copiedResult = UseCaseResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
+    public override void WhenIHaveAValue_Then_ItCanBeImplicitlyConvertedIntoAResult()
+    {
+        const byte value = 10;
+        UseCaseResult<byte> result = value;
+        ResultTestHelper.CheckSuccess(result, value);
     }
 }

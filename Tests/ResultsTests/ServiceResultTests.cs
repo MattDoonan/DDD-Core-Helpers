@@ -28,24 +28,24 @@ public class ServiceResultTests : BasicResultTests
 
     public override void GivenIHaveASuccessfulResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
     {
-        var mapperResult = ServiceResult.Pass();
-        var result = mapperResult.ToResult();
+        var serviceResult = ServiceResult.Pass();
+        var result = serviceResult.ToResult();
         ResultTestHelper.CheckSuccess(result);
     }
 
     public override void GivenIHaveAFailureResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
     {
         const string errorMessage = "I want it to fail";
-        var mapperResult = ServiceResult.Fail(errorMessage);
-        var result = mapperResult.ToResult();
+        var serviceResult = ServiceResult.Fail(errorMessage);
+        var result = serviceResult.ToResult();
         ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.Service, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully()
     {
         const int value = 10;    
-        var mapperResult = ServiceResult.Pass(value);
-        var result = mapperResult.RemoveValue();
+        var serviceResult = ServiceResult.Pass(value);
+        var result = serviceResult.RemoveType();
         Assert.IsType<ServiceResult>(result);
         ResultTestHelper.CheckSuccess(result);
     }
@@ -63,6 +63,24 @@ public class ServiceResultTests : BasicResultTests
         var result = ServiceResult.Pass();    
         var copiedResult = ServiceResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
+    public override void GivenIHaveAFailureResult_WithoutAValue_ThenICanConvertItIntoATypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ServiceResult.Fail(errorMessage);
+        ServiceResult<int> convertedResult = result;
+        ResultTestHelper.Equivalent(result, convertedResult);
+        Assert.ThrowsAny<Exception>(() => convertedResult.Output);
+    }
+
+    public override void GivenIHaveASuccessfulResult_WithoutAValue_WhenIConvertItIntoATypedResult_Then_AnErrorIsThrown()
+    {
+        var result = ServiceResult.Pass();
+        Assert.ThrowsAny<Exception>(() =>
+        {
+            ServiceResult<int> _ = result;
+        });
     }
 
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
@@ -95,8 +113,8 @@ public class ServiceResultTests : BasicResultTests
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
     {
         const int value = 10;
-        var mapperResult = ServiceResult.Pass(value);
-        var result = mapperResult.ToTypedResult();
+        var serviceResult = ServiceResult.Pass(value);
+        var result = serviceResult.ToTypedResult();
         Assert.IsType<Result<int>>(result);
         ResultTestHelper.CheckSuccess(result, value);
     }
@@ -104,8 +122,8 @@ public class ServiceResultTests : BasicResultTests
     public override void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
     {
         const string errorMessage = "I want it to fail";
-        var mapperResult = ServiceResult.Fail<int>(errorMessage);
-        var result = mapperResult.ToTypedResult();
+        var serviceResult = ServiceResult.Fail<int>(errorMessage);
+        var result = serviceResult.ToTypedResult();
         Assert.IsType<Result<int>>(result);
         ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.Service, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
     }
@@ -124,6 +142,13 @@ public class ServiceResultTests : BasicResultTests
         var result = ServiceResult.Pass(value);    
         var copiedResult = ServiceResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
+    public override void WhenIHaveAValue_Then_ItCanBeImplicitlyConvertedIntoAResult()
+    {
+        const uint value = 11;
+        ServiceResult<uint> result = value;
+        ResultTestHelper.CheckSuccess(result, value);
     }
 
     [Fact]

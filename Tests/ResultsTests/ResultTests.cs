@@ -5,52 +5,32 @@ using Xunit;
 
 namespace OutputTests;
 
-public class ResultTests : BasicResultTests
+public class ResultTests
 {
-    public override void WhenIPassTheResult_Then_TheResultIsSuccessful()
+    [Fact]
+    public void WhenIPassTheResult_Then_TheResultIsSuccessful()
     {
         var result = Result.Pass();
         ResultTestHelper.CheckSuccess(result);
     }
 
-    public override void WhenIFailTheResult_Then_TheResultIsAFailure()
+    [Fact]
+    public void WhenIFailTheResult_Then_TheResultIsAFailure()
     {
         var result = Result.Fail();
         ResultTestHelper.CheckFailure(result, FailureType.Generic, FailureType.Generic.ToMessage());
     }
 
-    public override void WhenIFailTheResult_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
+    [Fact]
+    public void WhenIFailTheResult_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail(errorMessage);
         ResultTestHelper.CheckFailure(result, FailureType.Generic, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
 
-    public override void GivenIHaveASuccessfulResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
-    {
-        var mapperResult = Result.Pass();
-        var result = mapperResult.ToResult();
-        ResultTestHelper.CheckSuccess(result);
-    }
-
-    public override void GivenIHaveAFailureResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
-    {
-        const string errorMessage = "I want it to fail";
-        var mapperResult = Result.Fail(errorMessage);
-        var result = mapperResult.ToResult();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
-    }
-
-    public override void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully()
-    {
-        const int value = 10;    
-        var mapperResult = Result.Pass(value);
-        var result = mapperResult.RemoveValue();
-        Assert.IsType<Result>(result);
-        ResultTestHelper.CheckSuccess(result);
-    }
-
-    public override void GivenIHaveAFailureResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    [Fact]
+    public void GivenIHaveAFailureResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail(errorMessage);
@@ -58,59 +38,67 @@ public class ResultTests : BasicResultTests
         ResultTestHelper.Equivalent(result, copiedResult);
     }
 
-    public override void GivenIHaveASuccessfulResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
     {
         var result = Result.Pass();    
         var copiedResult = Result.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }
 
-    public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
+    [Fact]
+    public void GivenIHaveAFailureResult_WithoutAValue_ThenICanConvertItIntoATypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = Result.Fail(errorMessage);
+        Result<int> convertedResult = result;
+        ResultTestHelper.Equivalent(result, convertedResult);
+        Assert.ThrowsAny<Exception>(() => convertedResult.Output);
+    }
+
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithoutAValue_WhenIConvertItIntoATypedResult_Then_AnErrorIsThrown()
+    {
+        var result = Result.Pass();
+        Assert.ThrowsAny<Exception>(() =>
+        {
+            Result<int> _ = result;
+        });
+    }
+
+    [Fact]
+    public void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
         const int value = 10;
         var result = Result.Pass(value);
         ResultTestHelper.CheckSuccess(result, value);    
     }
 
-    public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    [Fact]
+    public void WhenIFailTheResult_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = Result.Fail<int>();
         ResultTestHelper.CheckFailure(result, FailureType.Generic, FailureType.Generic.ToMessage<int>());    
     }
 
-    public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
+    [Fact]
+    public void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail<int>(errorMessage);
         ResultTestHelper.CheckFailure(result, FailureType.Generic, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
     }
 
-    public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
+    [Fact]
+    public void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
     {
         const int value = 10;
         Result<int> convertedResult = value;
         ResultTestHelper.CheckSuccess(convertedResult, value);
     }
 
-    public override void GivenIHaveASuccessfulResult_WithAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
-    {
-        const int value = 10;
-        var mapperResult = Result.Pass(value);
-        var result = mapperResult.ToTypedResult();
-        Assert.IsType<Result<int>>(result);
-        ResultTestHelper.CheckSuccess(result, value);
-    }
-
-    public override void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
-    {
-        const string errorMessage = "I want it to fail";
-        var mapperResult = Result.Fail<int>(errorMessage);
-        var result = mapperResult.ToTypedResult();
-        Assert.IsType<Result<int>>(result);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
-    }
-
-    public override void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    [Fact]
+    public void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail<int>(errorMessage);
@@ -118,12 +106,21 @@ public class ResultTests : BasicResultTests
         ResultTestHelper.Equivalent(result, copiedResult);
     }
 
-    public override void GivenIHaveASuccessfulResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
     {
         const byte value = 20;
         var result = Result.Pass(value);    
         var copiedResult = Result.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
+    [Fact]
+    public void WhenIHaveAValue_Then_ItCanBeImplicitlyConvertedIntoAResult()
+    {
+        const int value = 1111;
+        Result<int> result = value;
+        ResultTestHelper.CheckSuccess(result, value);
     }
 
     public static IEnumerable<object[]> FailureTypes =>

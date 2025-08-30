@@ -64,7 +64,7 @@ public class EntityResultTests : BasicResultTests
     {
         var value = new TestEntityResult(TestId.Create(1).Output);
         var mapperResult = EntityResult.Pass(value);
-        var result = mapperResult.RemoveValue();
+        var result = mapperResult.RemoveType();
         Assert.IsType<EntityResult>(result);
         ResultTestHelper.CheckSuccess(result);
     }
@@ -82,6 +82,24 @@ public class EntityResultTests : BasicResultTests
         var result = EntityResult.Pass();    
         var copiedResult = EntityResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
+    }
+
+    public override void GivenIHaveAFailureResult_WithoutAValue_ThenICanConvertItIntoATypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail(errorMessage);
+        EntityResult<TestEntityResult> convertedResult = result;
+        ResultTestHelper.Equivalent(result, convertedResult);
+        Assert.ThrowsAny<Exception>(() => convertedResult.Output);
+    }
+
+    public override void GivenIHaveASuccessfulResult_WithoutAValue_WhenIConvertItIntoATypedResult_Then_AnErrorIsThrown()
+    {
+        var result = EntityResult.Pass();
+        Assert.ThrowsAny<Exception>(() =>
+        {
+            EntityResult<TestEntityResult> _ = result;
+        });
     }
 
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
@@ -144,7 +162,14 @@ public class EntityResultTests : BasicResultTests
         var copiedResult = EntityResult.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }
-    
+
+    public override void WhenIHaveAValue_Then_ItCanBeImplicitlyConvertedIntoAResult()
+    {
+        var value = new TestEntityResult(TestId.Create(1).Output);
+        EntityResult<TestEntityResult> convertedResult = value;
+        ResultTestHelper.CheckSuccess(convertedResult, value);
+    }
+
     [Fact]
     public void WhenIFailTheResult_BecauseOfADomainViolation_Then_TheResultIsAFailure()
     {
