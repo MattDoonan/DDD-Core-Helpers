@@ -45,6 +45,16 @@ public class ResultTests
         var copiedResult = Result.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }
+    
+    [Fact]
+    public void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully()
+    {
+        const int value = 1;
+        var result = Result.Pass(value);
+        var resultConverted = result.RemoveType();
+        Assert.IsType<Result>(resultConverted);
+        ResultTestHelper.CheckSuccess(resultConverted);
+    }
 
     [Fact]
     public void GivenIHaveAFailureResult_WithoutAValue_ThenICanConvertItIntoATypedResult()

@@ -7,12 +7,12 @@ public abstract class Entity<TId> : IEntity<TId>
 {
     public TId Id { get; init; }
 
-    public Entity(TId id)
+    protected Entity(TId id)
     {
         Id = id;
     }
 
-    public Entity()
+    protected Entity()
     {
         Id = default!;
     }
