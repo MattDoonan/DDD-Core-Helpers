@@ -127,6 +127,18 @@ public class ServiceResult<T> : UseCaseConvertable<T>
         return new ServiceResult<T>(result);
     }
     
+    internal static ServiceResult<T> Create(IUseCaseConvertable result)
+    {
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
+        {
+            return new ServiceResult<T>(result)
+            {
+                FailedLayer = FailedLayer.Service
+            };   
+        }
+        return new ServiceResult<T>(result);
+    }
+    
     public static implicit operator ServiceResult<T>(T value)
     {
         return Pass(value);

@@ -22,6 +22,11 @@ public abstract class MapperConvertable : InfraConvertable, IMapperConvertable
     {
     }
     
+    public MapperResult<T> ToTypedMapperResult<T>()
+    {
+        return MapperResult<T>.Create(this);
+    }
+    
     public MapperResult ToMapperResult()
     {
         return MapperResult.Create(this);
@@ -53,6 +58,11 @@ public abstract class MapperConvertable<T> : InfraConvertable<T>, IMapperConvert
 
     protected MapperConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
     {
+    }
+    
+    public MapperResult<T2> ToTypedMapperResult<T2>()
+    {
+        return MapperResult<T2>.Create(this);
     }
     
     public MapperResult<T> ToTypedMapperResult()

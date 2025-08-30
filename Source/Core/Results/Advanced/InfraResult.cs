@@ -147,6 +147,18 @@ public class InfraResult<T> : RepoConvertable<T>
         return new InfraResult<T>(result);
     }
     
+    internal static InfraResult<T> Create(IRepoConvertable result)
+    {
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
+        {
+            return new InfraResult<T>(result)
+            {
+                FailedLayer = FailedLayer.Infrastructure
+            };   
+        }
+        return new InfraResult<T>(result);
+    }
+    
     public static implicit operator InfraResult<T>(T value)
     {
         return Pass(value);

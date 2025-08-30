@@ -122,6 +122,11 @@ public class Result<T> : TypedResult<T>
         return new Result<T>(result);
     }
     
+    internal static Result<T> Create(IResultStatus result)
+    {
+        return new Result<T>(result);
+    }
+    
     public static implicit operator Result<T>(T value)
     {
         return Pass(value);

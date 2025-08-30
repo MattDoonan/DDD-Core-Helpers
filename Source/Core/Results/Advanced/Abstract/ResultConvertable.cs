@@ -27,6 +27,11 @@ public abstract class ResultConvertable : CoreResult, IResultConvertable
         return Result.Create(this);
     }
     
+    public Result<T> ToTypedResult<T>()
+    {
+        return Result<T>.Create(this);
+    }
+    
     public static implicit operator Result(ResultConvertable result)
     {
         return result.ToResult();
@@ -54,6 +59,11 @@ public abstract class ResultConvertable<T> : TypedResult<T>, IResultConvertable<
 
     protected ResultConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
     {
+    }
+    
+    public Result<T2> ToTypedResult<T2>()
+    {
+        return Result<T2>.Create(this);
     }
     
     public Result<T> ToTypedResult()

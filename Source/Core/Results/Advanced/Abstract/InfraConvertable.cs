@@ -20,6 +20,11 @@ public abstract class InfraConvertable : RepoConvertable, IInfraConvertable
     protected InfraConvertable()
     {
     }
+    
+    public InfraResult<T> ToTypedInfraResult<T>()
+    {
+        return InfraResult<T>.Create(this);
+    }
    
     public InfraResult ToInfraResult()
     {
@@ -52,6 +57,10 @@ public abstract class InfraConvertable<T> : RepoConvertable<T>, IInfraConvertabl
 
     protected InfraConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
     {
+    }
+    public InfraResult<T2> ToTypedInfraResult<T2>()
+    {
+        return InfraResult<T2>.Create(this);
     }
 
     public InfraResult<T> ToTypedInfraResult()

@@ -3,7 +3,8 @@
 namespace Core.Results.Advanced.Interfaces;
 
 public interface IResultConvertable : IResultStatus
-{ Result ToResult();
+{ 
+    Result ToResult();
 }
 
 public interface IResultConvertable<T> : IResultConvertable, ITypedResult<T>

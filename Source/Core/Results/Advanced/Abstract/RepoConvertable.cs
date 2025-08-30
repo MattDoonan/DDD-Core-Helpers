@@ -26,6 +26,11 @@ public abstract class RepoConvertable : ServiceConvertable, IRepoConvertable
         return RepoResult.Create(this);
     }
     
+    public RepoResult<T> ToTypedRepoResult<T>()
+    {
+        return RepoResult<T>.Create(this);
+    }
+    
     public static implicit operator RepoResult(RepoConvertable result)
     {
         return result.ToRepoResult();
@@ -52,6 +57,11 @@ public abstract class RepoConvertable<T> : ServiceConvertable<T>, IRepoConvertab
 
     protected RepoConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
     {
+    }
+    
+    public RepoResult<T2> ToTypedRepoResult<T2>()
+    {
+        return RepoResult<T2>.Create(this);
     }
     
     public RepoResult<T> ToTypedRepoResult()

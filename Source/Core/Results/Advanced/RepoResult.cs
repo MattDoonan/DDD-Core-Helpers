@@ -155,6 +155,18 @@ public class RepoResult<T> : ServiceConvertable<T>
         return new RepoResult<T>(result);
     }
     
+    internal static RepoResult<T> Create(IServiceConvertable result)
+    {
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
+        {
+            return new RepoResult<T>(result)
+            {
+                FailedLayer = FailedLayer.Infrastructure
+            };   
+        }
+        return new RepoResult<T>(result);
+    }
+    
     public static implicit operator RepoResult<T>(T value)
     {
         return Pass(value);

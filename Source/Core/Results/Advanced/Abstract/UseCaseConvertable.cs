@@ -26,6 +26,11 @@ public abstract class UseCaseConvertable : ResultConvertable, IUseCaseConvertabl
         return UseCaseResult.Create(this);
     }
     
+    public UseCaseResult<T> ToTypedUseCaseResult<T>()
+    {
+        return UseCaseResult<T>.Create(this);
+    }
+    
     public static implicit operator UseCaseResult(UseCaseConvertable result)
     {
         return result.ToUseCaseResult();
@@ -52,6 +57,11 @@ public abstract class UseCaseConvertable<T> : ResultConvertable<T>, IUseCaseConv
 
     protected UseCaseConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
     {
+    }
+    
+    public UseCaseResult<T2> ToTypedUseCaseResult<T2>()
+    {
+        return UseCaseResult<T2>.Create(this);
     }
 
     public UseCaseResult<T> ToTypedUseCaseResult()

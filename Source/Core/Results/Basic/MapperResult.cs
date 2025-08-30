@@ -113,6 +113,11 @@ public class MapperResult<T> : InfraConvertable<T>
         return new MapperResult<T>(result);
     }
     
+    internal static MapperResult<T> Create(IInfraConvertable result)
+    {
+        return new MapperResult<T>(result);
+    }
+    
     public static implicit operator MapperResult<T>(T value)
     {
         return Pass(value);

@@ -20,6 +20,11 @@ public abstract class EntityConvertable : MapperConvertable, IEntityConvertable
     protected EntityConvertable()
     {
     }
+    
+    public EntityResult<T> ToTypedEntityResult<T>()
+    {
+        return EntityResult<T>.Create(this);
+    }
 
     public EntityResult ToEntityResult()
     {
@@ -52,6 +57,11 @@ public abstract class EntityConvertable<T> : MapperConvertable<T>, IEntityConver
 
     protected EntityConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
     {
+    }
+    
+    public EntityResult<T2> ToTypedEntityResult<T2>()
+    {
+        return EntityResult<T2>.Create(this);
     }
     
     public EntityResult<T> ToTypedEntityResult()

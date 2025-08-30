@@ -125,6 +125,11 @@ public class EntityResult<T> : MapperConvertable<T>
         return new EntityResult<T>(result);
     }
     
+    internal static EntityResult<T> Create(IMapperConvertable result)
+    {
+        return new EntityResult<T>(result);
+    }
+    
     public static implicit operator EntityResult<T>(T value)
     {
         return Pass(value);

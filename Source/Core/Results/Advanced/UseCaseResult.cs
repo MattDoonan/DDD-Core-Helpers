@@ -106,6 +106,18 @@ public class UseCaseResult<T> : ResultConvertable<T>
         return new UseCaseResult<T>(result);
     }
     
+    internal static UseCaseResult<T> Create(IResultConvertable result)
+    {
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
+        {
+            return new UseCaseResult<T>(result)
+            {
+                FailedLayer = FailedLayer.UseCase
+            };   
+        }
+        return new UseCaseResult<T>(result);
+    }
+    
     public static implicit operator UseCaseResult<T>(T value)
     {
         return Pass(value);

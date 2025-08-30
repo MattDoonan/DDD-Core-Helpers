@@ -26,6 +26,11 @@ public abstract class ServiceConvertable : UseCaseConvertable, IServiceConvertab
         return ServiceResult.Create(this);
     }
     
+    public ServiceResult<T> ToTypedServiceResult<T>()
+    {
+        return ServiceResult<T>.Create(this);
+    }
+    
     public static implicit operator ServiceResult(ServiceConvertable result)
     {
         return result.ToServiceResult();
@@ -52,6 +57,11 @@ public abstract class ServiceConvertable<T> : UseCaseConvertable<T>, IServiceCon
 
     protected ServiceConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
     {
+    }
+    
+    public ServiceResult<T2> ToTypedServiceResult<T2>()
+    {
+        return ServiceResult<T2>.Create(this);
     }
 
     public ServiceResult<T> ToTypedServiceResult()
