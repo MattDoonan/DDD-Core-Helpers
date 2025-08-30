@@ -102,6 +102,29 @@ public class EntityResultTests : BasicResultTests
         });
     }
 
+    public override void GivenIHaveAManySuccessfulResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully()
+    {
+        var r1 = EntityResult.Pass();
+        var r2 = EntityResult.Pass();
+        var r3 = EntityResult.Pass(new TestEntityResult(TestId.Create(1).Output));
+        var mergedResult = EntityResult.Merge(r1, r2, r3);
+        ResultTestHelper.CheckSuccess(mergedResult);    
+    }
+
+    public override void GivenIHaveASomeSuccessfulAndSomeFailureResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully_AsAFailureResult()
+    {
+        var r1 = EntityResult.Pass();
+        var r2 = EntityResult.Fail();
+        var r3 = EntityResult.Pass(new TestEntityResult(TestId.Create(1).Output));
+        var r4 = EntityResult.Fail<TestEntityResult>("Error");
+        var mergedResult = EntityResult.Merge(r1, r2, r3, r4);
+        Assert.True(mergedResult.IsFailure);
+        Assert.False(mergedResult.IsSuccessful);
+        Assert.Equal(FailureType.Generic, mergedResult.FailureType);
+        Assert.Equal(FailedLayer.Unknown, mergedResult.FailedLayer);
+        Assert.Equal(3, mergedResult.ErrorMessages.Count);
+    }
+
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
         var value = new TestEntityResult(TestId.Create(1).Output);

@@ -3,6 +3,7 @@ using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
 using Core.Results.Basic.Abstract;
 using Core.Results.Basic.Interfaces;
+using Core.Results.Helpers;
 
 namespace Core.Results.Basic;
 
@@ -48,6 +49,11 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
     public static EntityResult InvalidInput(string because = "")
     {
         return new EntityResult(FailureType.InvalidInput, because);
+    }
+    
+    public static EntityResult Merge(params MapperConvertable[] results)
+    {
+        return ResultCreationHelper.Merge<EntityResult, MapperConvertable>(results);
     }
     
     public static EntityResult<T> Pass<T>(T value)

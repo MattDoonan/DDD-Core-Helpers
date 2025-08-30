@@ -84,6 +84,29 @@ public class MapperResultTests : BasicResultTests
         });
     }
 
+    public override void GivenIHaveAManySuccessfulResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully()
+    {
+        var r1 = MapperResult.Pass();
+        var r2 = MapperResult.Pass();
+        var r3 = MapperResult.Pass(20);
+        var mergedResult = MapperResult.Merge(r1, r2, r3);
+        ResultTestHelper.CheckSuccess(mergedResult);
+    }
+
+    public override void GivenIHaveASomeSuccessfulAndSomeFailureResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully_AsAFailureResult()
+    {
+        var r1 = MapperResult.Pass();
+        var r2 = MapperResult.Fail();
+        var r3 = MapperResult.Pass(1);
+        var r4 = MapperResult.Fail<int>("Error");
+        var mergedResult = MapperResult.Merge(r1, r2, r3, r4);
+        Assert.True(mergedResult.IsFailure);
+        Assert.False(mergedResult.IsSuccessful);
+        Assert.Equal(FailureType.Generic, mergedResult.FailureType);
+        Assert.Equal(FailedLayer.Unknown, mergedResult.FailedLayer);
+        Assert.Equal(3, mergedResult.ErrorMessages.Count);
+    }
+
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
         const int value = 10;

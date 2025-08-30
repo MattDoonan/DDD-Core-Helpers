@@ -169,7 +169,30 @@ public class RepoResultTests : BasicResultTests
             RepoResult<TestRepoResult> _ = result;
         });
     }
-    
+
+    public override void GivenIHaveAManySuccessfulResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully()
+    {
+        var r1 = RepoResult.Pass();
+        var r2 = RepoResult.Pass();
+        var r3 = RepoResult.Pass(new TestRepoResult(TestId.Create(1).Output));
+        var mergedResult = RepoResult.Merge(r1, r2, r3);
+        ResultTestHelper.CheckSuccess(mergedResult);
+    }
+
+    public override void GivenIHaveASomeSuccessfulAndSomeFailureResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully_AsAFailureResult()
+    {
+        var r1 = RepoResult.Pass();
+        var r2 = RepoResult.Fail();
+        var r3 = RepoResult.Pass(new TestRepoResult(TestId.Create(1).Output));
+        var r4 = RepoResult.Fail<TestRepoResult>("Error");
+        var mergedResult = RepoResult.Merge(r1, r2, r3, r4);
+        Assert.True(mergedResult.IsFailure);
+        Assert.False(mergedResult.IsSuccessful);
+        Assert.Equal(FailureType.Generic, mergedResult.FailureType);
+        Assert.Equal(FailedLayer.Infrastructure, mergedResult.FailedLayer);
+        Assert.Equal(3, mergedResult.ErrorMessages.Count);
+    }
+
     [Fact]
     public void WhenICantFindTheValue_ThatIsMeantToHaveAValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {

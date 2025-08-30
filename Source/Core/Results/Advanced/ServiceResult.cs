@@ -2,6 +2,7 @@
 using Core.Results.Advanced.Interfaces;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
+using Core.Results.Helpers;
 
 namespace Core.Results.Advanced;
 
@@ -37,6 +38,11 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
     public static ServiceResult NotAllowed(string because = "")
     {
         return new ServiceResult(FailureType.NotAllowed, because);
+    }
+    
+    public static ServiceResult Merge(params UseCaseConvertable[] results)
+    {
+        return ResultCreationHelper.Merge<ServiceResult, UseCaseConvertable>(results);
     }
     
     public static ServiceResult<T> Pass<T>(T value)

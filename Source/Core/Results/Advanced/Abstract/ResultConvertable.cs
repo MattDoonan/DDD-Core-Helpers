@@ -4,7 +4,7 @@ using Core.Results.Base.Enums;
 
 namespace Core.Results.Advanced.Abstract;
 
-public abstract class ResultConvertable : CoreResult, IResultConvertable
+public abstract class ResultConvertable : NonTypedResult, IResultConvertable
 {
     protected ResultConvertable(FailureType failureType, string because) : base(failureType, because)
     {

@@ -83,6 +83,29 @@ public class ServiceResultTests : BasicResultTests
         });
     }
 
+    public override void GivenIHaveAManySuccessfulResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully()
+    {
+        var r1 = ServiceResult.Pass();
+        var r2 = ServiceResult.Pass();
+        var r3 = ServiceResult.Pass(5);
+        var mergedResult = ServiceResult.Merge(r1, r2, r3);
+        ResultTestHelper.CheckSuccess(mergedResult);
+    }
+
+    public override void GivenIHaveASomeSuccessfulAndSomeFailureResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully_AsAFailureResult()
+    {
+        var r1 = ServiceResult.Pass();
+        var r2 = ServiceResult.Fail();
+        var r3 = ServiceResult.Pass(1);
+        var r4 = ServiceResult.Fail<string>("Error");
+        var mergedResult = ServiceResult.Merge(r1, r2, r3, r4);
+        Assert.True(mergedResult.IsFailure);
+        Assert.False(mergedResult.IsSuccessful);
+        Assert.Equal(FailureType.Generic, mergedResult.FailureType);
+        Assert.Equal(FailedLayer.Service, mergedResult.FailedLayer);
+        Assert.Equal(3, mergedResult.ErrorMessages.Count);
+    }
+
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
         const int value = 10;

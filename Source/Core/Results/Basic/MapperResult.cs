@@ -2,6 +2,7 @@
 using Core.Results.Advanced.Interfaces;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
+using Core.Results.Helpers;
 
 namespace Core.Results.Basic;
 
@@ -42,6 +43,11 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
     public static MapperResult InvalidInput(string because = "")
     {
         return new MapperResult(FailureType.InvalidInput, because);
+    }
+    
+    public static MapperResult Merge(params InfraConvertable[] results)
+    {
+        return ResultCreationHelper.Merge<MapperResult, InfraConvertable>(results);
     }
     
     public static MapperResult<T> Pass<T>(T value)

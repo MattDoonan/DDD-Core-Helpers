@@ -124,6 +124,31 @@ public class ResultTests
         var copiedResult = Result.Copy(result);
         ResultTestHelper.Equivalent(result, copiedResult);
     }
+    
+    [Fact]
+    public void GivenIHaveAManySuccessfulResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully()
+    {
+        var r1 = Result.Pass();
+        var r2 = Result.Pass();
+        var r3 = Result.Pass(5);
+        var mergedResult = Result.Merge(r1, r2, r3);
+        ResultTestHelper.CheckSuccess(mergedResult);
+    }
+    
+    [Fact]
+    public void GivenIHaveASomeSuccessfulAndSomeFailureResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully_AsAFailureResult()
+    {
+        var r1 = Result.Pass();
+        var r2 = Result.Fail();
+        var r3 = Result.Pass(1);
+        var r4 = Result.Fail<string>("Error");
+        var mergedResult = Result.Merge(r1, r2, r3, r4);
+        Assert.True(mergedResult.IsFailure);
+        Assert.False(mergedResult.IsSuccessful);
+        Assert.Equal(FailureType.Generic, mergedResult.FailureType);
+        Assert.Equal(FailedLayer.Unknown, mergedResult.FailedLayer);
+        Assert.Equal(3, mergedResult.ErrorMessages.Count);
+    }
 
     [Fact]
     public void WhenIHaveAValue_Then_ItCanBeImplicitlyConvertedIntoAResult()

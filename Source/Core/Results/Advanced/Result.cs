@@ -1,16 +1,17 @@
 ﻿using Core.Results.Base.Abstract;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
+using Core.Results.Helpers;
 
 namespace Core.Results.Advanced;
 
-public class Result : CoreResult, IResultFactory<Result>
+public class Result : NonTypedResult, IResultFactory<Result>
 {
     private Result()
     {
     }
     
-    private Result(ResultStatus resultStatus) : base(resultStatus)
+    private Result(IResultStatus resultStatus) : base(resultStatus)
     {
     }
     
@@ -48,9 +49,14 @@ public class Result : CoreResult, IResultFactory<Result>
         return new Result(result);
     }
     
-    internal static Result Create(ResultStatus result)
+    internal static Result Create(IResultStatus result)
     {
         return new Result(result);
+    }
+    
+    public static Result Merge(params ResultStatus[] results)
+    {
+        return ResultCreationHelper.Merge<Result, ResultStatus>(results);
     }
     
     public static Result<T> Pass<T>(T value)
@@ -137,7 +143,7 @@ public class Result<T> : TypedResult<T>
         return result.RemoveType();
     }
     
-    public static implicit operator Result<T>(CoreResult result)
+    public static implicit operator Result<T>(NonTypedResult result)
     {
         return new Result<T>(result);
     }

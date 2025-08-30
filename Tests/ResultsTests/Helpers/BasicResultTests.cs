@@ -32,5 +32,11 @@ public abstract class BasicResultTests : BasicValueResultTests
     
     [Fact]
     public abstract void GivenIHaveASuccessfulResult_WithoutAValue_WhenIConvertItIntoATypedResult_Then_AnErrorIsThrown();
+    
+    [Fact]
+    public abstract void GivenIHaveAManySuccessfulResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully();
+
+    [Fact]
+    public abstract void GivenIHaveASomeSuccessfulAndSomeFailureResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully_AsAFailureResult();
 
 }

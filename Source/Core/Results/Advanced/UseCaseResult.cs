@@ -1,7 +1,9 @@
 ﻿using Core.Results.Advanced.Abstract;
 using Core.Results.Advanced.Interfaces;
+using Core.Results.Base.Abstract;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
+using Core.Results.Helpers;
 
 namespace Core.Results.Advanced;
 
@@ -26,6 +28,11 @@ public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
     public static UseCaseResult Fail(string because = "")
     {
         return new UseCaseResult(FailureType.Generic, because);
+    }
+    
+    public static UseCaseResult Merge(params ResultConvertable[] results)
+    {
+        return ResultCreationHelper.Merge<UseCaseResult, ResultConvertable>(results);
     }
     
     public static UseCaseResult<T> Pass<T>(T value)

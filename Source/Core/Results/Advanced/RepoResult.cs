@@ -3,6 +3,7 @@ using Core.Results.Advanced.Abstract;
 using Core.Results.Advanced.Interfaces;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
+using Core.Results.Helpers;
 
 namespace Core.Results.Advanced;
 
@@ -53,6 +54,11 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
     public static RepoResult OperationTimeout(string because = "")
     {
         return new RepoResult(FailureType.OperationTimeout, because);
+    }
+    
+    public static RepoResult Merge(params ServiceConvertable[] results)
+    {
+        return ResultCreationHelper.Merge<RepoResult, ServiceConvertable>(results);
     }
 
     internal static RepoResult Create(IServiceConvertable result)

@@ -2,6 +2,7 @@
 using Core.Results.Advanced.Interfaces;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
+using Core.Results.Helpers;
 
 namespace Core.Results.Advanced;
 
@@ -52,6 +53,11 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
     public static InfraResult OperationTimout(string because = "")
     {
         return new InfraResult(FailureType.OperationTimeout, because);
+    }
+    
+    public static InfraResult Merge(params RepoConvertable[] results)
+    {
+        return ResultCreationHelper.Merge<InfraResult, RepoConvertable>(results);
     }
     
     public static InfraResult<T> Pass<T>(T value)

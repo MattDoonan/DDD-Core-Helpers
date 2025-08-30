@@ -8,13 +8,10 @@ public abstract class ResultStatus : IResultStatus
 {
     public bool IsSuccessful => !IsFailure;
     public bool IsFailure { get; }
-    
-    protected List<string> Errors { get; } = [];
-
+    internal List<string> Errors { get; } = [];
     public IReadOnlyList<string> ErrorMessages => Errors.AsReadOnly();
-
-    public FailureType FailureType { get; protected set; }
-    public FailedLayer FailedLayer { get; protected set; }
+    public FailureType FailureType { get; }
+    public FailedLayer FailedLayer { get; protected init; }
     public string MainError => this.MainErrorMessage();
 
     protected ResultStatus(FailureType failureType, string failureMessageStarter, string because) 
