@@ -57,37 +57,26 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
     }
     
     public static EntityResult<T> Pass<T>(T value)
-        where T : IEntity
     {
         return EntityResult<T>.Pass(value);
     }
     
-    public static EntityResult<IEnumerable<T>> Pass<T>(IEnumerable<T> value)
-        where T : IEntity
-    {
-        return EntityResult<IEnumerable<T>>.Pass(value);
-    }
-    
     public static EntityResult<T> Fail<T>(string because = "")
-        where T : IEntity
     {
         return EntityResult<T>.Fail(FailureType.Generic, because);
     }
     
     public static EntityResult<T> DomainViolation<T>(string because = "")
-        where T : IEntity
     {
         return EntityResult<T>.Fail(FailureType.DomainViolation, because);
     }
     
     public static EntityResult<T> InvalidInput<T>(string because = "")
-        where T : IEntity
     {
         return EntityResult<T>.Fail(FailureType.InvalidInput, because);
     }
     
     public static EntityResult<T> Copy<T>(EntityResult<T> result)
-        where T : IEntity
     {
         return EntityResult<T>.Create(result);
     }
