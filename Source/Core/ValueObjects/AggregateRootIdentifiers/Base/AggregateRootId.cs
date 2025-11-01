@@ -2,5 +2,5 @@
 
 namespace Core.ValueObjects.AggregateRootIdentifiers.Base;
 
-public class AggregateRootIdBase<TValue>(TValue value) : IdentifierBase<TValue>(value)
+public record AggregateRootId<TValue>(TValue Value) : Identifier<TValue>(Value), IAggregateRootId<TValue>
     where TValue : IComparable, IComparable<TValue>, IEquatable<TValue>;

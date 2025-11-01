@@ -1,6 +1,5 @@
 ﻿using Core.Entities.AggregateRoot;
 using Core.Results.Advanced;
-using Core.Results.Basic;
 using Core.ValueObjects.AggregateRootIdentifiers.Base;
 
 namespace Core.Repositories;

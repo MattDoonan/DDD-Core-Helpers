@@ -1,4 +1,5 @@
-﻿using Core.Results.Advanced;
+﻿using Core.Interfaces;
+using Core.Results.Advanced;
 using Core.Results.Base.Enums;
 using Core.Results.Basic;
 using Core.ValueObjects.Regular.Base;
@@ -10,14 +11,16 @@ namespace OutputTests;
 
 public class ValueObjectResultTests : BasicValueResultTests
 {
-    private class TestValueObject(int value)
-        : NumberValueObjectBase<int, TestValueObject>(value), IValueObject<int, TestValueObject>
+    private record TestValueObject(int Value)
+        : NumberValueObject<int, TestValueObject>(Value), ISimpleValueObjectFactory<int , TestValueObject>
     {
         public static ValueObjectResult<TestValueObject> Create(int value)
         {
             return new TestValueObject(value);
         }
     }
+
+    private record TestValueObject2 : ValueObject;
 
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()
     {
@@ -282,6 +285,15 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.UseCase, $"{FailureType.Generic.ToMessage<TestValueObject>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.UseCase,$"{FailureType.Generic.ToMessage<TestValueObject>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToADifferentTypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
+        var convertedResult = result.ToTypedValueObjectResult<TestValueObject2>();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic,$"{FailureType.Generic.ToMessage<TestValueObject>()} because {errorMessage}");
     }
 }

@@ -173,4 +173,22 @@ public class UseCaseResultTests : BasicResultTests
         UseCaseResult<byte> result = value;
         ResultTestHelper.CheckSuccess(result, value);
     }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToATypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = UseCaseResult.Fail(errorMessage);    
+        var convertedResult = result.ToTypedUseCaseResult<string>();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.UseCase,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToADifferentTypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = UseCaseResult.Fail<int>(errorMessage);    
+        var convertedResult = result.ToTypedUseCaseResult<string>();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.UseCase,$"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+    }
 }

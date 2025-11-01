@@ -1,9 +1,10 @@
 ﻿using System.Numerics;
+using Core.Interfaces;
 using Core.ValueObjects.AggregateRootIdentifiers.Base;
 using Core.ValueObjects.Identifiers.Cases;
 
 namespace Core.ValueObjects.AggregateRootIdentifiers.Cases;
 
-public class NumberAggregateRootIdBase<TValue, T>(TValue value) : NumberIdentifierBase<TValue, T>(value)
+public record NumberAggregateRootIdBase<TValue, T>(TValue Value) : NumberIdentifierBase<TValue, T>(Value)
     where TValue : INumber<TValue>, IComparable<TValue>, IEquatable<TValue>
-    where T : class, IAggregateRootId<TValue, T>;
+    where T : NumberAggregateRootIdBase<TValue, T>, ISimpleValueObjectFactory<TValue, T>;

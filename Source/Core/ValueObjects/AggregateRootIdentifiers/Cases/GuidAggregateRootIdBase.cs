@@ -1,10 +1,10 @@
-﻿using Core.ValueObjects.AggregateRootIdentifiers.Base;
+﻿using Core.ValueObjects.Identifiers.Base;
 using Core.ValueObjects.Identifiers.Cases;
 
 namespace Core.ValueObjects.AggregateRootIdentifiers.Cases;
 
-public class GuidAggregateRootIdBase<T>(Guid value) : GuidIdentifierBase<T>(value)
-    where T : class, IAggregateRootId<Guid, T>
+public record GuidAggregateRootIdBase<T>(Guid Value) : GuidIdentifierBase<T>(Value)
+    where T : GuidAggregateRootIdBase<T>, IGuidFactory<T>
 {
     
 }

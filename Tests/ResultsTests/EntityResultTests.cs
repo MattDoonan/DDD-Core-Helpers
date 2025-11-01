@@ -1,4 +1,5 @@
 ﻿using Core.Entities.AggregateRoot;
+using Core.Interfaces;
 using Core.Results.Advanced;
 using Core.Results.Base.Enums;
 using Core.Results.Basic;
@@ -10,7 +11,7 @@ namespace OutputTests;
 
 public class EntityResultTests : BasicResultTests
 {
-    private class TestId: AggregateRootIdBase<int>, IAggregateRootId<int, TestId>
+    private record TestId: AggregateRootId<int>
     {
         private TestId(int value) : base(value)
         {
@@ -449,5 +450,23 @@ public class EntityResultTests : BasicResultTests
         var result = EntityResult.Fail(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
         ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.UseCase, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToATypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail(errorMessage);    
+        var convertedResult = result.ToTypedEntityResult<string>();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToADifferentTypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = EntityResult.Fail<int>(errorMessage);    
+        var convertedResult = result.ToTypedEntityResult<string>();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
     }
 }

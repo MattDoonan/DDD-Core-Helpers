@@ -1,7 +1,7 @@
-﻿using Core.ValueObjects.AggregateRootIdentifiers.Base;
+﻿using Core.Interfaces;
 using Core.ValueObjects.Identifiers.Cases;
 
 namespace Core.ValueObjects.AggregateRootIdentifiers.Cases;
 
-public class StringAggregateRootIdBase<T>(string value): StringIdentifierBase<T>(value)
-    where T : class, IAggregateRootId<string, T>;
+public record StringAggregateRootIdBase<T>(string Value): StringIdentifier<T>(Value)
+    where T : StringAggregateRootIdBase<T>, ISimpleValueObjectFactory<string, T>;

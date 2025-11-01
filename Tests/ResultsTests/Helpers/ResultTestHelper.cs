@@ -78,6 +78,7 @@ public static class ResultTestHelper
         Assert.Equal(FailureType.InvalidInput == expectedFailureType, result.IsInvalidInput);
         Assert.Equal(FailureType.NotFound == expectedFailureType, result.IsNotFound);
         Assert.Equal(FailureType.AlreadyExists == expectedFailureType, result.DoesAlreadyExists);
+        Assert.Equal(FailureType.InvariantViolation == expectedFailureType, result.IsInvariantViolation);
         Assert.True(result.IsFailureType(expectedFailureType));
     }
 }

@@ -1,4 +1,5 @@
-﻿using Core.Results.Basic;
+﻿using Core.Interfaces;
+using Core.Results.Basic;
 using Core.ValueObjects.Regular.Base;
 using Xunit;
 
@@ -7,7 +8,7 @@ namespace ValueObjectTests.Helpers;
 public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T smallerValue)
     where T : IComparable, IComparable<T>, IEquatable<T>
 {
-    private class TestValueObjectBase : ValueObjectBase<T>, IValueObject<T, TestValueObjectBase>
+    private record TestValueObjectBase : SingleValueObject<T>, ISimpleValueObjectFactory<T, TestValueObjectBase>
     {
         private TestValueObjectBase(T value) : base(value) { }
         public static ValueObjectResult<TestValueObjectBase> Create(T value)
@@ -22,7 +23,7 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     {
         var valueObject = TestValueObjectBase.Create(baseValue);
         Assert.True(valueObject.IsSuccessful);
-        var toString = valueObject.Output.ToString();
+        var toString = valueObject.Output.ValueAsString();
         Assert.Equal($"{valueObject.Output.Value}", toString);
     }
     
@@ -208,13 +209,6 @@ public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T sma
     {
         var obj1 = TestValueObjectBase.Create(baseValue).Output;
         Assert.True(obj1 != compare);
-    }
-    
-    [Fact]
-    public void GetHasCode_Should_EqualValueHashCode()
-    {
-        var obj1 = TestValueObjectBase.Create(baseValue).Output;
-        Assert.Equal(obj1.GetHashCode(), baseValue.GetHashCode());
     }
     
     [Fact]

@@ -343,4 +343,22 @@ public class InfraResultTests : BasicResultTests
         var convertedResult = result.ToUseCaseResult();
         ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToATypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = InfraResult.Fail(errorMessage);    
+        var convertedResult = result.ToTypedInfraResult<string>();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToADifferentTypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = InfraResult.Fail<int>(errorMessage);    
+        var convertedResult = result.ToTypedInfraResult<string>();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+    }
 }

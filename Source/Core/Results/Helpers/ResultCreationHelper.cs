@@ -6,8 +6,8 @@ namespace Core.Results.Helpers;
 internal static class ResultCreationHelper
 {
     public static TResult Merge<TResult, TMergeableResult>(params TMergeableResult[] results)
-        where TResult: ResultStatus, IResultFactory<TResult>
-        where TMergeableResult : ResultStatus
+        where TResult: IResultStatus, IResultFactory<TResult>
+        where TMergeableResult : IResultStatus
     {
         var allSuccessful = results.All(r => r.IsSuccessful);
         return allSuccessful
@@ -16,10 +16,10 @@ internal static class ResultCreationHelper
     }
     
     private static TResult CreateResult<TResult, TMergeableResult>(TResult result, TMergeableResult[] results)
-        where TResult: ResultStatus, IResultFactory<TResult>
-        where TMergeableResult : ResultStatus
+        where TResult: IResultStatus, IResultFactory<TResult>
+        where TMergeableResult : IResultStatus
     {
-        result.Errors.AddRange(results.SelectMany(r => r.Errors));
+        result.AddErrorMessage(results.SelectMany(r => r.ErrorMessages).ToArray());
         return result;
     }
 }

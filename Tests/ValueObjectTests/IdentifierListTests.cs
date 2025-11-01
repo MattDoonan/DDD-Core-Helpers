@@ -1,4 +1,5 @@
-﻿using Core.Results.Basic;
+﻿using Core.Interfaces;
+using Core.Results.Basic;
 using Core.ValueObjects.Identifiers.Base;
 using Core.ValueObjects.Identifiers.Lists;
 using Xunit;
@@ -7,7 +8,7 @@ namespace ValueObjectTests;
 
 public class IdentifierListTests
 {
-    private class TestValueObjectBase : IdentifierBase<string>, IIdentifier<string, TestValueObjectBase>
+    private record TestValueObjectBase : Identifier<string>, ISimpleValueObjectFactory<string, TestValueObjectBase>
     {
         private TestValueObjectBase(string value) : base(value) { }
         public static ValueObjectResult<TestValueObjectBase> Create(string value)

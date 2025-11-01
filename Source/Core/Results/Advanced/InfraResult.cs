@@ -20,6 +20,11 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
     {
     }
     
+    public InfraResult<T> ToTypedInfraResult<T>()
+    {
+        return InfraResult<T>.Create(this);
+    }
+    
     public static InfraResult Pass()
     {
         return new InfraResult();
@@ -55,9 +60,9 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
         return new InfraResult(FailureType.OperationTimeout, because);
     }
     
-    public static InfraResult Merge(params RepoConvertable[] results)
+    public static InfraResult Merge(params IRepoConvertable[] results)
     {
-        return ResultCreationHelper.Merge<InfraResult, RepoConvertable>(results);
+        return ResultCreationHelper.Merge<InfraResult, IRepoConvertable>(results);
     }
     
     public static InfraResult<T> Pass<T>(T value)
@@ -129,6 +134,11 @@ public class InfraResult<T> : RepoConvertable<T>
     public InfraResult RemoveType()
     {
         return InfraResult.Create(this);
+    }
+    
+    public InfraResult<T2> ToTypedInfraResult<T2>()
+    {
+        return InfraResult<T2>.Create(this);
     }
     
     internal static InfraResult<T> Pass(T value)

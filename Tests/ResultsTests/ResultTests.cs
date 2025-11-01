@@ -1,5 +1,6 @@
 ﻿using Core.Results.Advanced;
 using Core.Results.Base.Enums;
+using Core.Results.Basic;
 using OutputTests.Helpers;
 using Xunit;
 
@@ -274,5 +275,23 @@ public class ResultTests
     {
         const string errorMessage = "I want it to fail";
         Assert.ThrowsAny<Exception>(() => Result.Fail<long>(FailedLayer.None, errorMessage));
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToATypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = Result.Fail(errorMessage);    
+        var convertedResult = result.ToTypedResult<string>();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToADifferentTypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = Result.Fail<int>(errorMessage);    
+        var convertedResult = result.ToTypedResult<string>();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
     }
 }

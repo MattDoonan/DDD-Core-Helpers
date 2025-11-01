@@ -1,6 +1,5 @@
 ﻿using Core.Results.Advanced.Abstract;
 using Core.Results.Advanced.Interfaces;
-using Core.Results.Base.Abstract;
 using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
 using Core.Results.Helpers;
@@ -19,6 +18,11 @@ public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
     private UseCaseResult(FailureType failureType, string because) : base(failureType, FailedLayer.UseCase, because)
     {
     }
+    
+    public UseCaseResult<T> ToTypedUseCaseResult<T>()
+    {
+        return UseCaseResult<T>.Create(this);
+    }
 
     public static UseCaseResult Pass()
     {
@@ -30,9 +34,14 @@ public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
         return new UseCaseResult(FailureType.Generic, because);
     }
     
-    public static UseCaseResult Merge(params ResultConvertable[] results)
+    public static UseCaseResult InvariantViolation(string because = "")
     {
-        return ResultCreationHelper.Merge<UseCaseResult, ResultConvertable>(results);
+        return new UseCaseResult(FailureType.InvariantViolation, because);
+    }
+    
+    public static UseCaseResult Merge(params IResultConvertable[] results)
+    {
+        return ResultCreationHelper.Merge<UseCaseResult, IResultConvertable>(results);
     }
     
     public static UseCaseResult<T> Pass<T>(T value)
@@ -43,6 +52,11 @@ public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
     public static UseCaseResult<T> Fail<T>(string because = "")
     {
         return UseCaseResult<T>.Fail(FailureType.Generic, because);
+    }
+    
+    public static UseCaseResult<T> InvariantViolation<T>(string because = "")
+    {
+        return UseCaseResult<T>.Fail(FailureType.InvariantViolation, because);
     }
     
     public static UseCaseResult Copy(UseCaseResult result)
@@ -89,6 +103,11 @@ public class UseCaseResult<T> : ResultConvertable<T>
     public UseCaseResult RemoveType()
     {
         return UseCaseResult.Create(this);
+    }
+    
+    public UseCaseResult<T2> ToTypedUseCaseResult<T2>()
+    {
+        return UseCaseResult<T2>.Create(this);
     }
     
     internal static UseCaseResult<T> Pass(T value)

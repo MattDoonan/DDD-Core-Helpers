@@ -6,6 +6,8 @@ public interface IResultFailure
 {
     public bool IsFailure { get; }
     public IReadOnlyList<string> ErrorMessages { get; }
+    public void AddErrorMessage(params string[] messages);
+    
 }
 
 public interface IResultStatus : IResultFailure

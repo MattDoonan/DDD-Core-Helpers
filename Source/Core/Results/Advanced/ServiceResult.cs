@@ -20,6 +20,11 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
     {
     }
     
+    public ServiceResult<T> ToTypedServiceResult<T>()
+    {
+        return ServiceResult<T>.Create(this);
+    }
+    
     public static ServiceResult Pass()
     {
         return new ServiceResult();
@@ -40,9 +45,19 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
         return new ServiceResult(FailureType.NotAllowed, because);
     }
     
-    public static ServiceResult Merge(params UseCaseConvertable[] results)
+    public static ServiceResult NotFound(string because = "")
     {
-        return ResultCreationHelper.Merge<ServiceResult, UseCaseConvertable>(results);
+        return new ServiceResult(FailureType.NotFound, because);
+    }
+    
+    public static ServiceResult InvariantViolation(string because = "")
+    {
+        return new ServiceResult(FailureType.InvariantViolation, because);
+    }
+    
+    public static ServiceResult Merge(params IUseCaseConvertable[] results)
+    {
+        return ResultCreationHelper.Merge<ServiceResult, IUseCaseConvertable>(results);
     }
     
     public static ServiceResult<T> Pass<T>(T value)
@@ -63,6 +78,16 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
     public static ServiceResult<T> NotAllowed<T>(string because = "")
     {
         return ServiceResult<T>.Fail(FailureType.NotAllowed, because);
+    }
+    
+    public static ServiceResult<T> NotFound<T>(string because = "")
+    {
+        return ServiceResult<T>.Fail(FailureType.NotFound, because);
+    }
+    
+    public static ServiceResult<T> InvariantViolation<T>(string because = "")
+    {
+        return ServiceResult<T>.Fail(FailureType.InvariantViolation, because);
     }
     
     public static ServiceResult Copy(ServiceResult result)
@@ -109,6 +134,11 @@ public class ServiceResult<T> : UseCaseConvertable<T>
     public ServiceResult RemoveType()
     {
         return ServiceResult.Create(this);
+    }
+    
+    public ServiceResult<T2> ToTypedServiceResult<T2>()
+    {
+        return ServiceResult<T2>.Create(this);
     }
     
     internal static ServiceResult<T> Pass(T value)

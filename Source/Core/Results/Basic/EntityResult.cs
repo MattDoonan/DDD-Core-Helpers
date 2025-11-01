@@ -1,5 +1,4 @@
-﻿using Core.Entities.Regular;
-using Core.Results.Base.Enums;
+﻿using Core.Results.Base.Enums;
 using Core.Results.Base.Interfaces;
 using Core.Results.Basic.Abstract;
 using Core.Results.Basic.Interfaces;
@@ -19,6 +18,11 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
 
     private EntityResult()
     {
+    }
+    
+    public EntityResult<T> ToTypedEntityResult<T>()
+    {
+        return EntityResult<T>.Create(this);
     }
     
     public static EntityResult Pass()
@@ -51,9 +55,19 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
         return new EntityResult(FailureType.InvalidInput, because);
     }
     
-    public static EntityResult Merge(params MapperConvertable[] results)
+    public static EntityResult NotFound(string because = "")
     {
-        return ResultCreationHelper.Merge<EntityResult, MapperConvertable>(results);
+        return new EntityResult(FailureType.NotFound, because);
+    }
+    
+    public static EntityResult InvariantViolation(string because = "")
+    {
+        return new EntityResult(FailureType.InvariantViolation, because);
+    }
+    
+    public static EntityResult Merge(params IMapperConvertable[] results)
+    {
+        return ResultCreationHelper.Merge<EntityResult, IMapperConvertable>(results);
     }
     
     public static EntityResult<T> Pass<T>(T value)
@@ -74,6 +88,16 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
     public static EntityResult<T> InvalidInput<T>(string because = "")
     {
         return EntityResult<T>.Fail(FailureType.InvalidInput, because);
+    }
+    
+    public static EntityResult<T> NotFound<T>(string because = "")
+    {
+        return EntityResult<T>.Fail(FailureType.NotFound, because);
+    }
+    
+    public static EntityResult<T> InvariantViolation<T>(string because = "")
+    {
+        return EntityResult<T>.Fail(FailureType.InvariantViolation, because);
     }
     
     public static EntityResult<T> Copy<T>(EntityResult<T> result)
@@ -103,6 +127,11 @@ public class EntityResult<T> : MapperConvertable<T>
     public EntityResult RemoveType()
     {
         return EntityResult.Create(this);
+    }
+    
+    public EntityResult<T2> ToTypedEntityResult<T2>()
+    {
+        return EntityResult<T2>.Create(this);
     }
     
     internal static EntityResult<T> Pass(T value)

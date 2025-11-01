@@ -8,31 +8,31 @@ namespace Core.Results.Basic;
 public static class ValueObjectResult
 {
     public static ValueObjectResult<T> Pass<T>(T value)
-        where T : class, IValueObject
+        where T : ValueObject
     {
         return ValueObjectResult<T>.Pass(value);
     }
     
     public static ValueObjectResult<T> Fail<T>(string because = "")
-        where T : class, IValueObject
+        where T : ValueObject
     {
         return ValueObjectResult<T>.Fail(FailureType.Generic, because);
     }
     
     public static ValueObjectResult<T> DomainViolation<T>(string because = "")
-        where T : class, IValueObject
+        where T : ValueObject
     {
         return ValueObjectResult<T>.Fail(FailureType.DomainViolation, because);
     }
     
     public static ValueObjectResult<T> InvalidInput<T>(string because = "")
-        where T : class, IValueObject
+        where T : ValueObject
     {
         return ValueObjectResult<T>.Fail(FailureType.InvalidInput, because);
     }
     
     public static ValueObjectResult<T> Copy<T>(ValueObjectResult<T> result)
-        where T : class, IValueObject
+        where T : ValueObject
     {
         return ValueObjectResult<T>.Create(result);
     }
@@ -56,6 +56,12 @@ public class ValueObjectResult<T> : EntityConvertable<T>
     private ValueObjectResult(IEntityConvertable result) : base(result)
     {
     }
+    
+    public ValueObjectResult<T2> ToTypedValueObjectResult<T2>()
+        where T2 : ValueObject
+    {
+        return ValueObjectResult<T2>.Create(this);
+    }
 
     internal static ValueObjectResult<T> Pass(T value)
     {
@@ -68,6 +74,11 @@ public class ValueObjectResult<T> : EntityConvertable<T>
     }
     
     internal static ValueObjectResult<T> Create(IEntityConvertable<T> result)
+    {
+        return new ValueObjectResult<T>(result);
+    }
+    
+    private static ValueObjectResult<T> Create(IEntityConvertable result)
     {
         return new ValueObjectResult<T>(result);
     }

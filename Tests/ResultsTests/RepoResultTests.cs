@@ -11,7 +11,7 @@ namespace OutputTests;
 public class RepoResultTests : BasicResultTests
 {
     
-    private class TestId: AggregateRootIdBase<int>, IAggregateRootId<int, TestId>
+    private record TestId: AggregateRootId<int>
     {
         private TestId(int value) : base(value)
         {
@@ -295,5 +295,23 @@ public class RepoResultTests : BasicResultTests
         var result = RepoResult.Fail<TestRepoResult>(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
         ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<TestRepoResult>()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToATypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = RepoResult.Fail(errorMessage);    
+        var convertedResult = result.ToTypedRepoResult<string>();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_Then_ItCanBeConvertedToADifferentTypedResult()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = RepoResult.Fail<int>(errorMessage);    
+        var convertedResult = result.ToTypedRepoResult<string>();
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
     }
 }

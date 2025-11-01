@@ -18,6 +18,11 @@ public class Result : NonTypedResult, IResultFactory<Result>
     private Result(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
     {
     }
+    
+    public Result<T> ToTypedResult<T>()
+    {
+        return Result<T>.Create(this);
+    }
 
     public static Result Pass()
     {
@@ -54,9 +59,9 @@ public class Result : NonTypedResult, IResultFactory<Result>
         return new Result(result);
     }
     
-    public static Result Merge(params ResultStatus[] results)
+    public static Result Merge(params IResultStatus[] results)
     {
-        return ResultCreationHelper.Merge<Result, ResultStatus>(results);
+        return ResultCreationHelper.Merge<Result, IResultStatus>(results);
     }
     
     public static Result<T> Pass<T>(T value)
@@ -111,6 +116,11 @@ public class Result<T> : TypedResult<T>
     public Result RemoveType()
     {
         return Result.Create(this);
+    }
+    
+    public Result<T2> ToTypedResult<T2>()
+    {
+        return Result<T2>.Create(this);
     }
     
     internal static Result<T> Pass(T value)

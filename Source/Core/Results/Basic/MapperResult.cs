@@ -19,6 +19,11 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
     private MapperResult()
     {
     }
+    
+    public MapperResult<T> ToTypedMapperResult<T>()
+    {
+        return MapperResult<T>.Create(this);
+    }
 
     public static MapperResult Pass()
     {
@@ -30,14 +35,14 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
         return new MapperResult(FailureType.Generic, because);
     }
     
-    public static MapperResult Copy(MapperResult result)
-    {
-        return Create(result);
-    }
-    
     public static MapperResult DomainViolation(string because = "")
     {
         return new MapperResult(FailureType.DomainViolation, because);
+    }
+    
+    public static MapperResult InvariantViolation(string because = "")
+    {
+        return new MapperResult(FailureType.InvariantViolation, because);
     }
     
     public static MapperResult InvalidInput(string because = "")
@@ -45,9 +50,14 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
         return new MapperResult(FailureType.InvalidInput, because);
     }
     
-    public static MapperResult Merge(params InfraConvertable[] results)
+    public static MapperResult Merge(params IInfraConvertable[] results)
     {
-        return ResultCreationHelper.Merge<MapperResult, InfraConvertable>(results);
+        return ResultCreationHelper.Merge<MapperResult, IInfraConvertable>(results);
+    }
+    
+    public static MapperResult Copy(MapperResult result)
+    {
+        return Create(result);
     }
     
     public static MapperResult<T> Pass<T>(T value)
@@ -68,6 +78,11 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
     public static MapperResult<T> InvalidInput<T>(string because = "")
     {
         return MapperResult<T>.Fail(FailureType.InvalidInput, because);
+    }
+    
+    public static MapperResult<T> InvariantViolation<T>(string because = "")
+    {
+        return MapperResult<T>.Fail(FailureType.InvariantViolation, because);
     }
     
     public static MapperResult<T> Copy<T>(MapperResult<T> result)
@@ -102,6 +117,11 @@ public class MapperResult<T> : InfraConvertable<T>
     public MapperResult RemoveType()
     {
         return MapperResult.Create(this);
+    }
+    
+    public MapperResult<T2> ToTypedMapperResult<T2>()
+    {
+        return MapperResult<T2>.Create(this);
     }
 
     internal static MapperResult<T> Pass(T value)

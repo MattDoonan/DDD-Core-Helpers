@@ -21,6 +21,11 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
     {
     }
     
+    public RepoResult<T> ToTypedRepoResult<T>()
+    {
+        return RepoResult<T>.Create(this);
+    }
+    
     public static RepoResult Pass()
     {
         return new RepoResult();
@@ -56,9 +61,9 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
         return new RepoResult(FailureType.OperationTimeout, because);
     }
     
-    public static RepoResult Merge(params ServiceConvertable[] results)
+    public static RepoResult Merge(params IServiceConvertable[] results)
     {
-        return ResultCreationHelper.Merge<RepoResult, ServiceConvertable>(results);
+        return ResultCreationHelper.Merge<RepoResult, IServiceConvertable>(results);
     }
 
     internal static RepoResult Create(IServiceConvertable result)
@@ -137,6 +142,11 @@ public class RepoResult<T> : ServiceConvertable<T>
     public RepoResult RemoveType()
     {
         return RepoResult.Create(this);
+    }
+    
+    public RepoResult<T2> ToTypedRepoResult<T2>()
+    {
+        return RepoResult<T2>.Create(this);
     }
     
     internal static RepoResult<T> Pass(T value)

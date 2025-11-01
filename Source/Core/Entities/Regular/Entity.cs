@@ -2,7 +2,9 @@
 
 namespace Core.Entities.Regular;
 
-public abstract class Entity<TId> : IEntity<TId>
+public abstract class Entity;
+
+public abstract class Entity<TId> : Entity, IEntity<TId>
     where TId : IIdentifier
 {
     public TId Id { get; init; }

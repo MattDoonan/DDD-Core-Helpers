@@ -10,7 +10,8 @@ public enum FailureType
     DomainViolation,
     NotAllowed,
     NotFound,
-    AlreadyExists
+    AlreadyExists,
+    InvariantViolation
 }
 
 public static class FailureTypeExtensions
@@ -29,6 +30,7 @@ public static class FailureTypeExtensions
             FailureType.NotAllowed => "Operation not permitted",
             FailureType.NotFound => "Resource not found",
             FailureType.AlreadyExists => "Resource already exists",
+            FailureType.InvariantViolation => "Unexpected failure occured",
             _ => "Unknown failure"
         };
     }
@@ -47,6 +49,7 @@ public static class FailureTypeExtensions
             FailureType.NotAllowed => $"Operation to get {objectName} is not permitted",
             FailureType.NotFound => $"{objectName} not found",
             FailureType.AlreadyExists => $"{objectName} resource already exists",
+            FailureType.InvariantViolation => $"An unexpected failure occured when retrieving {objectName}",
             _ => $"Unknown failure to retrieve {objectName}"
         };
     }
