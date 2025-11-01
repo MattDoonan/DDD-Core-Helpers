@@ -3,8 +3,8 @@ using Core.ValueObjects.Identifiers.Cases;
 
 namespace Core.ValueObjects.AggregateRootIdentifiers.Cases;
 
-public record GuidAggregateRootIdBase<T>(Guid Value) : GuidIdentifierBase<T>(Value)
-    where T : GuidAggregateRootIdBase<T>, IGuidFactory<T>
+public record GuidAggregateRootId<T>(Guid Value) : GuidIdentifier<T>(Value)
+    where T : GuidAggregateRootId<T>, IGuidFactory<T>
 {
     
 }

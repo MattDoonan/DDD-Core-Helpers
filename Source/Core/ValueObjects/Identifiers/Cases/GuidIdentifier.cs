@@ -3,8 +3,8 @@ using Core.ValueObjects.Identifiers.Base;
 
 namespace Core.ValueObjects.Identifiers.Cases;
 
-public abstract record GuidIdentifierBase<T>(Guid Value) : Identifier<Guid>(Value), IGuidCreatables<T>
-    where T : GuidIdentifierBase<T>, IGuidFactory<T>
+public abstract record GuidIdentifier<T>(Guid Value) : Identifier<Guid>(Value), IGuidCreatables<T>
+    where T : GuidIdentifier<T>, IGuidFactory<T>
 {
     
     public static ValueObjectResult<T> Create()
