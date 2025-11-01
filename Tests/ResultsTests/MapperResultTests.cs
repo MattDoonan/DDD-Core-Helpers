@@ -202,6 +202,20 @@ public class MapperResultTests : BasicResultTests
         var result = MapperResult.InvalidInput<int>();
         ResultTestHelper.CheckFailure(result, FailureType.InvalidInput, FailureType.InvalidInput.ToMessage<int>());    
     }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvariantViolation_Then_TheResultIsAFailure()
+    {
+        var result = MapperResult.InvariantViolation();
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailureType.InvariantViolation.ToMessage());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvariantViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = MapperResult.InvariantViolation<int>();
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailureType.InvariantViolation.ToMessage<int>());    
+    }
 
     [Fact]
     public void WhenIPassTheResult_WithANullableValue_AndThatValueIsNull_Then_TheResultIsSuccessful_AndHasTheNullValue()

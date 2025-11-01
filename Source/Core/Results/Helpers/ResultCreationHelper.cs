@@ -1,5 +1,4 @@
-﻿using Core.Results.Base.Abstract;
-using Core.Results.Base.Interfaces;
+﻿using Core.Results.Base.Interfaces;
 
 namespace Core.Results.Helpers;
 

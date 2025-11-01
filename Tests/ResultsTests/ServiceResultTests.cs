@@ -207,6 +207,34 @@ public class ServiceResultTests : BasicResultTests
     }
     
     [Fact]
+    public void WhenIFailTheResult_BecauseOfANotFoundError_Then_TheResultIsAFailure()
+    {
+        var result = ServiceResult.NotFound();
+        ResultTestHelper.CheckFailure(result, FailureType.NotFound, FailedLayer.Service, FailureType.NotFound.ToMessage());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfANotFoundError_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = ServiceResult.NotFound<int>();
+        ResultTestHelper.CheckFailure(result, FailureType.NotFound, FailedLayer.Service, FailureType.NotFound.ToMessage<int>());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvariantViolation_Then_TheResultIsAFailure()
+    {
+        var result = ServiceResult.InvariantViolation();
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailedLayer.Service, FailureType.InvariantViolation.ToMessage());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvariantViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = ServiceResult.InvariantViolation<int>();
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailedLayer.Service, FailureType.InvariantViolation.ToMessage<int>());    
+    }
+    
+    [Fact]
     public void WhenIPassTheResult_WithANullableValue_AndThatValueIsNull_Then_TheResultIsSuccessful_AndHasTheNullValue()
     {
         string? value = null;

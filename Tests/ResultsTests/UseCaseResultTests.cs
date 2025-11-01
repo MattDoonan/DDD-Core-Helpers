@@ -175,6 +175,20 @@ public class UseCaseResultTests : BasicResultTests
     }
     
     [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvariantViolation_Then_TheResultIsAFailure()
+    {
+        var result = UseCaseResult.InvariantViolation();
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailedLayer.UseCase, FailureType.InvariantViolation.ToMessage());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvariantViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = UseCaseResult.InvariantViolation<int>();
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailedLayer.UseCase, FailureType.InvariantViolation.ToMessage<int>());    
+    }
+    
+    [Fact]
     public void GivenIHaveAFailureResult_Then_ItCanBeConvertedToATypedResult()
     {
         const string errorMessage = "I want it to fail";

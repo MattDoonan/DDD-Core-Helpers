@@ -1,5 +1,4 @@
 ﻿using Core.Entities.AggregateRoot;
-using Core.Interfaces;
 using Core.Results.Advanced;
 using Core.Results.Base.Enums;
 using Core.Results.Basic;
@@ -220,6 +219,34 @@ public class EntityResultTests : BasicResultTests
     {
         var result = EntityResult.InvalidInput<TestEntityResult>();
         ResultTestHelper.CheckFailure(result, FailureType.InvalidInput, FailureType.InvalidInput.ToMessage<TestEntityResult>());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfANotFoundError_Then_TheResultIsAFailure()
+    {
+        var result = EntityResult.NotFound();
+        ResultTestHelper.CheckFailure(result, FailureType.NotFound, FailureType.NotFound.ToMessage());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfANotFoundError_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = EntityResult.NotFound<int>();
+        ResultTestHelper.CheckFailure(result, FailureType.NotFound, FailureType.NotFound.ToMessage<int>());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvariantViolation_Then_TheResultIsAFailure()
+    {
+        var result = EntityResult.InvariantViolation();
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailureType.InvariantViolation.ToMessage());    
+    }
+    
+    [Fact]
+    public void WhenIFailTheResult_BecauseOfAnInvariantViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
+    {
+        var result = EntityResult.InvariantViolation<int>();
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailureType.InvariantViolation.ToMessage<int>());    
     }
     
     [Fact]

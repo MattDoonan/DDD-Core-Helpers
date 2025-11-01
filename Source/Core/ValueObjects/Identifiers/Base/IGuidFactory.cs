@@ -1,6 +1,5 @@
 ﻿using Core.Interfaces;
 using Core.Results.Basic;
-using Core.ValueObjects.Regular.Base;
 
 namespace Core.ValueObjects.Identifiers.Base;
 
