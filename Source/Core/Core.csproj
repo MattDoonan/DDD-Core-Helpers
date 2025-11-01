@@ -7,7 +7,7 @@
         <RootNamespace>Core</RootNamespace>
         <PackageId>DDD.Core.Components</PackageId>
         <PackageTags>DDD Domain ValueObjects Results Entities</PackageTags>
-        <Version>1.0.4</Version>
+        <Version>1.1.0</Version>
         <Authors>Matt Doonan</Authors>
         <PackageDescription>This package introduces core elements for a DDD project</PackageDescription>
         <PackageProjectUrl>https://github.com/MattDoonan/DDD-Core-Helpers</PackageProjectUrl>
