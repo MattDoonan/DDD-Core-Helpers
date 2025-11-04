@@ -56,6 +56,11 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
         return new RepoResult(FailureType.InvalidRequest, because);
     }
     
+    public static RepoResult ConcurrencyViolation(string because = "")
+    {
+        return new RepoResult(FailureType.ConcurrencyViolation, because);
+    }
+    
     public static RepoResult OperationTimeout(string because = "")
     {
         return new RepoResult(FailureType.OperationTimeout, because);
@@ -108,6 +113,11 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
     public static RepoResult<T> InvalidRequest<T>(string because = "")
     {
         return RepoResult<T>.Fail(FailureType.InvalidRequest, because);
+    }
+    
+    public static RepoResult<T> ConcurrencyViolation<T>(string because = "")
+    {
+        return RepoResult<T>.Fail(FailureType.ConcurrencyViolation, because);
     }
     
     public static RepoResult<T> OperationTimeout<T>(string because = "")
