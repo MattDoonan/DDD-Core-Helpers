@@ -1,6 +1,7 @@
 ﻿using Core.Results.Advanced.Interfaces;
 using Core.Results.Base.Abstract;
 using Core.Results.Base.Enums;
+using Core.Results.Base.Interfaces;
 
 namespace Core.Results.Advanced.Abstract;
 
@@ -24,12 +25,12 @@ public abstract class ResultConvertable : NonTypedResult, IResultConvertable
 
     public Result ToResult()
     {
-        return Result.Create(this);
+        return Result.From(this);
     }
     
     public Result<T> ToTypedResult<T>()
     {
-        return Result<T>.Create(this);
+        return Result<T>.From(this);
     }
     
     public static implicit operator Result(ResultConvertable result)
@@ -63,17 +64,17 @@ public abstract class ResultConvertable<T> : TypedResult<T>, IResultConvertable<
     
     public Result<T2> ToTypedResult<T2>()
     {
-        return Result<T2>.Create(this);
+        return Result<T2>.From(this);
     }
     
     public Result<T> ToTypedResult()
     {
-        return Result<T>.Create(this);
+        return Result<T>.From(this);
     }
 
     public Result ToResult()
     {
-        return Result.Create(this);
+        return Result.From((IResultStatus)this);
     }
     
     public static implicit operator Result<T>(ResultConvertable<T> result)

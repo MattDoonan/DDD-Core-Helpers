@@ -23,7 +23,7 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
     
     public RepoResult<T> ToTypedRepoResult<T>()
     {
-        return RepoResult<T>.Create(this);
+        return RepoResult<T>.From(this);
     }
     
     public static RepoResult Pass()
@@ -71,7 +71,7 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
         return ResultCreationHelper.Merge<RepoResult, IServiceConvertable>(results);
     }
 
-    internal static RepoResult Create(IServiceConvertable result)
+    public static RepoResult From(IServiceConvertable result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -81,6 +81,16 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
             };   
         }
         return new RepoResult(result);
+    }
+    
+    public static RepoResult<T> From<T>(IServiceConvertable<T> result)
+    {
+        return RepoResult<T>.From(result);
+    }
+    
+    public static RepoResult<T> From<T>(IServiceConvertable result)
+    {
+        return RepoResult<T>.From(result);
     }
     
     public static RepoResult<T> Pass<T>(T value)
@@ -127,7 +137,7 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
     
     public static RepoResult<T> Copy<T>(RepoResult<T> result)
     {
-        return RepoResult<T>.Create(result);
+        return RepoResult<T>.From(result);
     }
 }
 
@@ -151,12 +161,12 @@ public class RepoResult<T> : ServiceConvertable<T>
     
     public RepoResult RemoveType()
     {
-        return RepoResult.Create(this);
+        return RepoResult.From(this);
     }
     
     public RepoResult<T2> ToTypedRepoResult<T2>()
     {
-        return RepoResult<T2>.Create(this);
+        return RepoResult<T2>.From(this);
     }
     
     internal static RepoResult<T> Pass(T value)
@@ -169,7 +179,7 @@ public class RepoResult<T> : ServiceConvertable<T>
         return new RepoResult<T>(failureType, because);
     }
     
-    internal static RepoResult<T> Create(IServiceConvertable<T> result)
+    internal static RepoResult<T> From(IServiceConvertable<T> result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -181,7 +191,7 @@ public class RepoResult<T> : ServiceConvertable<T>
         return new RepoResult<T>(result);
     }
     
-    internal static RepoResult<T> Create(IServiceConvertable result)
+    internal static RepoResult<T> From(IServiceConvertable result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {

@@ -5,7 +5,7 @@ using Core.ValueObjects.Regular.Base;
 namespace Core.ValueObjects.Regular.Strings;
 
 public abstract record StringValueObject<T>(string Value) : SingleValueObject<string>(Value)
-    where T : StringValueObject<T>, ISimpleValueObjectFactory<string, T>
+    where T : StringValueObject<T>, ISingleValueObjectFactory<string, T>
 {
     public ValueObjectResult<T> ToLower(StringValueObject<T> value)
     {

@@ -1,4 +1,5 @@
 ﻿using Core.Results.Advanced.Abstract;
+using Core.Results.Advanced.Interfaces;
 using Core.Results.Base.Enums;
 using Core.Results.Basic.Interfaces;
 
@@ -24,12 +25,12 @@ public abstract class MapperConvertable : InfraConvertable, IMapperConvertable
     
     public MapperResult<T> ToTypedMapperResult<T>()
     {
-        return MapperResult<T>.Create(this);
+        return MapperResult<T>.From(this);
     }
     
     public MapperResult ToMapperResult()
     {
-        return MapperResult.Create(this);
+        return MapperResult.From(this);
     }
     
     public static implicit operator MapperResult(MapperConvertable result)
@@ -62,17 +63,17 @@ public abstract class MapperConvertable<T> : InfraConvertable<T>, IMapperConvert
     
     public MapperResult<T2> ToTypedMapperResult<T2>()
     {
-        return MapperResult<T2>.Create(this);
+        return MapperResult<T2>.From(this);
     }
     
     public MapperResult<T> ToTypedMapperResult()
     {
-        return MapperResult<T>.Create(this);
+        return MapperResult<T>.From(this);
     }
 
     public MapperResult ToMapperResult()
     {
-        return MapperResult.Create(this);
+        return MapperResult.From((IInfraConvertable)this);
     }
     
     public static implicit operator MapperResult<T>(MapperConvertable<T> result)

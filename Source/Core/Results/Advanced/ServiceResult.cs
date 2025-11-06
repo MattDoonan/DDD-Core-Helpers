@@ -22,7 +22,7 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
     
     public ServiceResult<T> ToTypedServiceResult<T>()
     {
-        return ServiceResult<T>.Create(this);
+        return ServiceResult<T>.From(this);
     }
     
     public static ServiceResult Pass()
@@ -60,6 +60,28 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
         return ResultCreationHelper.Merge<ServiceResult, IUseCaseConvertable>(results);
     }
     
+    public static ServiceResult From(IUseCaseConvertable result)
+    {
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
+        {
+            return new ServiceResult(result)
+            {
+                FailedLayer = FailedLayer.Service
+            };   
+        }
+        return new ServiceResult(result);
+    }
+    
+    public static ServiceResult<T> From<T>(IUseCaseConvertable<T> result)
+    {
+        return ServiceResult<T>.From(result);
+    }
+    
+    public static ServiceResult<T> From<T>(IUseCaseConvertable result)
+    {
+        return ServiceResult<T>.From(result);
+    }
+    
     public static ServiceResult<T> Pass<T>(T value)
     {
         return ServiceResult<T>.Pass(value);
@@ -92,24 +114,12 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
     
     public static ServiceResult Copy(ServiceResult result)
     {
-        return Create(result);
+        return From(result);
     }
     
     public static ServiceResult<T> Copy<T>(ServiceResult<T> result)
     {
-        return ServiceResult<T>.Create(result);
-    }
-    
-    internal static ServiceResult Create(IUseCaseConvertable result)
-    {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new ServiceResult(result)
-            {
-                FailedLayer = FailedLayer.Service
-            };   
-        }
-        return new ServiceResult(result);
+        return ServiceResult<T>.From(result);
     }
 }
 
@@ -133,12 +143,12 @@ public class ServiceResult<T> : UseCaseConvertable<T>
     
     public ServiceResult RemoveType()
     {
-        return ServiceResult.Create(this);
+        return ServiceResult.From((IUseCaseConvertable)this);
     }
     
     public ServiceResult<T2> ToTypedServiceResult<T2>()
     {
-        return ServiceResult<T2>.Create(this);
+        return ServiceResult<T2>.From(this);
     }
     
     internal static ServiceResult<T> Pass(T value)
@@ -151,7 +161,7 @@ public class ServiceResult<T> : UseCaseConvertable<T>
         return new ServiceResult<T>(failureType, because);
     }
     
-    internal static ServiceResult<T> Create(IUseCaseConvertable<T> result)
+    internal static ServiceResult<T> From(IUseCaseConvertable<T> result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -163,7 +173,7 @@ public class ServiceResult<T> : UseCaseConvertable<T>
         return new ServiceResult<T>(result);
     }
     
-    internal static ServiceResult<T> Create(IUseCaseConvertable result)
+    internal static ServiceResult<T> From(IUseCaseConvertable result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {

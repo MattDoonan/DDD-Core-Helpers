@@ -22,7 +22,7 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
     
     public MapperResult<T> ToTypedMapperResult<T>()
     {
-        return MapperResult<T>.Create(this);
+        return MapperResult<T>.From(this);
     }
 
     public static MapperResult Pass()
@@ -57,7 +57,22 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
     
     public static MapperResult Copy(MapperResult result)
     {
-        return Create(result);
+        return From(result);
+    }
+    
+    public static MapperResult From(IInfraConvertable status)
+    {
+        return new MapperResult(status);
+    }
+    
+    public static MapperResult<T> From<T>(IInfraConvertable<T> result)
+    {
+        return MapperResult<T>.From(result);
+    }
+    
+    public static MapperResult<T> From<T>(IInfraConvertable result)
+    {
+        return MapperResult<T>.From(result);
     }
     
     public static MapperResult<T> Pass<T>(T value)
@@ -87,12 +102,7 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
     
     public static MapperResult<T> Copy<T>(MapperResult<T> result)
     {
-        return MapperResult<T>.Create(result);
-    }
-
-    internal static MapperResult Create(IInfraConvertable status)
-    {
-        return new MapperResult(status);
+        return MapperResult<T>.From(result);
     }
 }
 
@@ -116,12 +126,12 @@ public class MapperResult<T> : InfraConvertable<T>
     
     public MapperResult RemoveType()
     {
-        return MapperResult.Create(this);
+        return MapperResult.From((IInfraConvertable)this);
     }
     
     public MapperResult<T2> ToTypedMapperResult<T2>()
     {
-        return MapperResult<T2>.Create(this);
+        return MapperResult<T2>.From(this);
     }
 
     internal static MapperResult<T> Pass(T value)
@@ -134,12 +144,12 @@ public class MapperResult<T> : InfraConvertable<T>
         return new MapperResult<T>(failureType, because);
     }
     
-    internal static MapperResult<T> Create(IInfraConvertable<T> result)
+    internal static MapperResult<T> From(IInfraConvertable<T> result)
     {
         return new MapperResult<T>(result);
     }
     
-    internal static MapperResult<T> Create(IInfraConvertable result)
+    internal static MapperResult<T> From(IInfraConvertable result)
     {
         return new MapperResult<T>(result);
     }

@@ -23,12 +23,12 @@ public abstract class EntityConvertable : MapperConvertable, IEntityConvertable
     
     public EntityResult<T> ToTypedEntityResult<T>()
     {
-        return EntityResult<T>.Create(this);
+        return EntityResult<T>.From(this);
     }
 
     public EntityResult ToEntityResult()
     {
-        return EntityResult.Create(this);
+        return EntityResult.From(this);
     }
 
     public static implicit operator EntityResult(EntityConvertable result)
@@ -61,17 +61,17 @@ public abstract class EntityConvertable<T> : MapperConvertable<T>, IEntityConver
     
     public EntityResult<T2> ToTypedEntityResult<T2>()
     {
-        return EntityResult<T2>.Create(this);
+        return EntityResult<T2>.From(this);
     }
     
     public EntityResult<T> ToTypedEntityResult()
     {
-        return EntityResult<T>.Create(this);
+        return EntityResult<T>.From(this);
     }
 
     public EntityResult ToEntityResult()
     {
-        return EntityResult.Create(this);
+        return EntityResult.From((IMapperConvertable)this);
     }
     
     

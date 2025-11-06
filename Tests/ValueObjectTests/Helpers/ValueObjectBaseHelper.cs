@@ -8,7 +8,7 @@ namespace ValueObjectTests.Helpers;
 public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T smallerValue)
     where T : IComparable, IComparable<T>, IEquatable<T>
 {
-    private record TestValueObjectBase : SingleValueObject<T>, ISimpleValueObjectFactory<T, TestValueObjectBase>
+    private record TestValueObjectBase : SingleValueObject<T>, ISingleValueObjectFactory<T, TestValueObjectBase>
     {
         private TestValueObjectBase(T value) : base(value) { }
         public static ValueObjectResult<TestValueObjectBase> Create(T value)

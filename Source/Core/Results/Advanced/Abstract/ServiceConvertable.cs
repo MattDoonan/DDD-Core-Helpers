@@ -23,12 +23,12 @@ public abstract class ServiceConvertable : UseCaseConvertable, IServiceConvertab
 
     public ServiceResult ToServiceResult()
     {
-        return ServiceResult.Create(this);
+        return ServiceResult.From(this);
     }
     
     public ServiceResult<T> ToTypedServiceResult<T>()
     {
-        return ServiceResult<T>.Create(this);
+        return ServiceResult<T>.From(this);
     }
     
     public static implicit operator ServiceResult(ServiceConvertable result)
@@ -61,17 +61,17 @@ public abstract class ServiceConvertable<T> : UseCaseConvertable<T>, IServiceCon
     
     public ServiceResult<T2> ToTypedServiceResult<T2>()
     {
-        return ServiceResult<T2>.Create(this);
+        return ServiceResult<T2>.From(this);
     }
 
     public ServiceResult<T> ToTypedServiceResult()
     {
-        return ServiceResult<T>.Create(this);
+        return ServiceResult<T>.From(this);
     }
 
     public ServiceResult ToServiceResult()
     {
-        return ServiceResult.Create(this);
+        return ServiceResult.From((IUseCaseConvertable)this);
     }
     
     public static implicit operator ServiceResult<T>(ServiceConvertable<T> result)

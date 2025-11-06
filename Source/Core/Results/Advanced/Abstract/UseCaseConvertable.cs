@@ -23,12 +23,12 @@ public abstract class UseCaseConvertable : ResultConvertable, IUseCaseConvertabl
     
     public UseCaseResult ToUseCaseResult()
     {
-        return UseCaseResult.Create(this);
+        return UseCaseResult.From(this);
     }
     
     public UseCaseResult<T> ToTypedUseCaseResult<T>()
     {
-        return UseCaseResult<T>.Create(this);
+        return UseCaseResult<T>.From(this);
     }
     
     public static implicit operator UseCaseResult(UseCaseConvertable result)
@@ -61,17 +61,17 @@ public abstract class UseCaseConvertable<T> : ResultConvertable<T>, IUseCaseConv
     
     public UseCaseResult<T2> ToTypedUseCaseResult<T2>()
     {
-        return UseCaseResult<T2>.Create(this);
+        return UseCaseResult<T2>.From(this);
     }
 
     public UseCaseResult<T> ToTypedUseCaseResult()
     {
-        return UseCaseResult<T>.Create(this);
+        return UseCaseResult<T>.From(this);
     }
 
     public UseCaseResult ToUseCaseResult()
     {
-        return UseCaseResult.Create(this);
+        return UseCaseResult.From((IResultConvertable)this);
     }
     
     public static implicit operator UseCaseResult<T>(UseCaseConvertable<T> result)

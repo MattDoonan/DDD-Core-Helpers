@@ -75,7 +75,8 @@ public abstract class ResultStatus : IResultStatus
     public bool IsNotFound => FailureType is FailureType.NotFound;
     public bool DoesAlreadyExists => FailureType is FailureType.AlreadyExists;
     public bool IsInvariantViolation => FailureType is FailureType.InvariantViolation;
-    
+    public bool IsConcurrencyViolation => FailureType is FailureType.ConcurrencyViolation;
+
     public bool IsFailureType(FailureType failureType)
     {
         return FailureType == failureType;

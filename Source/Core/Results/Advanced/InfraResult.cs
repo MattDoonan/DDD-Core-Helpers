@@ -22,7 +22,7 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
     
     public InfraResult<T> ToTypedInfraResult<T>()
     {
-        return InfraResult<T>.Create(this);
+        return InfraResult<T>.From(this);
     }
     
     public static InfraResult Pass()
@@ -37,7 +37,7 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
     
     public static InfraResult Copy(InfraResult result)
     {
-        return Create(result);
+        return From(result);
     }
     
     public static InfraResult NotFound(string because = "")
@@ -63,6 +63,28 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
     public static InfraResult Merge(params IRepoConvertable[] results)
     {
         return ResultCreationHelper.Merge<InfraResult, IRepoConvertable>(results);
+    }
+    
+    public static InfraResult From(IRepoConvertable result)
+    {
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
+        {
+            return new InfraResult(result)
+            {
+                FailedLayer = FailedLayer.Infrastructure
+            };   
+        }
+        return new InfraResult(result);
+    }
+    
+    public static InfraResult<T> From<T>(IRepoConvertable<T> result)
+    {
+        return InfraResult<T>.From(result);
+    }
+    
+    public static InfraResult<T> From<T>(IRepoConvertable result)
+    {
+        return InfraResult<T>.From(result);
     }
     
     public static InfraResult<T> Pass<T>(T value)
@@ -97,19 +119,7 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
     
     public static InfraResult<T> Copy<T>(InfraResult<T> result)
     {
-        return InfraResult<T>.Create(result);
-    }
-
-    internal static InfraResult Create(IRepoConvertable result)
-    {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new InfraResult(result)
-            {
-                FailedLayer = FailedLayer.Infrastructure
-            };   
-        }
-        return new InfraResult(result);
+        return InfraResult<T>.From(result);
     }
 }
 
@@ -133,12 +143,12 @@ public class InfraResult<T> : RepoConvertable<T>
     
     public InfraResult RemoveType()
     {
-        return InfraResult.Create(this);
+        return InfraResult.From((IRepoConvertable)this);
     }
     
     public InfraResult<T2> ToTypedInfraResult<T2>()
     {
-        return InfraResult<T2>.Create(this);
+        return InfraResult<T2>.From(this);
     }
     
     internal static InfraResult<T> Pass(T value)
@@ -151,7 +161,7 @@ public class InfraResult<T> : RepoConvertable<T>
         return new InfraResult<T>(failureType, because);
     }
     
-    internal static InfraResult<T> Create(IRepoConvertable<T> result)
+    internal static InfraResult<T> From(IRepoConvertable<T> result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -163,7 +173,7 @@ public class InfraResult<T> : RepoConvertable<T>
         return new InfraResult<T>(result);
     }
     
-    internal static InfraResult<T> Create(IRepoConvertable result)
+    internal static InfraResult<T> From(IRepoConvertable result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {

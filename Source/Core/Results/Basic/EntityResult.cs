@@ -22,7 +22,7 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
     
     public EntityResult<T> ToTypedEntityResult<T>()
     {
-        return EntityResult<T>.Create(this);
+        return EntityResult<T>.From(this);
     }
     
     public static EntityResult Pass()
@@ -36,11 +36,6 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
     }
     
     public static EntityResult Copy(EntityResult result)
-    {
-        return new EntityResult(result);
-    }
-    
-    internal static EntityResult Create(IMapperConvertable result)
     {
         return new EntityResult(result);
     }
@@ -68,6 +63,21 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
     public static EntityResult Merge(params IMapperConvertable[] results)
     {
         return ResultCreationHelper.Merge<EntityResult, IMapperConvertable>(results);
+    }
+    
+    public static EntityResult From(IMapperConvertable result)
+    {
+        return new EntityResult(result);
+    }
+    
+    public static EntityResult<T> From<T>(IMapperConvertable<T> result)
+    {
+        return EntityResult<T>.From(result);
+    }
+    
+    public static EntityResult<T> From<T>(IMapperConvertable result)
+    {
+        return EntityResult<T>.From(result);
     }
     
     public static EntityResult<T> Pass<T>(T value)
@@ -102,7 +112,7 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
     
     public static EntityResult<T> Copy<T>(EntityResult<T> result)
     {
-        return EntityResult<T>.Create(result);
+        return EntityResult<T>.From(result);
     }
 }
 
@@ -126,12 +136,12 @@ public class EntityResult<T> : MapperConvertable<T>
     
     public EntityResult RemoveType()
     {
-        return EntityResult.Create(this);
+        return EntityResult.From((IMapperConvertable)this);
     }
     
     public EntityResult<T2> ToTypedEntityResult<T2>()
     {
-        return EntityResult<T2>.Create(this);
+        return EntityResult<T2>.From(this);
     }
     
     internal static EntityResult<T> Pass(T value)
@@ -144,12 +154,12 @@ public class EntityResult<T> : MapperConvertable<T>
         return new EntityResult<T>(failureType, because);
     }
     
-    internal static EntityResult<T> Create(IMapperConvertable<T> result)
+    internal static EntityResult<T> From(IMapperConvertable<T> result)
     {
         return new EntityResult<T>(result);
     }
     
-    internal static EntityResult<T> Create(IMapperConvertable result)
+    internal static EntityResult<T> From(IMapperConvertable result)
     {
         return new EntityResult<T>(result);
     }

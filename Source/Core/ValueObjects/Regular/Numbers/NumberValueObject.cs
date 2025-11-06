@@ -7,7 +7,7 @@ namespace Core.ValueObjects.Regular.Numbers;
 
 public abstract record NumberValueObject<TValue, T>(TValue Value) : SingleValueObject<TValue>(Value)
     where TValue : INumber<TValue>, IComparable<TValue>, IEquatable<TValue>
-    where T : NumberValueObject<TValue, T>, ISimpleValueObjectFactory<TValue, T>
+    where T : NumberValueObject<TValue, T>, ISingleValueObjectFactory<TValue, T>
 {
     public static ValueObjectResult<T> operator +(NumberValueObject<TValue, T> a, NumberValueObject<TValue, T> b)
     {

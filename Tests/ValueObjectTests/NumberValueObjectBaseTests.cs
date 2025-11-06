@@ -1,5 +1,6 @@
 ﻿using Core.Interfaces;
 using Core.Results.Basic;
+using Core.ValueObjects.Regular.Base;
 using Core.ValueObjects.Regular.Numbers;
 using Xunit;
 
@@ -8,7 +9,7 @@ namespace ValueObjectTests;
 public class NumberValueObjectBaseTests
 {
     private record TestNumberValueObjectBase 
-        : NumberValueObject<long, TestNumberValueObjectBase>, ISimpleValueObjectFactory<long, TestNumberValueObjectBase>
+        : NumberValueObject<long, TestNumberValueObjectBase>, ISingleValueObjectFactory<long, TestNumberValueObjectBase>
     {
         private TestNumberValueObjectBase (long value) : base(value) { }
         

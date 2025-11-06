@@ -21,7 +21,7 @@ public class Result : NonTypedResult, IResultFactory<Result>
     
     public Result<T> ToTypedResult<T>()
     {
-        return Result<T>.Create(this);
+        return Result<T>.From(this);
     }
 
     public static Result Pass()
@@ -54,9 +54,19 @@ public class Result : NonTypedResult, IResultFactory<Result>
         return new Result(result);
     }
     
-    internal static Result Create(IResultStatus result)
+    public static Result From(IResultStatus result)
     {
         return new Result(result);
+    }
+    
+    public static Result<T> From<T>(ITypedResult<T> result)
+    {
+        return Result<T>.From(result);
+    }
+    
+    public static Result<T> From<T>(IResultStatus result)
+    {
+        return Result<T>.From(result);
     }
     
     public static Result Merge(params IResultStatus[] results)
@@ -71,7 +81,7 @@ public class Result : NonTypedResult, IResultFactory<Result>
     
     public static Result<T> Copy<T>(Result<T> result)
     {
-        return Result<T>.Create(result);
+        return Result<T>.From(result);
     }
     
     public static Result<T> Fail<T>(string because = "")
@@ -115,12 +125,12 @@ public class Result<T> : TypedResult<T>
     
     public Result RemoveType()
     {
-        return Result.Create(this);
+        return Result.From((IResultStatus)this);
     }
     
     public Result<T2> ToTypedResult<T2>()
     {
-        return Result<T2>.Create(this);
+        return Result<T2>.From(this);
     }
     
     internal static Result<T> Pass(T value)
@@ -133,12 +143,12 @@ public class Result<T> : TypedResult<T>
         return new Result<T>(failureType, failedLayer, because);
     }
     
-    internal static Result<T> Create(ITypedResult<T> result)
+    internal static Result<T> From(ITypedResult<T> result)
     {
         return new Result<T>(result);
     }
     
-    internal static Result<T> Create(IResultStatus result)
+    internal static Result<T> From(IResultStatus result)
     {
         return new Result<T>(result);
     }

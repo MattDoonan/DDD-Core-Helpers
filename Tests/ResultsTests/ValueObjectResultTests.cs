@@ -12,7 +12,7 @@ namespace OutputTests;
 public class ValueObjectResultTests : BasicValueResultTests
 {
     private record TestValueObject(int Value)
-        : NumberValueObject<int, TestValueObject>(Value), ISimpleValueObjectFactory<int , TestValueObject>
+        : NumberValueObject<int, TestValueObject>(Value), ISingleValueObjectFactory<int , TestValueObject>
     {
         public static ValueObjectResult<TestValueObject> Create(int value)
         {

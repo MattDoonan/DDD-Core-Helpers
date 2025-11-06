@@ -2,13 +2,14 @@
 using Core.Results.Basic;
 using Core.ValueObjects.Identifiers.Base;
 using Core.ValueObjects.Identifiers.Lists;
+using Core.ValueObjects.Regular.Base;
 using Xunit;
 
 namespace ValueObjectTests;
 
 public class IdentifierListTests
 {
-    private record TestValueObjectBase : Identifier<string>, ISimpleValueObjectFactory<string, TestValueObjectBase>
+    private record TestValueObjectBase : Identifier<string>, ISingleValueObjectFactory<string, TestValueObjectBase>
     {
         private TestValueObjectBase(string value) : base(value) { }
         public static ValueObjectResult<TestValueObjectBase> Create(string value)

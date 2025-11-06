@@ -21,7 +21,7 @@ public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
     
     public UseCaseResult<T> ToTypedUseCaseResult<T>()
     {
-        return UseCaseResult<T>.Create(this);
+        return UseCaseResult<T>.From(this);
     }
 
     public static UseCaseResult Pass()
@@ -44,6 +44,28 @@ public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
         return ResultCreationHelper.Merge<UseCaseResult, IResultConvertable>(results);
     }
     
+    public static UseCaseResult From(IResultConvertable result)
+    {
+        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
+        {
+            return new UseCaseResult(result)
+            {
+                FailedLayer = FailedLayer.UseCase
+            };   
+        }
+        return new UseCaseResult(result);
+    }
+    
+    public static UseCaseResult<T> From<T>(IResultConvertable<T> result)
+    {
+        return UseCaseResult<T>.From(result);
+    }
+    
+    public static UseCaseResult<T> From<T>(IResultConvertable result)
+    {
+        return UseCaseResult<T>.From(result);
+    }
+    
     public static UseCaseResult<T> Pass<T>(T value)
     {
         return UseCaseResult<T>.Pass(value);
@@ -61,24 +83,12 @@ public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
     
     public static UseCaseResult Copy(UseCaseResult result)
     {
-        return Create(result);
+        return From(result);
     }
     
     public static UseCaseResult<T> Copy<T>(UseCaseResult<T> result)
     {
-        return UseCaseResult<T>.Create(result);
-    }
-    
-    internal static UseCaseResult Create(IResultConvertable result)
-    {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new UseCaseResult(result)
-            {
-                FailedLayer = FailedLayer.UseCase
-            };   
-        }
-        return new UseCaseResult(result);
+        return UseCaseResult<T>.From(result);
     }
 }
 
@@ -102,12 +112,12 @@ public class UseCaseResult<T> : ResultConvertable<T>
     
     public UseCaseResult RemoveType()
     {
-        return UseCaseResult.Create(this);
+        return UseCaseResult.From((IResultConvertable)this);
     }
     
     public UseCaseResult<T2> ToTypedUseCaseResult<T2>()
     {
-        return UseCaseResult<T2>.Create(this);
+        return UseCaseResult<T2>.From(this);
     }
     
     internal static UseCaseResult<T> Pass(T value)
@@ -120,7 +130,7 @@ public class UseCaseResult<T> : ResultConvertable<T>
         return new UseCaseResult<T>(failureType, because);
     }
     
-    internal static UseCaseResult<T> Create(IResultConvertable<T> result)
+    internal static UseCaseResult<T> From(IResultConvertable<T> result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {
@@ -132,7 +142,7 @@ public class UseCaseResult<T> : ResultConvertable<T>
         return new UseCaseResult<T>(result);
     }
     
-    internal static UseCaseResult<T> Create(IResultConvertable result)
+    internal static UseCaseResult<T> From(IResultConvertable result)
     {
         if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
         {

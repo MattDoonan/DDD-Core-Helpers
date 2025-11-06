@@ -23,12 +23,12 @@ public abstract class RepoConvertable : ServiceConvertable, IRepoConvertable
     
     public RepoResult ToRepoResult()
     {
-        return RepoResult.Create(this);
+        return RepoResult.From(this);
     }
     
     public RepoResult<T> ToTypedRepoResult<T>()
     {
-        return RepoResult<T>.Create(this);
+        return RepoResult<T>.From(this);
     }
     
     public static implicit operator RepoResult(RepoConvertable result)
@@ -61,17 +61,17 @@ public abstract class RepoConvertable<T> : ServiceConvertable<T>, IRepoConvertab
     
     public RepoResult<T2> ToTypedRepoResult<T2>()
     {
-        return RepoResult<T2>.Create(this);
+        return RepoResult<T2>.From(this);
     }
     
     public RepoResult<T> ToTypedRepoResult()
     {
-        return RepoResult<T>.Create(this);
+        return RepoResult<T>.From(this);
     }
 
     public RepoResult ToRepoResult()
     {
-        return RepoResult.Create(this);
+        return RepoResult.From((IServiceConvertable)this);
     }
     
     public static implicit operator RepoResult<T>(RepoConvertable<T> result)

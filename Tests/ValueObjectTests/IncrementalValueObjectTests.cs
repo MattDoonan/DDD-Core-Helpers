@@ -1,5 +1,6 @@
 ﻿using Core.Interfaces;
 using Core.Results.Basic;
+using Core.ValueObjects.Regular.Base;
 using Core.ValueObjects.Regular.Numbers;
 using Xunit;
 
@@ -8,7 +9,7 @@ namespace ValueObjectTests;
 public class IncrementalValueObjectTests
 {
     private record TestIncrementalValueObject 
-        : IncrementalValueObject<float, TestIncrementalValueObject>, ISimpleValueObjectFactory<float, TestIncrementalValueObject>
+        : IncrementalValueObject<float, TestIncrementalValueObject>, ISingleValueObjectFactory<float, TestIncrementalValueObject>
     {
         private TestIncrementalValueObject (float value) : base(value) { }
         public static ValueObjectResult<TestIncrementalValueObject> Create(float value)

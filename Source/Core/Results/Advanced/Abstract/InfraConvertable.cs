@@ -23,12 +23,12 @@ public abstract class InfraConvertable : RepoConvertable, IInfraConvertable
     
     public InfraResult<T> ToTypedInfraResult<T>()
     {
-        return InfraResult<T>.Create(this);
+        return InfraResult<T>.From(this);
     }
    
     public InfraResult ToInfraResult()
     {
-        return InfraResult.Create(this);
+        return InfraResult.From(this);
     }
     
     public static implicit operator InfraResult(InfraConvertable result)
@@ -60,17 +60,17 @@ public abstract class InfraConvertable<T> : RepoConvertable<T>, IInfraConvertabl
     }
     public InfraResult<T2> ToTypedInfraResult<T2>()
     {
-        return InfraResult<T2>.Create(this);
+        return InfraResult<T2>.From(this);
     }
 
     public InfraResult<T> ToTypedInfraResult()
     {
-        return InfraResult<T>.Create(this);
+        return InfraResult<T>.From(this);
     }
     
     public InfraResult ToInfraResult()
     {
-        return InfraResult.Create(this);
+        return InfraResult.From((IRepoConvertable) this);
     }
 
     public static implicit operator InfraResult<T>(InfraConvertable<T> result)
