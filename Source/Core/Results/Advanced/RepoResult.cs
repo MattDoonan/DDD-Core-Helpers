@@ -161,7 +161,7 @@ public class RepoResult<T> : ServiceConvertable<T>
     
     public RepoResult RemoveType()
     {
-        return RepoResult.From(this);
+        return RepoResult.From((IServiceConvertable)this);
     }
     
     public RepoResult<T2> ToTypedRepoResult<T2>()
