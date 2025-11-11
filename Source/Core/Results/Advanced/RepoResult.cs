@@ -94,15 +94,8 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
     }
     
     public static RepoResult<T> Pass<T>(T value)
-        where T : IAggregateRoot
     {
         return RepoResult<T>.Pass(value);
-    }
-    
-    public static RepoResult<IEnumerable<T>> Pass<T>(IEnumerable<T> value)
-        where T : IAggregateRoot
-    {
-        return RepoResult<IEnumerable<T>>.Pass(value);
     }
     
     public static RepoResult<T> Fail<T>(string because = "")
