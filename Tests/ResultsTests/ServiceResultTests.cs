@@ -1,5 +1,5 @@
-﻿using Core.Results.Advanced;
-using Core.Results.Base.Enums;
+﻿using DDD.Core.Results;
+using DDD.Core.Results.Enums;
 using OutputTests.Helpers;
 using Xunit;
 

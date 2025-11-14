@@ -1,9 +1,8 @@
-﻿using Core.Interfaces;
-using Core.Results.Advanced;
-using Core.Results.Base.Enums;
-using Core.Results.Basic;
-using Core.ValueObjects.Regular.Base;
-using Core.ValueObjects.Regular.Numbers;
+﻿using DDD.Core.Results;
+using DDD.Core.Results.Enums;
+using DDD.Core.ValueObjects.Base;
+using DDD.Core.ValueObjects.Factories;
+using DDD.Core.ValueObjects.SingleValueObjects.Types;
 using OutputTests.Helpers;
 using Xunit;
 

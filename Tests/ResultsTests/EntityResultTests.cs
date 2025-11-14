@@ -1,8 +1,7 @@
-﻿using Core.Entities.AggregateRoot;
-using Core.Results.Advanced;
-using Core.Results.Base.Enums;
-using Core.Results.Basic;
-using Core.ValueObjects.AggregateRootIdentifiers.Base;
+﻿using DDD.Core.Entities.AggregateRoot;
+using DDD.Core.Results;
+using DDD.Core.Results.Enums;
+using DDD.Core.ValueObjects.Identifiers;
 using OutputTests.Helpers;
 using Xunit;
 

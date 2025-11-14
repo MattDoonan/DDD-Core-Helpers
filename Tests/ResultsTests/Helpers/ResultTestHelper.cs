@@ -1,5 +1,5 @@
-﻿using Core.Results.Base.Abstract;
-using Core.Results.Base.Enums;
+﻿using DDD.Core.Results.Base;
+using DDD.Core.Results.Enums;
 using Xunit;
 
 namespace OutputTests.Helpers;
@@ -79,6 +79,7 @@ public static class ResultTestHelper
         Assert.Equal(FailureType.NotFound == expectedFailureType, result.IsNotFound);
         Assert.Equal(FailureType.AlreadyExists == expectedFailureType, result.DoesAlreadyExists);
         Assert.Equal(FailureType.InvariantViolation == expectedFailureType, result.IsInvariantViolation);
+        Assert.Equal(FailureType.ConcurrencyViolation == expectedFailureType, result.IsConcurrencyViolation);
         Assert.True(result.IsFailureType(expectedFailureType));
     }
 }

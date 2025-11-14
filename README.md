@@ -7,7 +7,8 @@ It provides abstract base classes for common building blocks such as **Value Obj
 
 ## ✨ Features
 - 🔹 Abstract **Entity** base class with identity handling.
-- 🔹 Abstract **ValueObject** base class with equality and immutability support.
+- 🔹 Abstract **ValueObject** base record class with equality and immutability support.
+- 🔹 Abstract **Event** base record class with equality and immutability support.
 - 🔹 **Result** class for clean success/failure operations without exceptions.
 - 🔹 Designed for **.NET 9.0+** and modern C#.
 
@@ -38,10 +39,10 @@ Results can be converted up the hierarchy. For instance, an **EntityResult** can
 From lowest to highest in the hierarchy:
 
 - 🔹 **ValueObjectResult:** Used for creating value objects.
-- 🔹 **EntityResult:** Used within entity classes for domain-specific operations. The typed version only returns an `Entity` object.
+- 🔹 **EntityResult:** Used within entity classes for domain-specific operations
 - 🔹 **MapperResult:** Used for object mapping operations.
-- 🔹 **InfraResult:** Used in the infrastructure layer for non-repository operations.
-- 🔹 **RepoResult:** Used in the infrastructure layer for repository operations. Can only contain an `AggregateRoot`.
+- 🔹 **InfraResult:** Used in the infrastructure layer for non-repository infrastructure operations.
+- 🔹 **RepoResult:** Used in the infrastructure layer for repository operations.
 - 🔹 **ServiceResult:** Used in the service layer for domain-specific applications.
 - 🔹 **UseCaseResult:** Used in the use case layer. Typically, results are converted to this type when propagating outward.
 - 🔹 **Result:** A generic result type that can be used anywhere in the application.

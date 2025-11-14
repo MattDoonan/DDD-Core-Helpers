@@ -1,8 +1,7 @@
-﻿using Core.Entities.AggregateRoot;
-using Core.Results.Advanced;
-using Core.Results.Base.Enums;
-using Core.Results.Basic;
-using Core.ValueObjects.AggregateRootIdentifiers.Base;
+﻿using DDD.Core.Entities.AggregateRoot;
+using DDD.Core.Results;
+using DDD.Core.Results.Enums;
+using DDD.Core.ValueObjects.Identifiers;
 using OutputTests.Helpers;
 using Xunit;
 
@@ -223,6 +222,22 @@ public class RepoResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = RepoResult.OperationTimeout(errorMessage);
         ResultTestHelper.CheckFailure(result, FailureType.OperationTimeout, FailedLayer.Infrastructure, $"{FailureType.OperationTimeout.ToMessage()} because {errorMessage}");
+    }
+    
+    [Fact]
+    public void WhenHaveAConcurrencyViolation_Then_TheResultIsAFailure_WithTheFullErrorMessage()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = RepoResult.ConcurrencyViolation(errorMessage);
+        ResultTestHelper.CheckFailure(result, FailureType.ConcurrencyViolation, FailedLayer.Infrastructure, $"{FailureType.ConcurrencyViolation.ToMessage()} because {errorMessage}");
+    }
+
+    [Fact]
+    public void WhenHaveAConcurrencyViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure_WithTheFullErrorMessage()
+    {
+        const string errorMessage = "I want it to fail";
+        var result = RepoResult.ConcurrencyViolation<TestRepoResult>(errorMessage);
+        ResultTestHelper.CheckFailure(result, FailureType.ConcurrencyViolation, FailedLayer.Infrastructure, $"{FailureType.ConcurrencyViolation.ToMessage<TestRepoResult>()} because {errorMessage}");
     }
     
     [Fact]

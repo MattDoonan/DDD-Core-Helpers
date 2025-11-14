@@ -4,7 +4,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{4AC178
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{147760F9-1489-4BF9-A67D-025F54EAD146}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Source\Core\Core.csproj", "{C20B9EBE-C43C-49E9-85DA-44EFDF2793E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDD.Core", "Source\DDD.Core\DDD.Core.csproj", "{C20B9EBE-C43C-49E9-85DA-44EFDF2793E1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueObjectTests", "Tests\ValueObjectTests\ValueObjectTests.csproj", "{245B3361-91A3-41BF-A56A-92F76A5E0A78}"
 EndProject

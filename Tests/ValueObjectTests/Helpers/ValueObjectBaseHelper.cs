@@ -1,6 +1,6 @@
-﻿using Core.Interfaces;
-using Core.Results.Basic;
-using Core.ValueObjects.Regular.Base;
+﻿using DDD.Core.Results;
+using DDD.Core.ValueObjects.Factories;
+using DDD.Core.ValueObjects.SingleValueObjects;
 using Xunit;
 
 namespace ValueObjectTests.Helpers;
