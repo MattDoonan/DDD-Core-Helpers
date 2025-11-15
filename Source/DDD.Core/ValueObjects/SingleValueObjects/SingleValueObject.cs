@@ -1,6 +1,5 @@
 ﻿using DDD.Core.Interfaces.Values;
 using DDD.Core.ValueObjects.Base;
-using DDD.Core.ValueObjects.Base.Interfaces;
 using DDD.Core.ValueObjects.SingleValueObjects.Interfaces;
 
 namespace DDD.Core.ValueObjects.SingleValueObjects;

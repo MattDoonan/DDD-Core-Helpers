@@ -1,6 +1,7 @@
-﻿using DDD.Core.ValueObjects.Identifiers.Interfaces;
+﻿using DDD.Core.Entities.Interfaces;
+using DDD.Core.ValueObjects.Identifiers.Interfaces;
 
-namespace DDD.Core.Entities.Regular;
+namespace DDD.Core.Entities;
 
 public abstract class Entity;
 

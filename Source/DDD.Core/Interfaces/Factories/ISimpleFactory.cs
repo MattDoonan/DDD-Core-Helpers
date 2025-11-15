@@ -1,4 +1,4 @@
-﻿using DDD.Core.Entities.Regular;
+﻿using DDD.Core.Entities;
 using DDD.Core.Results;
 using DDD.Core.Results.Base.Interfaces;
 

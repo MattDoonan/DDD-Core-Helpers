@@ -11,12 +11,12 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
     {
         get
         {
-            if (_output is not null && _hasGotOutput)
+            if (_output is not null && _hasOutput)
             {
                 return _output;
             }
             var type = typeof(T);
-            if (type.IsValueType && Nullable.GetUnderlyingType(type) is null || !_hasGotOutput)
+            if (type.IsValueType && Nullable.GetUnderlyingType(type) is null || !_hasOutput)
             {
                 throw new ResultException($"Cannot access the output of type {type.Name} when the result is a failure.");
             }
@@ -25,12 +25,12 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
     }
     
     private readonly T? _output;
-    private readonly bool _hasGotOutput;
+    private readonly bool _hasOutput;
     
     protected TypedResult(T value)
     {
         _output = value;
-        _hasGotOutput  = true;
+        _hasOutput  = true;
     }
     
     protected TypedResult(IResultStatus result) : base(result)
@@ -39,7 +39,7 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
         {
             throw new ResultException("Cannot convert a successful non-typed Result to a typed Result.");
         }
-        _hasGotOutput = false;
+        _hasOutput = false;
     }
 
     
@@ -48,22 +48,22 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
         if (valueResult.IsSuccessful)
         {
             _output = valueResult.Output;
-            _hasGotOutput = true;
+            _hasOutput = true;
         }
         else
         {
-            _hasGotOutput = false;
+            _hasOutput = false;
         }
     }
     
     protected TypedResult(FailureType failureType, string because) : base(failureType, failureType.ToMessage<T>(), because)
     {
-        _hasGotOutput = false;
+        _hasOutput = false;
     }
     
     protected TypedResult(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, failureType.ToMessage<T>(), because)
     {
-        _hasGotOutput = false;
+        _hasOutput = false;
     }
 
     public string GetOutputType()
@@ -74,7 +74,7 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
     public bool TryGetOutput([NotNullWhen(true)] out T? output)
     {
         output = _output;
-        return _hasGotOutput;
+        return _hasOutput;
     }
     
     public T? Unwrap()

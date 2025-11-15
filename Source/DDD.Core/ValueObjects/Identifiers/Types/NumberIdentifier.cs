@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using DDD.Core.Lists;
+using DDD.Core.Lists.Interfaces;
 using DDD.Core.ValueObjects.Factories;
 using DDD.Core.ValueObjects.Identifiers.Interfaces;
 using DDD.Core.ValueObjects.SingleValueObjects.Types;

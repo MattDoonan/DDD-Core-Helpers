@@ -1,7 +1,7 @@
 ﻿using DDD.Core.Results;
 using DDD.Core.ValueObjects.Identifiers.Interfaces;
 
-namespace DDD.Core.Lists;
+namespace DDD.Core.Lists.Interfaces;
 
 public interface IIdentifierList<T> 
     where T : IIdentifier

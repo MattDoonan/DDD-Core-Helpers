@@ -1,4 +1,4 @@
-﻿using DDD.Core.Entities.AggregateRoot;
+﻿using DDD.Core.Entities.Interfaces;
 using DDD.Core.Results;
 
 namespace DDD.Core.Interfaces.Repositories;

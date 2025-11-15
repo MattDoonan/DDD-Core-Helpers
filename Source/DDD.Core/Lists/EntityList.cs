@@ -1,7 +1,8 @@
-﻿using DDD.Core.Entities.Regular;
+﻿using DDD.Core.Entities.Interfaces;
+using DDD.Core.Lists.Interfaces;
 using DDD.Core.Results;
 
-namespace DDD.Core.Entities.List;
+namespace DDD.Core.Lists;
 
 public class EntityList<T>(params T[] values) : IEntityList<T>
     where T : class, IEntity

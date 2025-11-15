@@ -44,7 +44,7 @@ From lowest to highest in the hierarchy:
 - 🔹 **InfraResult:** Used in the infrastructure layer for non-repository infrastructure operations.
 - 🔹 **RepoResult:** Used in the infrastructure layer for repository operations.
 - 🔹 **ServiceResult:** Used in the service layer for domain-specific applications.
-- 🔹 **UseCaseResult:** Used in the use case layer. Typically, results are converted to this type when propagating outward.
+- 🔹 **UseCaseResult:** Used in the use case layer for application-specific operations.
 - 🔹 **Result:** A generic result type that can be used anywhere in the application.
 
 

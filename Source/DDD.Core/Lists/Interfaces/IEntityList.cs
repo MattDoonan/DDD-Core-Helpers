@@ -1,7 +1,7 @@
-﻿using DDD.Core.Entities.Regular;
+﻿using DDD.Core.Entities.Interfaces;
 using DDD.Core.Results;
 
-namespace DDD.Core.Entities.List;
+namespace DDD.Core.Lists.Interfaces;
 
 public interface IEntityList<T> 
     where T : IEntity

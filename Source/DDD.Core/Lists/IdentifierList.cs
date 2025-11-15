@@ -1,4 +1,5 @@
-﻿using DDD.Core.Results;
+﻿using DDD.Core.Lists.Interfaces;
+using DDD.Core.Results;
 using DDD.Core.ValueObjects.Identifiers.Interfaces;
 
 namespace DDD.Core.Lists;

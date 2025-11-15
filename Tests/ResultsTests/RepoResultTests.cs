@@ -1,4 +1,4 @@
-﻿using DDD.Core.Entities.AggregateRoot;
+﻿using DDD.Core.Entities;
 using DDD.Core.Results;
 using DDD.Core.Results.Enums;
 using DDD.Core.ValueObjects.Identifiers;
