@@ -6,11 +6,11 @@ namespace DDD.Core.ValueObjects.Factories;
 
 
 public interface IGuidCreatables<T>
-    where T : class, IIdentifier
+    where T : IIdentifier
 {
     static abstract ValueObjectResult<T> Create();
     static abstract ValueObjectResult<T> Create(string value);
 }
 
 public interface IGuidFactory<T> : IGuidCreatables<T>, ISingleValueObjectFactory<Guid, T>
-    where T : Identifier<Guid>;
+    where T : IIdentifier<Guid>;
