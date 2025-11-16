@@ -6,7 +6,7 @@ namespace DDD.Core.Interfaces.Repositories;
 public interface IBasicAddRepository<T>
     where T : IAggregateRoot
 {
-    RepoResult<T> Add(T aggregateRoot, CancellationToken token = default);
+    RepoResult<T> Add(T aggregateRoot);
 }
 
 public interface IBasicAddRepositoryAsync<T>
