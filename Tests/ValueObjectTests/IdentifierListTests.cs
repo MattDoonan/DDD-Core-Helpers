@@ -39,7 +39,7 @@ public class IdentifierListTests
         var result = list.Add(identifier);
 
         Assert.True(result.IsFailure);
-        Assert.Contains("the identifier already exists in the list", result.GetErrorMessages());
+        Assert.Contains("the identifier already exists in the list", result.ErrorMessagesToString());
     }
 
     [Fact]
@@ -64,6 +64,6 @@ public class IdentifierListTests
         var result = list.Remove(identifier);
 
         Assert.False(result.IsSuccessful);
-        Assert.Contains("the identifier does not exist in the list", result.GetErrorMessages());
+        Assert.Contains("the identifier does not exist in the list", result.ErrorMessagesToString());
     }
 }

@@ -8,10 +8,10 @@ public interface IBasicGetRepository<in TId, T>
     where T : IAggregateRoot<TId>
     where TId : IAggregateRootId
 {
-    RepoResult<T> Get(TId id);
+    void Get(TId id);
 }
 
-public interface IBasicGetRepositoryAsync<in TId, T>
+public interface IAsyncBasicGetRepository<in TId, T>
     where T : IAggregateRoot<TId>
     where TId : IAggregateRootId
 {

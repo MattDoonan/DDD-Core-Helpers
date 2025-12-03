@@ -5,7 +5,7 @@ namespace DDD.Core.Results.Base.Interfaces;
 public interface IResultFailure
 {
     public bool IsFailure { get; }
-    public IReadOnlyList<string> ErrorMessages { get; }
+    public IReadOnlyCollection<string> ErrorMessages { get; }
     public void AddErrorMessage(params string[] messages);
     
 }

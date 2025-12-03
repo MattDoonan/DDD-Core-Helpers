@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>DDD.EFCore</AssemblyName>
+        <RootNamespace>DDD.Core</RootNamespace>
+        <Version>1.2.1</Version>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Microsoft.EntityFrameworkCore" />
+        <Using Include="DDD.Core"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DDD.Core\DDD.Core.csproj" />
+    </ItemGroup>
+</Project>

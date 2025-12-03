@@ -3,13 +3,20 @@ using DDD.Core.Results;
 
 namespace DDD.Core.Interfaces.Repositories;
 
-public interface IBasicUpdateRepository<T>
+public interface IBasicUpdateRepository<in T>
     where T : IAggregateRoot
 {
-    RepoResult<T> Update(T aggregateRoot);
+    void Update(T aggregateRoot);
 }
 
-public interface IBasicUpdateRepositoryAsync<T>
+public interface IBasicUpdateManyRepository<in T>
+    where T : IAggregateRoot
+{
+    void UpdateMany(IEnumerable<T> aggregateRoots);
+}
+
+
+public interface IAsyncBasicUpdateRepository<T>
     where T : IAggregateRoot
 {
     Task<RepoResult<T>> UpdateAsync(T aggregateRoot, CancellationToken token = default);

@@ -9,11 +9,12 @@ public abstract class ResultStatus : IResultStatus
 {
     public bool IsSuccessful => !IsFailure;
     public bool IsFailure { get; }
-    private readonly List<string> _errors = [];
-    public IReadOnlyList<string> ErrorMessages => _errors.AsReadOnly();
+    public IReadOnlyCollection<string> ErrorMessages => _errors.AsReadOnly();
     public FailureType FailureType { get; }
     public FailedLayer FailedLayer { get; protected init; }
     public string MainError => this.MainErrorMessage();
+    
+    private readonly List<string> _errors = [];
 
     protected ResultStatus(FailureType failureType, string failureMessageStarter, string because) 
         : this(true, failureType : failureType, failureLayer: FailedLayer.Unknown, failureMessageStarter: failureMessageStarter, because: because)
@@ -90,10 +91,10 @@ public abstract class ResultStatus : IResultStatus
     
     public void LogMessage()
     {
-        Console.WriteLine(GetErrorMessages());
+        Console.WriteLine(ErrorMessagesToString());
     }
 
-    public string GetErrorMessages()
+    public string ErrorMessagesToString()
     {
         return string.Join(Environment.NewLine, ErrorMessages.ToArray());
     }

@@ -65,7 +65,7 @@ public static class ResultTestHelper
         Assert.Equal(expectedFailureType, result.FailureType);
         Assert.Equal(failedLayer, result.FailedLayer);
         Assert.Single(result.ErrorMessages);
-        Assert.Equal(expectedErrorMessage, result.GetErrorMessages());
+        Assert.Equal(expectedErrorMessage, result.ErrorMessagesToString());
         CheckFailureTypes(result, expectedFailureType);
     }
 
