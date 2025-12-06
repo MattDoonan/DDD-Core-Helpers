@@ -1,22 +1,25 @@
 ﻿using DDD.Core.Results.Base.Interfaces;
 using DDD.Core.Results.Convertables;
 using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
 using DDD.Core.Results.Helpers;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
 public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
 {
-    private InfraResult()
+    private InfraResult() 
+        : base(ResultLayer.Infrastructure)
     {
     }
     
-    private InfraResult(IRepoConvertable resultStatus) : base(resultStatus)
+    private InfraResult(IRepoConvertable resultStatus) 
+        : base(resultStatus, ResultLayer.Infrastructure)
     {
     }
     
-    private InfraResult(FailureType failureType, string because) : base(failureType, FailedLayer.Infrastructure, because)
+    private InfraResult(FailureType failureType, string? because) 
+        : base(failureType, ResultLayer.Infrastructure, because)
     {
     }
     
@@ -30,7 +33,7 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
         return new InfraResult();
     }
 
-    public static InfraResult Fail(string because = "")
+    public static InfraResult Fail(string? because = null)
     {
         return new InfraResult(FailureType.Generic, because);
     }
@@ -40,22 +43,22 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
         return From(result);
     }
     
-    public static InfraResult NotFound(string because = "")
+    public static InfraResult NotFound(string? because = null)
     {
         return new InfraResult(FailureType.NotFound, because);
     }
     
-    public static InfraResult AlreadyExists(string because = "")
+    public static InfraResult AlreadyExists(string? because = null)
     {
         return new InfraResult(FailureType.AlreadyExists, because);
     }
     
-    public static InfraResult InvalidRequest(string because = "")
+    public static InfraResult InvalidRequest(string? because = null)
     {
         return new InfraResult(FailureType.InvalidRequest, because);
     }
     
-    public static InfraResult OperationTimout(string because = "")
+    public static InfraResult OperationTimout(string? because = null)
     {
         return new InfraResult(FailureType.OperationTimeout, because);
     }
@@ -67,13 +70,6 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
     
     public static InfraResult From(IRepoConvertable result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new InfraResult(result)
-            {
-                FailedLayer = FailedLayer.Infrastructure
-            };   
-        }
         return new InfraResult(result);
     }
     
@@ -92,27 +88,27 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
         return InfraResult<T>.Pass(value);
     }
     
-    public static InfraResult<T> Fail<T>(string because = "")
+    public static InfraResult<T> Fail<T>(string? because = null)
     {
         return InfraResult<T>.Fail(FailureType.Generic, because);
     }
     
-    public static InfraResult<T> NotFound<T>(string because = "")
+    public static InfraResult<T> NotFound<T>(string? because = null)
     {
         return InfraResult<T>.Fail(FailureType.NotFound, because);
     }
     
-    public static InfraResult<T> AlreadyExists<T>(string because = "")
+    public static InfraResult<T> AlreadyExists<T>(string? because = null)
     {
         return InfraResult<T>.Fail(FailureType.AlreadyExists, because);
     }
     
-    public static InfraResult<T> InvalidRequest<T>(string because = "")
+    public static InfraResult<T> InvalidRequest<T>(string? because = null)
     {
         return InfraResult<T>.Fail(FailureType.InvalidRequest, because);
     }
     
-    public static InfraResult<T> OperationTimout<T>(string because = "")
+    public static InfraResult<T> OperationTimout<T>(string? because = null)
     {
         return InfraResult<T>.Fail(FailureType.OperationTimeout, because);
     }
@@ -125,19 +121,23 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
 
 public class InfraResult<T> : RepoConvertable<T>
 {
-    private InfraResult(T value) : base(value)
+    private InfraResult(T value) 
+        : base(value, ResultLayer.Infrastructure)
     {
     }
     
-    private InfraResult(FailureType failureType, string because) : base(failureType, FailedLayer.Infrastructure, because)
+    private InfraResult(FailureType failureType, string? because) 
+        : base(failureType, ResultLayer.Infrastructure, because)
     {
     }
     
-    private InfraResult(IRepoConvertable<T> result) : base(result)
+    private InfraResult(IRepoConvertable<T> result) 
+        : base(result, ResultLayer.Infrastructure)
     {
     }
     
-    private InfraResult(IRepoConvertable result) : base(result)
+    private InfraResult(IRepoConvertable result) 
+        : base(result, ResultLayer.Infrastructure)
     {
     }
     
@@ -156,32 +156,18 @@ public class InfraResult<T> : RepoConvertable<T>
         return new InfraResult<T>(value);
     }
 
-    internal static InfraResult<T> Fail(FailureType failureType, string because = "")
+    internal static InfraResult<T> Fail(FailureType failureType, string? because = null)
     {
         return new InfraResult<T>(failureType, because);
     }
     
     internal static InfraResult<T> From(IRepoConvertable<T> result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new InfraResult<T>(result)
-            {
-                FailedLayer = FailedLayer.Infrastructure
-            };   
-        }
         return new InfraResult<T>(result);
     }
     
     internal static InfraResult<T> From(IRepoConvertable result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new InfraResult<T>(result)
-            {
-                FailedLayer = FailedLayer.Infrastructure
-            };   
-        }
         return new InfraResult<T>(result);
     }
     

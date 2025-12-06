@@ -20,7 +20,7 @@ public abstract class Entity<TId> : Entity, IEntity<TId>
         Id = default!;
     }
     
-    public bool IdIsNotSet()
+    public bool IsIdDefault()
     {
         return EqualityComparer<TId>.Default.Equals(Id, default);
     }

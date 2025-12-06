@@ -1,22 +1,25 @@
 ﻿using DDD.Core.Constants;
 using DDD.Core.Results.Base;
 using DDD.Core.Results.Base.Interfaces;
-using DDD.Core.Results.Enums;
 using DDD.Core.Results.Helpers;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
-public class Result : NonTypedResult, IResultFactory<Result>
+public class Result : ResultStatus, IResultFactory<Result>
 {
-    private Result()
+    private Result(ResultLayer resultLayer = ResultLayer.Unknown) 
+        : base(resultLayer)
     {
     }
     
-    private Result(IResultStatus resultStatus) : base(resultStatus)
+    private Result(IResultStatus resultStatus, ResultLayer? newLayer = null) 
+        : base(resultStatus, newLayer)
     {
     }
     
-    private Result(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    private Result(FailureType failureType, ResultLayer failedLayer, string because) 
+        : base(failureType, failedLayer, because)
     {
     }
 
@@ -35,22 +38,27 @@ public class Result : NonTypedResult, IResultFactory<Result>
         return new Result();
     }
     
+    public static Result Pass(ResultLayer resultLayer)
+    {
+        return new Result(resultLayer);
+    }
+    
     public static Result Fail(string because = "")
     {
-        return new Result(FailureType.Generic, FailedLayer.Unknown, because);
+        return new Result(FailureType.Generic, ResultLayer.Unknown, because);
     }
 
     public static Result Fail(FailureType failureType, string because)
     {
-        return new Result(failureType, FailedLayer.Unknown, because);
+        return new Result(failureType, ResultLayer.Unknown, because);
     }
     
-    public static Result Fail(FailedLayer failedLayer, string because)
+    public static Result Fail(ResultLayer failedLayer, string because)
     {
         return new Result(FailureType.Generic, failedLayer, because);
     }
     
-    public static Result Fail(FailureType failureType, FailedLayer failedLayer, string because)
+    public static Result Fail(FailureType failureType, ResultLayer failedLayer, string because)
     {
         return new Result(failureType, failedLayer, because);
     }
@@ -63,6 +71,11 @@ public class Result : NonTypedResult, IResultFactory<Result>
     public static Result From(IResultStatus result)
     {
         return new Result(result);
+    }
+    
+    public static Result From(IResultStatus result, ResultLayer newResultLayer)
+    {
+        return new Result(result, newResultLayer);
     }
     
     public static Result<T> From<T>(ITypedResult<T> result)
@@ -85,6 +98,11 @@ public class Result : NonTypedResult, IResultFactory<Result>
         return Result<T>.Pass(value);
     }
     
+    public static Result<T> Pass<T>(T value, ResultLayer resultLayer)
+    {
+        return Result<T>.Pass(value, resultLayer);
+    }
+    
     public static Result<T> Copy<T>(Result<T> result)
     {
         return Result<T>.From(result);
@@ -92,20 +110,20 @@ public class Result : NonTypedResult, IResultFactory<Result>
     
     public static Result<T> Fail<T>(string because = "")
     {
-        return Result<T>.Fail(FailureType.Generic, FailedLayer.Unknown, because);
+        return Result<T>.Fail(FailureType.Generic, ResultLayer.Unknown, because);
     }
     
     public static Result<T> Fail<T>(FailureType failureType, string because = "")
     {
-        return Result<T>.Fail(failureType, FailedLayer.Unknown, because);
+        return Result<T>.Fail(failureType, ResultLayer.Unknown, because);
     }
     
-    public static Result<T> Fail<T>(FailedLayer failedLayer, string because = "")
+    public static Result<T> Fail<T>(ResultLayer failedLayer, string because = "")
     {
         return Result<T>.Fail(FailureType.Generic, failedLayer, because);
     }
     
-    public static Result<T> Fail<T>(FailureType failureType, FailedLayer failedLayer, string because = "")
+    public static Result<T> Fail<T>(FailureType failureType, ResultLayer failedLayer, string because = "")
     {
         return Result<T>.Fail(failureType, failedLayer, because);
     }
@@ -113,11 +131,12 @@ public class Result : NonTypedResult, IResultFactory<Result>
 
 public class Result<T> : TypedResult<T>
 {
-    private Result(T value) : base(value)
+    private Result(T value, ResultLayer resultLayer = ResultLayer.Unknown) 
+        : base(value, resultLayer)
     {
     }
     
-    private Result(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    private Result(FailureType failureType, ResultLayer failedLayer, string because) : base(failureType, failedLayer, because)
     {
     }
     
@@ -144,12 +163,12 @@ public class Result<T> : TypedResult<T>
         return Result<T2>.From(this);
     }
     
-    internal static Result<T> Pass(T value)
+    internal static Result<T> Pass(T value, ResultLayer resultLayer = ResultLayer.Unknown)
     {
-        return new Result<T>(value);
+        return new Result<T>(value, resultLayer);
     }
     
-    internal static Result<T> Fail(FailureType failureType, FailedLayer failedLayer, string because = "")
+    internal static Result<T> Fail(FailureType failureType, ResultLayer failedLayer, string because = "")
     {
         return new Result<T>(failureType, failedLayer, because);
     }

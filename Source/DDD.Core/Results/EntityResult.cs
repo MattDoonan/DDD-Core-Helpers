@@ -1,22 +1,25 @@
 ﻿using DDD.Core.Results.Base.Interfaces;
 using DDD.Core.Results.Convertables;
 using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
 using DDD.Core.Results.Helpers;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
 public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
 {
-    private EntityResult(IMapperConvertable resultStatus) : base(resultStatus)
+    private EntityResult(IMapperConvertable resultStatus) 
+        : base(resultStatus)
     {
     }
     
-    private EntityResult(FailureType failureType, string because) : base(failureType, because)
+    private EntityResult(FailureType failureType, string? because) 
+        : base(failureType, ResultLayer.Unknown, because)
     {
     }
 
-    private EntityResult()
+    private EntityResult() 
+        : base(ResultLayer.Unknown)
     {
     }
     
@@ -30,7 +33,7 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
         return new EntityResult();
     }
     
-    public static EntityResult Fail(string because = "")
+    public static EntityResult Fail(string? because = null)
     {
         return new EntityResult(FailureType.Generic, because);
     }
@@ -40,22 +43,22 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
         return new EntityResult(result);
     }
     
-    public static EntityResult DomainViolation(string because = "")
+    public static EntityResult DomainViolation(string? because = null)
     {
         return new EntityResult(FailureType.DomainViolation, because);
     }
     
-    public static EntityResult InvalidInput(string because = "")
+    public static EntityResult InvalidInput(string? because = null)
     {
         return new EntityResult(FailureType.InvalidInput, because);
     }
     
-    public static EntityResult NotFound(string because = "")
+    public static EntityResult NotFound(string? because = null)
     {
         return new EntityResult(FailureType.NotFound, because);
     }
     
-    public static EntityResult InvariantViolation(string because = "")
+    public static EntityResult InvariantViolation(string? because = null)
     {
         return new EntityResult(FailureType.InvariantViolation, because);
     }
@@ -85,27 +88,27 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
         return EntityResult<T>.Pass(value);
     }
     
-    public static EntityResult<T> Fail<T>(string because = "")
+    public static EntityResult<T> Fail<T>(string? because = null)
     {
         return EntityResult<T>.Fail(FailureType.Generic, because);
     }
     
-    public static EntityResult<T> DomainViolation<T>(string because = "")
+    public static EntityResult<T> DomainViolation<T>(string? because = null)
     {
         return EntityResult<T>.Fail(FailureType.DomainViolation, because);
     }
     
-    public static EntityResult<T> InvalidInput<T>(string because = "")
+    public static EntityResult<T> InvalidInput<T>(string? because = null)
     {
         return EntityResult<T>.Fail(FailureType.InvalidInput, because);
     }
     
-    public static EntityResult<T> NotFound<T>(string because = "")
+    public static EntityResult<T> NotFound<T>(string? because = null)
     {
         return EntityResult<T>.Fail(FailureType.NotFound, because);
     }
     
-    public static EntityResult<T> InvariantViolation<T>(string because = "")
+    public static EntityResult<T> InvariantViolation<T>(string? because = null)
     {
         return EntityResult<T>.Fail(FailureType.InvariantViolation, because);
     }
@@ -118,11 +121,13 @@ public class EntityResult : MapperConvertable, IResultFactory<EntityResult>
 
 public class EntityResult<T> : MapperConvertable<T>
 {
-    private EntityResult(T value) : base(value)
+    private EntityResult(T value) 
+        : base(value, ResultLayer.Unknown)
     {
     }
 
-    private EntityResult(FailureType failureType, string because) : base(failureType, because)
+    private EntityResult(FailureType failureType, string? because) 
+        : base(failureType, ResultLayer.Unknown, because)
     {
     }
     
@@ -149,7 +154,7 @@ public class EntityResult<T> : MapperConvertable<T>
         return new EntityResult<T>(value);
     }
 
-    internal static EntityResult<T> Fail(FailureType failureType, string because = "")
+    internal static EntityResult<T> Fail(FailureType failureType, string? because = null)
     {
         return new EntityResult<T>(failureType, because);
     }

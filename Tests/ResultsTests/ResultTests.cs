@@ -1,5 +1,5 @@
 ﻿using DDD.Core.Results;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 using OutputTests.Helpers;
 using Xunit;
 
@@ -146,7 +146,7 @@ public class ResultTests
         Assert.True(mergedResult.IsFailure);
         Assert.False(mergedResult.IsSuccessful);
         Assert.Equal(FailureType.Generic, mergedResult.FailureType);
-        Assert.Equal(FailedLayer.Unknown, mergedResult.FailedLayer);
+        Assert.Equal(ResultLayer.Unknown, mergedResult.FailedLayer);
         Assert.Equal(3, mergedResult.ErrorMessages.Count);
     }
 
@@ -174,24 +174,24 @@ public class ResultTests
     public static IEnumerable<object[]> FailedLayers =>
         new List<object[]>
         {
-            new object[] { FailedLayer.Unknown },
-            new object[] { FailedLayer.Infrastructure },
-            new object[] { FailedLayer.Service },
-            new object[] { FailedLayer.UseCase },
-            new object[] { FailedLayer.Web },
+            new object[] { ResultLayer.Unknown },
+            new object[] { ResultLayer.Infrastructure },
+            new object[] { ResultLayer.Service },
+            new object[] { ResultLayer.UseCase },
+            new object[] { ResultLayer.Web },
         };
     
     public static IEnumerable<object[]> FailureTypesAndLayers =>
         new List<object[]>
         {
-            new object[] { FailureType.Generic, FailedLayer.Unknown },
-            new object[] { FailureType.OperationTimeout, FailedLayer.Infrastructure },
-            new object[] { FailureType.InvalidRequest, FailedLayer.UseCase },
-            new object[] { FailureType.DomainViolation, FailedLayer.Unknown },
-            new object[] { FailureType.NotAllowed, FailedLayer.Infrastructure },
-            new object[] { FailureType.InvalidInput, FailedLayer.Service },
-            new object[] { FailureType.NotFound, FailedLayer.Unknown },
-            new object[] { FailureType.AlreadyExists, FailedLayer.Web },
+            new object[] { FailureType.Generic, ResultLayer.Unknown },
+            new object[] { FailureType.OperationTimeout, ResultLayer.Infrastructure },
+            new object[] { FailureType.InvalidRequest, ResultLayer.UseCase },
+            new object[] { FailureType.DomainViolation, ResultLayer.Unknown },
+            new object[] { FailureType.NotAllowed, ResultLayer.Infrastructure },
+            new object[] { FailureType.InvalidInput, ResultLayer.Service },
+            new object[] { FailureType.NotFound, ResultLayer.Unknown },
+            new object[] { FailureType.AlreadyExists, ResultLayer.Web },
         };
     
     [Theory, MemberData(nameof(FailureTypes))]
@@ -214,7 +214,7 @@ public class ResultTests
     
     [Theory, MemberData(nameof(FailedLayers))]
 
-    public void WhenIFailTheResult_WithAFailedLayer_Then_TheResultIsAFailure_TheCorrespondingFailedLayer(FailedLayer failedLayer)
+    public void WhenIFailTheResult_WithAFailedLayer_Then_TheResultIsAFailure_TheCorrespondingFailedLayer(ResultLayer failedLayer)
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail(failedLayer, errorMessage);
@@ -223,7 +223,7 @@ public class ResultTests
     
     [Theory, MemberData(nameof(FailedLayers))]
 
-    public void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAFailedLayer_Then_TheResultIsAFailure_TheCorrespondingFailedLayer(FailedLayer failedLayer)
+    public void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAFailedLayer_Then_TheResultIsAFailure_TheCorrespondingFailedLayer(ResultLayer failedLayer)
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail<int>(failedLayer, errorMessage);
@@ -232,7 +232,7 @@ public class ResultTests
     
     [Theory, MemberData(nameof(FailureTypesAndLayers))]
 
-    public void WhenIFailTheResult_WithAFailureType_AndWithAFailedLayer_Then_TheResultIsAFailure_TheCorrespondingFailedLayer(FailureType failureType, FailedLayer failedLayer)
+    public void WhenIFailTheResult_WithAFailureType_AndWithAFailedLayer_Then_TheResultIsAFailure_TheCorrespondingFailedLayer(FailureType failureType, ResultLayer failedLayer)
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail(failureType, failedLayer, errorMessage);
@@ -241,7 +241,7 @@ public class ResultTests
     
     [Theory, MemberData(nameof(FailureTypesAndLayers))]
 
-    public void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAFailureType_AndWithAFailedLayer_Then_TheResultIsAFailure_TheCorrespondingFailedLayer(FailureType failureType, FailedLayer failedLayer)
+    public void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAFailureType_AndWithAFailedLayer_Then_TheResultIsAFailure_TheCorrespondingFailedLayer(FailureType failureType, ResultLayer failedLayer)
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail<int>(failureType, failedLayer, errorMessage);
@@ -266,14 +266,14 @@ public class ResultTests
     public void WhenIFailTheResult_WithNoFailedLevel_Then_TheResultShouldThrowError()
     {
         const string errorMessage = "I want it to fail";
-        Assert.ThrowsAny<Exception>(() => Result.Fail(FailedLayer.None, errorMessage));
+        Assert.ThrowsAny<Exception>(() => Result.Fail(ResultLayer.None, errorMessage));
     }
     
     [Fact]
     public void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithANoFailedLevel_Then_TheResultShouldThrowError()
     {
         const string errorMessage = "I want it to fail";
-        Assert.ThrowsAny<Exception>(() => Result.Fail<long>(FailedLayer.None, errorMessage));
+        Assert.ThrowsAny<Exception>(() => Result.Fail<long>(ResultLayer.None, errorMessage));
     }
     
     [Fact]

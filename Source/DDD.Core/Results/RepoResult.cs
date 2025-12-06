@@ -1,22 +1,24 @@
 ﻿using DDD.Core.Results.Base.Interfaces;
 using DDD.Core.Results.Convertables;
 using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
 using DDD.Core.Results.Helpers;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
 public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
 {
     
-    private RepoResult()
+    private RepoResult() 
+        : base(ResultLayer.Infrastructure)
     {
     }
-    private RepoResult(IServiceConvertable resultStatus) : base(resultStatus)
+    private RepoResult(IServiceConvertable resultStatus) 
+        : base(resultStatus, ResultLayer.Infrastructure)
     {
     }
     
-    private RepoResult(FailureType failureType, string because) : base(failureType, FailedLayer.Infrastructure, because)
+    private RepoResult(FailureType failureType, string? because) : base(failureType, ResultLayer.Infrastructure, because)
     {
     }
     
@@ -30,7 +32,7 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
         return new RepoResult();
     }
 
-    public static RepoResult Fail(string because = "")
+    public static RepoResult Fail(string? because = null)
     {
         return new RepoResult(FailureType.Generic, because);
     }
@@ -40,27 +42,27 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
         return new RepoResult(result);
     }
 
-    public static RepoResult NotFound(string because = "")
+    public static RepoResult NotFound(string? because = null)
     {
         return new RepoResult(FailureType.NotFound, because);
     }
     
-    public static RepoResult AlreadyExists(string because = "")
+    public static RepoResult AlreadyExists(string? because = null)
     {
         return new RepoResult(FailureType.AlreadyExists, because);
     }
     
-    public static RepoResult InvalidRequest(string because = "")
+    public static RepoResult InvalidRequest(string? because = null)
     {
         return new RepoResult(FailureType.InvalidRequest, because);
     }
     
-    public static RepoResult ConcurrencyViolation(string because = "")
+    public static RepoResult ConcurrencyViolation(string? because = null)
     {
         return new RepoResult(FailureType.ConcurrencyViolation, because);
     }
     
-    public static RepoResult OperationTimeout(string because = "")
+    public static RepoResult OperationTimeout(string? because = null)
     {
         return new RepoResult(FailureType.OperationTimeout, because);
     }
@@ -72,13 +74,6 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
 
     public static RepoResult From(IServiceConvertable result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new RepoResult(result)
-            {
-                FailedLayer = FailedLayer.Infrastructure
-            };   
-        }
         return new RepoResult(result);
     }
     
@@ -102,32 +97,32 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
         return RepoResult<T>.Pass(value);
     }
     
-    public static RepoResult<T> Fail<T>(string because = "")
+    public static RepoResult<T> Fail<T>(string? because = null)
     {
         return RepoResult<T>.Fail(FailureType.Generic, because);
     }
     
-    public static RepoResult<T> NotFound<T>(string because = "")
+    public static RepoResult<T> NotFound<T>(string? because = null)
     {
         return RepoResult<T>.Fail(FailureType.NotFound, because);
     }
     
-    public static RepoResult<T> AlreadyExists<T>(string because = "")
+    public static RepoResult<T> AlreadyExists<T>(string? because = null)
     {
         return RepoResult<T>.Fail(FailureType.AlreadyExists, because);
     }
     
-    public static RepoResult<T> InvalidRequest<T>(string because = "")
+    public static RepoResult<T> InvalidRequest<T>(string? because = null)
     {
         return RepoResult<T>.Fail(FailureType.InvalidRequest, because);
     }
     
-    public static RepoResult<T> ConcurrencyViolation<T>(string because = "")
+    public static RepoResult<T> ConcurrencyViolation<T>(string? because = null)
     {
         return RepoResult<T>.Fail(FailureType.ConcurrencyViolation, because);
     }
     
-    public static RepoResult<T> OperationTimeout<T>(string because = "")
+    public static RepoResult<T> OperationTimeout<T>(string? because = null)
     {
         return RepoResult<T>.Fail(FailureType.OperationTimeout, because);
     }
@@ -145,19 +140,23 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
 
 public class RepoResult<T> : ServiceConvertable<T>
 {
-    private RepoResult(T value) : base(value)
+    private RepoResult(T value) 
+        : base(value, ResultLayer.Infrastructure)
     {
     }
     
-    private RepoResult(FailureType failureType, string because) : base(failureType, FailedLayer.Infrastructure, because)
+    private RepoResult(FailureType failureType, string? because) 
+        : base(failureType, ResultLayer.Infrastructure, because)
     {
     }
     
-    private RepoResult(IServiceConvertable<T> result) : base(result)
+    private RepoResult(IServiceConvertable<T> result) 
+        : base(result, ResultLayer.Infrastructure)
     {
     }
     
-    private RepoResult(IServiceConvertable result) : base(result)
+    private RepoResult(IServiceConvertable result) 
+        : base(result, ResultLayer.Infrastructure)
     {
     }
     
@@ -176,32 +175,18 @@ public class RepoResult<T> : ServiceConvertable<T>
         return new RepoResult<T>(value);
     }
 
-    internal static RepoResult<T> Fail(FailureType failureType, string because = "")
+    internal static RepoResult<T> Fail(FailureType failureType, string? because = null)
     {
         return new RepoResult<T>(failureType, because);
     }
     
     internal static RepoResult<T> From(IServiceConvertable<T> result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new RepoResult<T>(result)
-            {
-                FailedLayer = FailedLayer.Infrastructure
-            };   
-        }
         return new RepoResult<T>(result);
     }
     
     internal static RepoResult<T> From(IServiceConvertable result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new RepoResult<T>(result)
-            {
-                FailedLayer = FailedLayer.Infrastructure
-            };   
-        }
         return new RepoResult<T>(result);
     }
     

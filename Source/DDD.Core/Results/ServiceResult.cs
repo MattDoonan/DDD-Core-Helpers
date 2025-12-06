@@ -1,22 +1,25 @@
 ﻿using DDD.Core.Results.Base.Interfaces;
 using DDD.Core.Results.Convertables;
 using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
 using DDD.Core.Results.Helpers;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
 public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
 {
-    private ServiceResult()
+    private ServiceResult() 
+        : base(ResultLayer.Service)
     {
     }
     
-     private ServiceResult(IUseCaseConvertable resultStatus) : base(resultStatus)
+     private ServiceResult(IUseCaseConvertable resultStatus) 
+         : base(resultStatus, ResultLayer.Service)
     {
     }
     
-    private ServiceResult(FailureType failureType, string because) : base(failureType, FailedLayer.Service, because)
+    private ServiceResult(FailureType failureType, string? because) 
+        : base(failureType, ResultLayer.Service, because)
     {
     }
     
@@ -30,27 +33,27 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
         return new ServiceResult();
     }
 
-    public static ServiceResult Fail(string because = "")
+    public static ServiceResult Fail(string? because = null)
     {
         return new ServiceResult(FailureType.Generic, because);
     }
     
-    public static ServiceResult DomainViolation(string because = "")
+    public static ServiceResult DomainViolation(string? because = null)
     {
         return new ServiceResult(FailureType.DomainViolation, because);
     }
     
-    public static ServiceResult NotAllowed(string because = "")
+    public static ServiceResult NotAllowed(string? because = null)
     {
         return new ServiceResult(FailureType.NotAllowed, because);
     }
     
-    public static ServiceResult NotFound(string because = "")
+    public static ServiceResult NotFound(string? because = null)
     {
         return new ServiceResult(FailureType.NotFound, because);
     }
     
-    public static ServiceResult InvariantViolation(string because = "")
+    public static ServiceResult InvariantViolation(string? because = null)
     {
         return new ServiceResult(FailureType.InvariantViolation, because);
     }
@@ -62,13 +65,6 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
     
     public static ServiceResult From(IUseCaseConvertable result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new ServiceResult(result)
-            {
-                FailedLayer = FailedLayer.Service
-            };   
-        }
         return new ServiceResult(result);
     }
     
@@ -87,27 +83,27 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
         return ServiceResult<T>.Pass(value);
     }
 
-    public static ServiceResult<T> Fail<T>(string because = "")
+    public static ServiceResult<T> Fail<T>(string? because = null)
     {
         return ServiceResult<T>.Fail(FailureType.Generic, because);
     }
     
-    public static ServiceResult<T> DomainViolation<T>(string because = "")
+    public static ServiceResult<T> DomainViolation<T>(string? because = null)
     {
         return ServiceResult<T>.Fail(FailureType.DomainViolation, because);
     }
     
-    public static ServiceResult<T> NotAllowed<T>(string because = "")
+    public static ServiceResult<T> NotAllowed<T>(string? because = null)
     {
         return ServiceResult<T>.Fail(FailureType.NotAllowed, because);
     }
     
-    public static ServiceResult<T> NotFound<T>(string because = "")
+    public static ServiceResult<T> NotFound<T>(string? because = null)
     {
         return ServiceResult<T>.Fail(FailureType.NotFound, because);
     }
     
-    public static ServiceResult<T> InvariantViolation<T>(string because = "")
+    public static ServiceResult<T> InvariantViolation<T>(string? because = null)
     {
         return ServiceResult<T>.Fail(FailureType.InvariantViolation, because);
     }
@@ -125,19 +121,23 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
 
 public class ServiceResult<T> : UseCaseConvertable<T>
 {
-    private ServiceResult(T value) : base(value)
+    private ServiceResult(T value) 
+        : base(value, ResultLayer.Service)
     {
     }
     
-    private ServiceResult(FailureType failureType, string because) : base(failureType, FailedLayer.Service, because)
+    private ServiceResult(FailureType failureType, string? because) 
+        : base(failureType, ResultLayer.Service, because)
     {
     }
     
-    private ServiceResult(IUseCaseConvertable<T> result) : base(result)
+    private ServiceResult(IUseCaseConvertable<T> result) 
+        : base(result, ResultLayer.Service)
     {
     }
     
-    private ServiceResult(IUseCaseConvertable result) : base(result)
+    private ServiceResult(IUseCaseConvertable result)
+        : base(result, ResultLayer.Service)
     {
     }
     
@@ -156,32 +156,18 @@ public class ServiceResult<T> : UseCaseConvertable<T>
         return new ServiceResult<T>(value);
     }
 
-    internal static ServiceResult<T> Fail(FailureType failureType, string because = "")
+    internal static ServiceResult<T> Fail(FailureType failureType, string? because = null)
     {
         return new ServiceResult<T>(failureType, because);
     }
     
     internal static ServiceResult<T> From(IUseCaseConvertable<T> result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new ServiceResult<T>(result)
-            {
-                FailedLayer = FailedLayer.Service
-            };   
-        }
         return new ServiceResult<T>(result);
     }
     
     internal static ServiceResult<T> From(IUseCaseConvertable result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new ServiceResult<T>(result)
-            {
-                FailedLayer = FailedLayer.Service
-            };   
-        }
         return new ServiceResult<T>(result);
     }
     

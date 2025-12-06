@@ -22,7 +22,7 @@ public abstract class QueryRepository<T>
     {
         var fullQueryable = GetQueryable().OfType<TInheritor>();
         var query = fullQueryable.Where(predicate);
-        return QueryRepository.FindOneByQuery(query, hasTracking, token);
+        return QueryRepository.FindFirstByQuery(query, hasTracking, token);
     }
     
     protected Task<RepoResult<List<T>>> FindManyByPredicate(Expression<Func<T, bool>> predicate, bool hasTracking, CancellationToken token)
@@ -42,7 +42,7 @@ public abstract class QueryRepository<T>
     
     protected Task<RepoResult<T>> FindOneByQuery(IQueryable<T> query, bool hasTracking, CancellationToken token)
     {
-        return QueryRepository.FindOneByQuery(query, hasTracking, token);
+        return QueryRepository.FindFirstByQuery(query, hasTracking, token);
 
     }
     
@@ -54,39 +54,29 @@ public abstract class QueryRepository<T>
     protected abstract IQueryable<T> GetQueryable();
 }
 
-internal static class QueryRepository
+public static class QueryRepository
 {
-    public static async Task<RepoResult<T>> FindOneByQuery<T>(IQueryable<T> query, bool hasTracking, CancellationToken token)
+    public static async Task<RepoResult<T>> FindFirstByQuery<T>(IQueryable<T> query, bool hasTracking, CancellationToken token)
         where T : Entity, IAggregateRoot
     {
-        try
-        {
-            var entity = await query
-                .ConfigureTracking(hasTracking)
-                .FirstOrDefaultAsync(token);
-            return entity is not null 
-                ? RepoResult.Pass(entity) 
-                : RepoResult.NotFound<T>();
-        }
-        catch (Exception e)
-        {
-            return e.ToRepoResult<T>();
-        }
+        return await query
+            .ConfigureTracking(hasTracking)
+            .GetFirstAsync(token);
+    }
+    
+    public static async Task<RepoResult<T>> FindLastByQuery<T>(IQueryable<T> query, bool hasTracking, CancellationToken token)
+        where T : Entity, IAggregateRoot
+    {
+        return await query
+            .ConfigureTracking(hasTracking)
+            .GetLastAsync(token);
     }
     
     public static async Task<RepoResult<List<T>>> FindManyByQuery<T>(IQueryable<T> query, bool hasTracking, CancellationToken token)
         where T : Entity, IAggregateRoot
     {
-        try
-        {
-            var entityList = await query
-                .ConfigureTracking(hasTracking)
-                .ToListAsync(token);
-            return entityList;
-        }
-        catch (Exception e)
-        {
-            return e.ToRepoResult<List<T>>();
-        }
+        return await query
+            .ConfigureTracking(hasTracking)
+            .GetManyAsync(token);
     }
 }

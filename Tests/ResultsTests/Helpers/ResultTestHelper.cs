@@ -1,5 +1,5 @@
 ﻿using DDD.Core.Results.Base;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 using Xunit;
 
 namespace OutputTests.Helpers;
@@ -22,7 +22,7 @@ public static class ResultTestHelper
         Assert.Equal(expectedValue, result.Output);
     }
     
-    public static void CheckFailure<T>(TypedResult<T> result, FailureType expectedFailureType, FailedLayer failedLayer, string expectedErrorMessage)
+    public static void CheckFailure<T>(TypedResult<T> result, FailureType expectedFailureType, ResultLayer failedLayer, string expectedErrorMessage)
     {
         CheckFailure((ResultStatus) result, expectedFailureType, failedLayer, expectedErrorMessage);
         Assert.ThrowsAny<Exception>(() => result.Output);
@@ -30,7 +30,7 @@ public static class ResultTestHelper
     
     public static void CheckFailure<T>(TypedResult<T> result, FailureType expectedFailureType, string expectedErrorMessage)
     {
-        CheckFailure((ResultStatus) result, expectedFailureType, FailedLayer.Unknown, expectedErrorMessage);
+        CheckFailure((ResultStatus) result, expectedFailureType, ResultLayer.Unknown, expectedErrorMessage);
         Assert.ThrowsAny<Exception>(() => result.Output);
     }
     
@@ -48,17 +48,17 @@ public static class ResultTestHelper
         Assert.True(result.IsSuccessful);
         Assert.False(result.IsFailure);
         Assert.Equal(FailureType.None, result.FailureType);
-        Assert.Equal(FailedLayer.None, result.FailedLayer);
+        Assert.Equal(ResultLayer.None, result.FailedLayer);
         Assert.Empty(result.ErrorMessages);
         CheckFailureTypes(result, FailureType.None);
     }
     
     public static void CheckFailure(ResultStatus result, FailureType expectedFailureType, string expectedErrorMessage)
     {
-        CheckFailure(result, expectedFailureType, FailedLayer.Unknown, expectedErrorMessage);
+        CheckFailure(result, expectedFailureType, ResultLayer.Unknown, expectedErrorMessage);
     }
     
-    public static void CheckFailure(ResultStatus result, FailureType expectedFailureType, FailedLayer failedLayer, string expectedErrorMessage)
+    public static void CheckFailure(ResultStatus result, FailureType expectedFailureType, ResultLayer failedLayer, string expectedErrorMessage)
     {
         Assert.True(result.IsFailure);
         Assert.False(result.IsSuccessful);

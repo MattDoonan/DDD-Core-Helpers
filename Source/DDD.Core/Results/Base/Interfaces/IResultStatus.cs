@@ -1,11 +1,12 @@
-﻿using DDD.Core.Results.Enums;
+﻿using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Base.Interfaces;
 
 public interface IResultFailure
 {
     public bool IsFailure { get; }
-    public IReadOnlyCollection<string> ErrorMessages { get; }
+    public IReadOnlyCollection<ResultError> Errors { get; }
+    public IEnumerable<string> ErrorMessages { get; }
     public void AddErrorMessage(params string[] messages);
     
 }
@@ -13,7 +14,7 @@ public interface IResultFailure
 public interface IResultStatus : IResultFailure
 {
     public bool IsSuccessful => !IsFailure;
-    public FailureType FailureType { get; }
-    public FailedLayer FailedLayer { get; }
-    public string MainError => FailureType.ToMessage();
+    public FailureType CurrentFailureType { get; }
+    public ResultLayer CurrentLayer { get; }
+    public string MainError { get; }
 }

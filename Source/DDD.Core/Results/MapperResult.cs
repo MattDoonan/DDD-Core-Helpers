@@ -1,22 +1,25 @@
 ﻿using DDD.Core.Results.Base.Interfaces;
 using DDD.Core.Results.Convertables;
 using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
 using DDD.Core.Results.Helpers;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
 public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
 {
-    private MapperResult(IInfraConvertable resultStatus) : base(resultStatus)
+    private MapperResult(IInfraConvertable resultStatus) 
+        : base(resultStatus)
     {
     }
     
-    private MapperResult(FailureType failureType, string because) : base(failureType, because)
+    private MapperResult(FailureType failureType, string because) 
+        : base(failureType, ResultLayer.Unknown, because)
     {
     }
 
-    private MapperResult()
+    private MapperResult() 
+        : base(ResultLayer.Unknown)
     {
     }
     
@@ -108,19 +111,22 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
 
 public class MapperResult<T> : InfraConvertable<T>
 {
-    private MapperResult(T value) : base(value)
+    private MapperResult(T value) : base(value, ResultLayer.Unknown)
     {
     }
 
-    private MapperResult(FailureType failureType, string because) : base(failureType, because)
+    private MapperResult(FailureType failureType, string because) 
+        : base(failureType, ResultLayer.Unknown, because)
     {
     }
     
-    private MapperResult(IInfraConvertable<T> result) : base(result)
+    private MapperResult(IInfraConvertable<T> result) 
+        : base(result)
     {
     }
     
-    private MapperResult(IInfraConvertable result) : base(result)
+    private MapperResult(IInfraConvertable result) 
+        : base(result)
     {
     }
     

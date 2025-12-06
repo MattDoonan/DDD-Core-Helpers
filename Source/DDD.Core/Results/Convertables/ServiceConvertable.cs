@@ -1,23 +1,23 @@
 ﻿using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Convertables;
 
 public abstract class ServiceConvertable : UseCaseConvertable, IServiceConvertable
 {
-    protected ServiceConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
     
-    protected ServiceConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected ServiceConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
 
-    protected ServiceConvertable(IServiceConvertable result) : base(result)
+    protected ServiceConvertable(IServiceConvertable result, ResultLayer? newResultLayer = null) 
+        : base(result, newResultLayer)
     {
     }
     
-    protected ServiceConvertable()
+    protected ServiceConvertable(ResultLayer layer) 
+        : base(layer)
     {
     }
 
@@ -39,23 +39,22 @@ public abstract class ServiceConvertable : UseCaseConvertable, IServiceConvertab
 
 public abstract class ServiceConvertable<T> : UseCaseConvertable<T>, IServiceConvertable<T>
 {
-    protected ServiceConvertable(T value) : base(value)
+    protected ServiceConvertable(T value, ResultLayer resultLayer) 
+        : base(value, resultLayer)
     {
     }
 
-    protected ServiceConvertable(IServiceConvertable valueResult) : base(valueResult)
+    protected ServiceConvertable(IServiceConvertable valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected ServiceConvertable(IServiceConvertable<T> valueResult) : base(valueResult)
+    protected ServiceConvertable(IServiceConvertable<T> valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected ServiceConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-
-    protected ServiceConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected ServiceConvertable(FailureType failureType, ResultLayer failedLayer, string? because) : base(failureType, failedLayer, because)
     {
     }
     

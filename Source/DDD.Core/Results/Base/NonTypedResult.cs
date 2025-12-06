@@ -1,23 +1,23 @@
 ﻿using DDD.Core.Results.Base.Interfaces;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Base;
 
 public abstract class NonTypedResult : ResultStatus
 {
-    protected NonTypedResult(FailureType failureType, string because) : base(failureType, failureType.ToMessage(), because)
+    protected NonTypedResult(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
+    {
+    }
+
+    protected NonTypedResult(IResultStatus result, ResultLayer? newResultLayer = null) 
+        : base(result, newResultLayer)
     {
     }
     
-    protected NonTypedResult(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, failureType.ToMessage(), because)
+    protected NonTypedResult(ResultLayer resultLayer) 
+        : base(resultLayer) 
     {
     }
-
-    protected NonTypedResult()
-    {
-    }
-
-    protected NonTypedResult(IResultStatus result) : base(result)
-    {
-    }
+    
 }

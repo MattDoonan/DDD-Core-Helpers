@@ -15,7 +15,7 @@ public static class DbContextExtensions
             where TId : ValueObject, IAggregateRootId
             where TAggregate : Entity, IAggregateRoot<TId>
         {
-            var repository = context.CreateGetRepository<TId, TAggregate>();
+            var repository = new GetRepository<TId, TAggregate>(context.Set<TAggregate>());
             return repository.GetAsync(id, token);
         }
 
@@ -23,7 +23,7 @@ public static class DbContextExtensions
             where TId : ValueObject, IAggregateRootId
             where TAggregate : Entity, IAggregateRoot<TId>
         {
-            var repository = context.CreateGetRepository<TId, TAggregate>();
+            var repository = new GetRepository<TId, TAggregate>(context.Set<TAggregate>());
             return repository.GetTrackedAsync(id, token);
         }
     }

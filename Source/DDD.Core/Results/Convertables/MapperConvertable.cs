@@ -1,23 +1,22 @@
 ﻿using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Convertables;
 
 public abstract class MapperConvertable : InfraConvertable, IMapperConvertable
 {
-    protected MapperConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-    
-    protected MapperConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected MapperConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
 
-    protected MapperConvertable(IMapperConvertable result) : base(result)
+    protected MapperConvertable(IMapperConvertable result, ResultLayer? newResultLayer = null) 
+        : base(result, newResultLayer)
     {
     }
     
-    protected MapperConvertable()
+    protected MapperConvertable(ResultLayer resultLayer) 
+        : base(resultLayer)
     {
     }
     
@@ -39,23 +38,23 @@ public abstract class MapperConvertable : InfraConvertable, IMapperConvertable
 
 public abstract class MapperConvertable<T> : InfraConvertable<T>, IMapperConvertable<T>
 {
-    protected MapperConvertable(T value) : base(value)
+    protected MapperConvertable(T value, ResultLayer resultLayer) 
+        : base(value, resultLayer)
     {
     }
 
-    protected MapperConvertable(IMapperConvertable valueResult) : base(valueResult)
+    protected MapperConvertable(IMapperConvertable valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected MapperConvertable(IMapperConvertable<T> valueResult) : base(valueResult)
+    protected MapperConvertable(IMapperConvertable<T> valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected MapperConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-
-    protected MapperConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected MapperConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
     

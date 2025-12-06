@@ -1,23 +1,23 @@
 ﻿using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Convertables;
 
 public abstract class UseCaseConvertable : ResultConvertable, IUseCaseConvertable
 {
-    protected UseCaseConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
     
-    protected UseCaseConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected UseCaseConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
 
-    protected UseCaseConvertable(IUseCaseConvertable result) : base(result)
+    protected UseCaseConvertable(IUseCaseConvertable result, ResultLayer? newResultLayer = null) 
+        : base(result, newResultLayer)
     {
     }
     
-    protected UseCaseConvertable()
+    protected UseCaseConvertable(ResultLayer layer) 
+        : base(layer)
     {
     }
     
@@ -39,23 +39,22 @@ public abstract class UseCaseConvertable : ResultConvertable, IUseCaseConvertabl
 
 public abstract class UseCaseConvertable<T> : ResultConvertable<T>, IUseCaseConvertable<T>
 {
-    protected UseCaseConvertable(T value) : base(value)
+    protected UseCaseConvertable(T value, ResultLayer resultLayer) : base(value, resultLayer)
     {
     }
 
-    protected UseCaseConvertable(IUseCaseConvertable valueResult) : base(valueResult)
+    protected UseCaseConvertable(IUseCaseConvertable valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected UseCaseConvertable(IUseCaseConvertable<T> valueResult) : base(valueResult)
+    protected UseCaseConvertable(IUseCaseConvertable<T> valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected UseCaseConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-
-    protected UseCaseConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected UseCaseConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
     

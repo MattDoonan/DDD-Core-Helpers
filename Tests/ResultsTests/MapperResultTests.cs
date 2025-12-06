@@ -1,5 +1,5 @@
 ﻿using DDD.Core.Results;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 using OutputTests.Helpers;
 using Xunit;
 
@@ -102,7 +102,7 @@ public class MapperResultTests : BasicResultTests
         Assert.True(mergedResult.IsFailure);
         Assert.False(mergedResult.IsSuccessful);
         Assert.Equal(FailureType.Generic, mergedResult.FailureType);
-        Assert.Equal(FailedLayer.Unknown, mergedResult.FailedLayer);
+        Assert.Equal(ResultLayer.Unknown, mergedResult.FailedLayer);
         Assert.Equal(3, mergedResult.ErrorMessages.Count);
     }
 
@@ -239,7 +239,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<byte>(errorMessage);    
         var convertedResult = result.ToTypedInfraResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure, $"{FailureType.Generic.ToMessage<byte>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure, $"{FailureType.Generic.ToMessage<byte>()} because {errorMessage}");
     }
     
     [Fact]
@@ -257,7 +257,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToInfraResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
     }
     
     [Fact]
@@ -274,7 +274,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail(errorMessage);    
         var convertedResult = result.ToInfraResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Infrastructure,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
     
     [Fact]
@@ -292,7 +292,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<short>(errorMessage);    
         var convertedResult = result.ToTypedServiceResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Service, $"{FailureType.Generic.ToMessage<short>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service, $"{FailureType.Generic.ToMessage<short>()} because {errorMessage}");
     }
     
     [Fact]
@@ -310,7 +310,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToServiceResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic,  FailedLayer.Service,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic,  ResultLayer.Service,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
     }
     
     [Fact]
@@ -327,7 +327,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail(errorMessage);    
         var convertedResult = result.ToServiceResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Service, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
     
     [Fact]
@@ -345,7 +345,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<long>(errorMessage);    
         var convertedResult = result.ToTypedUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.UseCase, $"{FailureType.Generic.ToMessage<long>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.UseCase, $"{FailureType.Generic.ToMessage<long>()} because {errorMessage}");
     }
     
     [Fact]
@@ -363,7 +363,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<int>(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.UseCase, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.UseCase, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
     }
     
     [Fact]
@@ -380,7 +380,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.UseCase, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.UseCase, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
     
     [Fact]

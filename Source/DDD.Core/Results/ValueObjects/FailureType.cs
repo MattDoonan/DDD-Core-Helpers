@@ -1,4 +1,4 @@
-﻿namespace DDD.Core.Results.Enums;
+﻿namespace DDD.Core.Results.ValueObjects;
 
 public enum FailureType
 {
@@ -20,6 +20,19 @@ public static class FailureTypeExtensions
 {
     extension(FailureType failureType)
     {
+        public string ToMessage(Type? outputType)
+        {
+            return outputType is null 
+                ? ToMessage(failureType) 
+                : ToTypedMessage(failureType, outputType);
+        }
+
+        public string ToMessage<T>()
+        {
+            return ToTypedMessage(failureType, typeof(T));
+
+        }
+        
         public string ToMessage()
         {
             return failureType switch
@@ -40,9 +53,9 @@ public static class FailureTypeExtensions
             };
         }
 
-        public string ToMessage<T>()
+        private string ToTypedMessage(Type type)
         {
-            var objectName = typeof(T).Name;
+            var objectName = type.Name;
             return failureType switch
             {
                 FailureType.None  => $"Result retrieving {objectName} was successful",

@@ -1,5 +1,5 @@
 ﻿using DDD.Core.Results;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 using OutputTests.Helpers;
 using Xunit;
 
@@ -16,14 +16,14 @@ public class ServiceResultTests : BasicResultTests
     public override void WhenIFailTheResult_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.Fail();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.Service, FailureType.Generic.ToMessage());
+        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Service, FailureType.Generic.ToMessage());
     }
 
     public override void WhenIFailTheResult_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic,  FailedLayer.Service, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.Generic,  ResultLayer.Service, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
 
     public override void GivenIHaveASuccessfulResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -38,7 +38,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var serviceResult = ServiceResult.Fail(errorMessage);
         var result = serviceResult.ToResult();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.Service, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Service, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully()
@@ -102,7 +102,7 @@ public class ServiceResultTests : BasicResultTests
         Assert.True(mergedResult.IsFailure);
         Assert.False(mergedResult.IsSuccessful);
         Assert.Equal(FailureType.Generic, mergedResult.FailureType);
-        Assert.Equal(FailedLayer.Service, mergedResult.FailedLayer);
+        Assert.Equal(ResultLayer.Service, mergedResult.FailedLayer);
         Assert.Equal(3, mergedResult.ErrorMessages.Count);
     }
 
@@ -116,14 +116,14 @@ public class ServiceResultTests : BasicResultTests
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.Fail<int>();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.Service, FailureType.Generic.ToMessage<int>());    
+        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Service, FailureType.Generic.ToMessage<int>());    
     }
 
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.Service, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Service, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
     }
 
     public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
@@ -148,7 +148,7 @@ public class ServiceResultTests : BasicResultTests
         var serviceResult = ServiceResult.Fail<int>(errorMessage);
         var result = serviceResult.ToTypedResult();
         Assert.IsType<Result<int>>(result);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.Service, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Service, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
     }
 
     public override void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -179,7 +179,7 @@ public class ServiceResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.DomainViolation(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, FailedLayer.Service, $"{FailureType.DomainViolation.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, ResultLayer.Service, $"{FailureType.DomainViolation.ToMessage()} because {errorMessage}");
     }
     
     [Fact]
@@ -187,7 +187,7 @@ public class ServiceResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.NotAllowed(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.NotAllowed, FailedLayer.Service, $"{FailureType.NotAllowed.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.NotAllowed, ResultLayer.Service, $"{FailureType.NotAllowed.ToMessage()} because {errorMessage}");
     }
     
     [Fact]
@@ -195,7 +195,7 @@ public class ServiceResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.DomainViolation<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, FailedLayer.Service, $"{FailureType.DomainViolation.ToMessage<int>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, ResultLayer.Service, $"{FailureType.DomainViolation.ToMessage<int>()} because {errorMessage}");
     }
     
     [Fact]
@@ -203,35 +203,35 @@ public class ServiceResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.NotAllowed<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.NotAllowed, FailedLayer.Service, $"{FailureType.NotAllowed.ToMessage<int>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.NotAllowed, ResultLayer.Service, $"{FailureType.NotAllowed.ToMessage<int>()} because {errorMessage}");
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfANotFoundError_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.NotFound();
-        ResultTestHelper.CheckFailure(result, FailureType.NotFound, FailedLayer.Service, FailureType.NotFound.ToMessage());    
+        ResultTestHelper.CheckFailure(result, FailureType.NotFound, ResultLayer.Service, FailureType.NotFound.ToMessage());    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfANotFoundError_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.NotFound<int>();
-        ResultTestHelper.CheckFailure(result, FailureType.NotFound, FailedLayer.Service, FailureType.NotFound.ToMessage<int>());    
+        ResultTestHelper.CheckFailure(result, FailureType.NotFound, ResultLayer.Service, FailureType.NotFound.ToMessage<int>());    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvariantViolation_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.InvariantViolation();
-        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailedLayer.Service, FailureType.InvariantViolation.ToMessage());    
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, ResultLayer.Service, FailureType.InvariantViolation.ToMessage());    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvariantViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.InvariantViolation<int>();
-        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailedLayer.Service, FailureType.InvariantViolation.ToMessage<int>());    
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, ResultLayer.Service, FailureType.InvariantViolation.ToMessage<int>());    
     }
     
     [Fact]
@@ -257,7 +257,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToTypedUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Service,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
     }
     
     [Fact]
@@ -275,7 +275,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Service,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
     }
     
     [Fact]
@@ -292,7 +292,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Service,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
     
     [Fact]
@@ -301,7 +301,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail(errorMessage);    
         var convertedResult = result.ToTypedServiceResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Service,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
     
     [Fact]
@@ -310,6 +310,6 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail<int>(errorMessage);    
         var convertedResult = result.ToTypedServiceResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.Service,$"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
     }
 }

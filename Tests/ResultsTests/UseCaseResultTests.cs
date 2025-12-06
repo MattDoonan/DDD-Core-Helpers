@@ -1,5 +1,5 @@
 ﻿using DDD.Core.Results;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 using OutputTests.Helpers;
 using Xunit;
 
@@ -16,14 +16,14 @@ public class UseCaseResultTests : BasicResultTests
     public override void WhenIFailTheResult_Then_TheResultIsAFailure()
     {
         var result = UseCaseResult.Fail();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.UseCase, FailureType.Generic.ToMessage());
+        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.UseCase, FailureType.Generic.ToMessage());
     }
 
     public override void WhenIFailTheResult_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = UseCaseResult.Fail(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.UseCase,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.UseCase,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
 
     public override void GivenIHaveASuccessfulResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -38,7 +38,7 @@ public class UseCaseResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var useCaseResult = UseCaseResult.Fail(errorMessage);
         var result = useCaseResult.ToResult();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.UseCase,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.UseCase,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully()
@@ -102,7 +102,7 @@ public class UseCaseResultTests : BasicResultTests
         Assert.True(mergedResult.IsFailure);
         Assert.False(mergedResult.IsSuccessful);
         Assert.Equal(FailureType.Generic, mergedResult.FailureType);
-        Assert.Equal(FailedLayer.UseCase, mergedResult.FailedLayer);
+        Assert.Equal(ResultLayer.UseCase, mergedResult.FailedLayer);
         Assert.Equal(3, mergedResult.ErrorMessages.Count);
     }
 
@@ -116,14 +116,14 @@ public class UseCaseResultTests : BasicResultTests
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = UseCaseResult.Fail<string>();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.UseCase, FailureType.Generic.ToMessage<string>());    
+        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.UseCase, FailureType.Generic.ToMessage<string>());    
     }
 
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = UseCaseResult.Fail<string>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.UseCase,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.UseCase,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
     }
 
     public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
@@ -148,7 +148,7 @@ public class UseCaseResultTests : BasicResultTests
         var useCaseResult = UseCaseResult.Fail<string>(errorMessage);
         var result = useCaseResult.ToTypedResult();
         Assert.IsType<Result<string>>(result);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailedLayer.UseCase,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.UseCase,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
     }
 
     public override void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -178,14 +178,14 @@ public class UseCaseResultTests : BasicResultTests
     public void WhenIFailTheResult_BecauseOfAnInvariantViolation_Then_TheResultIsAFailure()
     {
         var result = UseCaseResult.InvariantViolation();
-        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailedLayer.UseCase, FailureType.InvariantViolation.ToMessage());    
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, ResultLayer.UseCase, FailureType.InvariantViolation.ToMessage());    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvariantViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = UseCaseResult.InvariantViolation<int>();
-        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailedLayer.UseCase, FailureType.InvariantViolation.ToMessage<int>());    
+        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, ResultLayer.UseCase, FailureType.InvariantViolation.ToMessage<int>());    
     }
     
     [Fact]
@@ -194,7 +194,7 @@ public class UseCaseResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = UseCaseResult.Fail(errorMessage);    
         var convertedResult = result.ToTypedUseCaseResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.UseCase,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.UseCase,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
     }
     
     [Fact]
@@ -203,6 +203,6 @@ public class UseCaseResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = UseCaseResult.Fail<int>(errorMessage);    
         var convertedResult = result.ToTypedUseCaseResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, FailedLayer.UseCase,$"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.UseCase,$"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
     }
 }

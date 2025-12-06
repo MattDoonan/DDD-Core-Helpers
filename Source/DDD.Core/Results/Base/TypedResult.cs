@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using DDD.Core.Results.Base.Interfaces;
-using DDD.Core.Results.Enums;
 using DDD.Core.Results.Exceptions;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Base;
 
@@ -11,59 +11,62 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
     {
         get
         {
-            if (_output is not null && _hasOutput)
+            if (_output is not null && HasOutput)
             {
                 return _output;
             }
             var type = typeof(T);
-            if (type.IsValueType && Nullable.GetUnderlyingType(type) is null || !_hasOutput)
+            if (type.IsValueType && Nullable.GetUnderlyingType(type) is null || !HasOutput)
             {
-                throw new ResultException($"Cannot access the output of type {type.Name} when the result is a failure.");
+                throw new ResultException(this, $"Cannot access the output of type {type.Name} when the result is a failure.");
             }
             return default!;
         }
     }
-    
+    public bool HasOutput { get; }
+
     private readonly T? _output;
-    private readonly bool _hasOutput;
-    
-    protected TypedResult(T value)
+
+    protected TypedResult(T value, ResultLayer layer) : base(layer)
     {
         _output = value;
-        _hasOutput  = true;
+        HasOutput  = true;
     }
     
-    protected TypedResult(IResultStatus result) : base(result)
+    protected TypedResult(IResultStatus result, ResultLayer? newResultLayer = null) 
+        : base(result, newResultLayer)
     {
         if (result.IsSuccessful)
         {
-            throw new ResultException("Cannot convert a successful non-typed Result to a typed Result.");
+            throw new ResultException(this, "Cannot convert a successful non-typed Result to a typed Result.");
         }
-        _hasOutput = false;
+        HasOutput = false;
     }
 
     
-    protected TypedResult(ITypedResult<T> valueResult) : base(valueResult)
+    protected TypedResult(ITypedResult<T> valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
         if (valueResult.IsSuccessful)
         {
             _output = valueResult.Output;
-            _hasOutput = true;
+            HasOutput = true;
         }
         else
         {
-            _hasOutput = false;
+            HasOutput = false;
         }
     }
     
-    protected TypedResult(FailureType failureType, string because) : base(failureType, failureType.ToMessage<T>(), because)
+    protected TypedResult(FailureType failureType, ResultLayer failedLayer, string? because)
+        : base(new ResultError(failureType, failedLayer, because, typeof(T)))
     {
-        _hasOutput = false;
+        HasOutput = false;
     }
     
-    protected TypedResult(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, failureType.ToMessage<T>(), because)
+    public T GetOrDefault(T defaultValue)
     {
-        _hasOutput = false;
+        return _output ?? defaultValue;
     }
 
     public string GetOutputType()
@@ -74,7 +77,7 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
     public bool TryGetOutput([NotNullWhen(true)] out T? output)
     {
         output = _output;
-        return _hasOutput;
+        return HasOutput;
     }
     
     public T? Unwrap()

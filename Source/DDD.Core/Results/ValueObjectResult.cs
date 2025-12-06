@@ -1,6 +1,6 @@
 ﻿using DDD.Core.Results.Convertables;
 using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 using DDD.Core.ValueObjects.Base;
 
 namespace DDD.Core.Results;
@@ -41,11 +41,13 @@ public static class ValueObjectResult
 
 public class ValueObjectResult<T> : EntityConvertable<T>
 {
-    private ValueObjectResult(T value) : base(value)
+    private ValueObjectResult(T value) 
+        : base(value, ResultLayer.Unknown)
     {
     }
     
-    private ValueObjectResult(FailureType failureType, string because) : base(failureType, because)
+    private ValueObjectResult(FailureType failureType, string because) 
+        : base(failureType, ResultLayer.Unknown, because)
     {
     }
     

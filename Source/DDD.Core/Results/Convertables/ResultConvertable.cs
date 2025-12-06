@@ -1,25 +1,24 @@
 ﻿using DDD.Core.Results.Base;
 using DDD.Core.Results.Base.Interfaces;
 using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Convertables;
 
 public abstract class ResultConvertable : NonTypedResult, IResultConvertable
 {
-    protected ResultConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-    
-    protected ResultConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected ResultConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
 
-    protected ResultConvertable(IResultConvertable result) : base(result)
+    protected ResultConvertable(IResultConvertable result, ResultLayer? newResultLayer = null) 
+        : base(result, newResultLayer)
     {
     }
     
-    protected ResultConvertable()
+    protected ResultConvertable(ResultLayer resultLayer) 
+        : base(resultLayer) 
     {
     }
 
@@ -42,23 +41,23 @@ public abstract class ResultConvertable : NonTypedResult, IResultConvertable
 
 public abstract class ResultConvertable<T> : TypedResult<T>, IResultConvertable<T>
 {
-    protected ResultConvertable(T value) : base(value)
+    protected ResultConvertable(T value, ResultLayer resultLayer) 
+        : base(value, resultLayer)
     {
     }
 
-    protected ResultConvertable(IResultConvertable valueResult) : base(valueResult)
+    protected ResultConvertable(IResultConvertable valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected ResultConvertable(IResultConvertable<T> valueResult) : base(valueResult)
+    protected ResultConvertable(IResultConvertable<T> valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected ResultConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-
-    protected ResultConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected ResultConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
     

@@ -1,23 +1,22 @@
 ﻿using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Convertables;
 
 public abstract class EntityConvertable : MapperConvertable, IEntityConvertable
 {
-    protected EntityConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-    
-    protected EntityConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected EntityConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
 
-    protected EntityConvertable(IMapperConvertable result) : base(result)
+    protected EntityConvertable(IMapperConvertable result, ResultLayer? newResultLayer = null) 
+        : base(result, newResultLayer)
     {
     }
     
-    protected EntityConvertable()
+    protected EntityConvertable(ResultLayer resultLayer) 
+        : base(resultLayer)
     {
     }
     
@@ -39,23 +38,22 @@ public abstract class EntityConvertable : MapperConvertable, IEntityConvertable
 
 public abstract class EntityConvertable<T> : MapperConvertable<T>, IEntityConvertable<T>
 {
-    protected EntityConvertable(T value) : base(value)
+    protected EntityConvertable(T value, ResultLayer resultLayer) : base(value, resultLayer)
     {
     }
 
-    protected EntityConvertable(IMapperConvertable valueResult) : base(valueResult)
+    protected EntityConvertable(IMapperConvertable valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected EntityConvertable(IMapperConvertable<T> valueResult) : base(valueResult)
+    protected EntityConvertable(IMapperConvertable<T> valueResult, ResultLayer? newResultLayer = null)
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected EntityConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-
-    protected EntityConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected EntityConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
     

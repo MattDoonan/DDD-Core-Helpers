@@ -1,21 +1,24 @@
 ﻿using DDD.Core.Results.Base.Interfaces;
 using DDD.Core.Results.Convertables;
 using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
 using DDD.Core.Results.Helpers;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
 public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
 {
-    private UseCaseResult()
+    private UseCaseResult() 
+        : base(ResultLayer.UseCase)
     {
     }
-    private UseCaseResult(IResultConvertable resultStatus) : base(resultStatus)
+    private UseCaseResult(IResultConvertable resultStatus) 
+        : base(resultStatus, ResultLayer.UseCase)
     {
     }
     
-    private UseCaseResult(FailureType failureType, string because) : base(failureType, FailedLayer.UseCase, because)
+    private UseCaseResult(FailureType failureType, string because) 
+        : base(failureType, ResultLayer.UseCase, because)
     {
     }
     
@@ -46,13 +49,6 @@ public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
     
     public static UseCaseResult From(IResultConvertable result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new UseCaseResult(result)
-            {
-                FailedLayer = FailedLayer.UseCase
-            };   
-        }
         return new UseCaseResult(result);
     }
     
@@ -94,19 +90,23 @@ public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
 
 public class UseCaseResult<T> : ResultConvertable<T>
 {
-    private UseCaseResult(T value) : base(value)
+    private UseCaseResult(T value) 
+        : base(value, ResultLayer.UseCase)
     {
     }
 
-    private UseCaseResult(FailureType failureType, string because) : base(failureType, FailedLayer.UseCase, because)
+    private UseCaseResult(FailureType failureType, string because) 
+        : base(failureType, ResultLayer.UseCase, because)
     {
     }
 
-    private UseCaseResult(IResultConvertable<T> result) : base(result)
+    private UseCaseResult(IResultConvertable<T> result) 
+        : base(result, ResultLayer.UseCase)
     {
     }
     
-    private UseCaseResult(IResultConvertable result) : base(result)
+    private UseCaseResult(IResultConvertable result) 
+        : base(result, ResultLayer.UseCase)
     {
     }
     
@@ -132,25 +132,11 @@ public class UseCaseResult<T> : ResultConvertable<T>
     
     internal static UseCaseResult<T> From(IResultConvertable<T> result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new UseCaseResult<T>(result)
-            {
-                FailedLayer = FailedLayer.UseCase
-            };   
-        }
         return new UseCaseResult<T>(result);
     }
     
     internal static UseCaseResult<T> From(IResultConvertable result)
     {
-        if (result is { IsFailure: true, FailedLayer: FailedLayer.Unknown })
-        {
-            return new UseCaseResult<T>(result)
-            {
-                FailedLayer = FailedLayer.UseCase
-            };   
-        }
         return new UseCaseResult<T>(result);
     }
     

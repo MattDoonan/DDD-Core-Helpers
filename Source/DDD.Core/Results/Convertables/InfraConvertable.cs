@@ -1,23 +1,22 @@
 ﻿using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Convertables;
 
 public abstract class InfraConvertable : RepoConvertable, IInfraConvertable
 {
-    protected InfraConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-    
-    protected InfraConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected InfraConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
 
-    protected InfraConvertable(IInfraConvertable result) : base(result)
+    protected InfraConvertable(IInfraConvertable result, ResultLayer? newResultLayer = null) 
+        : base(result, newResultLayer)
     {
     }
     
-    protected InfraConvertable()
+    protected InfraConvertable(ResultLayer resultLayer)
+        : base(resultLayer)
     {
     }
     
@@ -39,23 +38,23 @@ public abstract class InfraConvertable : RepoConvertable, IInfraConvertable
 
 public abstract class InfraConvertable<T> : RepoConvertable<T>, IInfraConvertable<T>
 {
-    protected InfraConvertable(T value) : base(value)
+    protected InfraConvertable(T value, ResultLayer resultLayer) 
+        : base(value, resultLayer)
     {
     }
 
-    protected InfraConvertable(IInfraConvertable valueResult) : base(valueResult)
+    protected InfraConvertable(IInfraConvertable valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected InfraConvertable(IInfraConvertable<T> valueResult) : base(valueResult)
+    protected InfraConvertable(IInfraConvertable<T> valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected InfraConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-
-    protected InfraConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected InfraConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
     public InfraResult<T2> ToTypedInfraResult<T2>()

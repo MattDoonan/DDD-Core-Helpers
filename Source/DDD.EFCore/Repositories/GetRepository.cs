@@ -1,5 +1,6 @@
 ﻿using DDD.Core.Entities;
 using DDD.Core.Entities.Interfaces;
+using DDD.Core.Queries;
 using DDD.Core.Results;
 using DDD.Core.ValueObjects.Base;
 using DDD.Core.ValueObjects.Identifiers.Interfaces;
@@ -19,12 +20,12 @@ public class GetRepository<TId, T> : QueryRepository<T>
 
     public Task<RepoResult<T>> GetTrackedAsync(TId id, CancellationToken token = default)
     {
-        return FindOneByPredicate(e => e.Id.Equals(id), true, token);
+        return FindOneByPredicate(Get.ById<TId, T>(id), true, token);
     }
     
     public Task<RepoResult<T>> GetAsync(TId id, CancellationToken token = default)
     {
-        return FindOneByPredicate(e => e.Id.Equals(id), false, token);
+        return FindOneByPredicate(Get.ById<TId, T>(id), false, token);
     }
     
     public Task<RepoResult<List<T>>> GetAllAsync(CancellationToken token = default)

@@ -4,43 +4,43 @@ using DDD.Core.Results;
 
 namespace DDD.Core.Repositories;
 
-public class PersistenceRepository<T, TDbContext> : WriteRepository<T>
+public class PersistenceRepository<T, TDbContext>
     where T : Entity, IAggregateRoot
     where TDbContext : DbContext
 {
-    protected readonly TDbContext Context;
+    private readonly WriteUnitOfWork<TDbContext> _unitOfWork;
 
-    public PersistenceRepository(TDbContext context) : base(context.Set<T>())
+    public PersistenceRepository(TDbContext context)
     {
-        Context = context;
+        _unitOfWork = new WriteUnitOfWork<TDbContext>(context);
     }
 
     public async Task<RepoResult> AddAsync(T aggregateRoot, CancellationToken token = default)
     {
-        Add(aggregateRoot);
+        _unitOfWork.Add(aggregateRoot);
         return await SaveAsync(token);
     }
     
     public async Task<RepoResult> AddManyAsync(IEnumerable<T> aggregateRoots, CancellationToken token = default)
     {
-        AddMany(aggregateRoots);
+        _unitOfWork.AddMany(aggregateRoots);
         return await SaveAsync(token);
     }
 
     public async Task<RepoResult> UpdateAsync(T aggregateRoot, CancellationToken token = default)
     {
-        Attach(aggregateRoot);
+        _unitOfWork.Update(aggregateRoot);
         return await SaveAsync(token);
     }
     
     public async Task<RepoResult> UpdateManyAsync(IEnumerable<T> aggregateRoots, CancellationToken token = default)
     {
-        UpdateMany(aggregateRoots);
+        _unitOfWork.UpdateMany(aggregateRoots);
         return await SaveAsync(token);
     }
     
     public Task<RepoResult> SaveAsync(CancellationToken token = default)
     {
-        return new UnitOfWork<TDbContext>(Context).SaveAsync(token);
+        return _unitOfWork.SaveAsync(token);
     }
 }

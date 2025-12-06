@@ -1,23 +1,23 @@
 ﻿using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Enums;
+using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Convertables;
 
 public abstract class RepoConvertable : ServiceConvertable, IRepoConvertable
 {
-    protected RepoConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
     
-    protected RepoConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected RepoConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
 
-    protected RepoConvertable(IRepoConvertable result) : base(result)
+    protected RepoConvertable(IRepoConvertable result, ResultLayer? newResultLayer = null) 
+        : base(result, newResultLayer)
     {
     }
     
-    protected RepoConvertable()
+    protected RepoConvertable(ResultLayer resultLayer)  
+        : base(resultLayer)
     {
     }
     
@@ -39,23 +39,23 @@ public abstract class RepoConvertable : ServiceConvertable, IRepoConvertable
 
 public abstract class RepoConvertable<T> : ServiceConvertable<T>, IRepoConvertable<T>
 {
-    protected RepoConvertable(T value) : base(value)
+    protected RepoConvertable(T value, ResultLayer resultLayer) 
+        : base(value, resultLayer)
     {
     }
 
-    protected RepoConvertable(IRepoConvertable valueResult) : base(valueResult)
+    protected RepoConvertable(IRepoConvertable valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected RepoConvertable(IRepoConvertable<T> valueResult) : base(valueResult)
+    protected RepoConvertable(IRepoConvertable<T> valueResult, ResultLayer? newResultLayer = null) 
+        : base(valueResult, newResultLayer)
     {
     }
 
-    protected RepoConvertable(FailureType failureType, string because) : base(failureType, because)
-    {
-    }
-
-    protected RepoConvertable(FailureType failureType, FailedLayer failedLayer, string because) : base(failureType, failedLayer, because)
+    protected RepoConvertable(FailureType failureType, ResultLayer failedLayer, string? because) 
+        : base(failureType, failedLayer, because)
     {
     }
     
