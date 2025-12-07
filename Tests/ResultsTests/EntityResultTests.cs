@@ -28,27 +28,27 @@ public class EntityResultTests : BasicResultTests
     public override void WhenIPassTheResult_Then_TheResultIsSuccessful()
     {
         var result = EntityResult.Pass();
-        ResultTestHelper.CheckSuccess(result);
+        result.AssertSuccessful();
     }
 
     public override void WhenIFailTheResult_Then_TheResultIsAFailure()
     {
         var result = EntityResult.Fail();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailureType.Generic.ToMessage());
+        result.AssertFailure(FailureType.Generic, 1);
     }
 
     public override void WhenIFailTheResult_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, 1);
     }
 
     public override void GivenIHaveASuccessfulResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
     {
         var mapperResult = EntityResult.Pass();
         var result = mapperResult.ToResult();
-        ResultTestHelper.CheckSuccess(result);
+        result.AssertSuccessful();
     }
 
     public override void GivenIHaveAFailureResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -56,16 +56,16 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var mapperResult = EntityResult.Fail(errorMessage);
         var result = mapperResult.ToResult();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, 1);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully()
     {
         var value = new TestEntityResult(TestId.Create(1).Output);
-        var mapperResult = EntityResult.Pass(value);
-        var result = mapperResult.RemoveType();
+        var entityResult = EntityResult.Pass(value);
+        var result = entityResult.RemoveType();
         Assert.IsType<EntityResult>(result);
-        ResultTestHelper.CheckSuccess(result);
+        result.AssertSuccessful();
     }
 
     public override void GivenIHaveAFailureResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -73,14 +73,14 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail(errorMessage);
         var copiedResult = EntityResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void GivenIHaveASuccessfulResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
     {
         var result = EntityResult.Pass();    
         var copiedResult = EntityResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void GivenIHaveAFailureResult_WithoutAValue_ThenICanConvertItIntoATypedResult()
@@ -88,7 +88,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail(errorMessage);
         EntityResult<TestEntityResult> convertedResult = result;
-        ResultTestHelper.Equivalent(result, convertedResult);
+        result.AssertEquivalent(convertedResult);
         Assert.ThrowsAny<Exception>(() => convertedResult.Output);
     }
 
@@ -107,7 +107,7 @@ public class EntityResultTests : BasicResultTests
         var r2 = EntityResult.Pass();
         var r3 = EntityResult.Pass(new TestEntityResult(TestId.Create(1).Output));
         var mergedResult = EntityResult.Merge(r1, r2, r3);
-        ResultTestHelper.CheckSuccess(mergedResult);    
+        mergedResult.AssertSuccessful();    
     }
 
     public override void GivenIHaveASomeSuccessfulAndSomeFailureResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully_AsAFailureResult()
@@ -128,27 +128,27 @@ public class EntityResultTests : BasicResultTests
     {
         var value = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(value);
-        ResultTestHelper.CheckSuccess(result, value);    
+        result.AssertSuccessful(value);    
     }
 
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = EntityResult.Fail<TestEntityResult>();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailureType.Generic.ToMessage<TestEntityResult>());    
+        result.AssertFailure(FailureType.Generic, 1);    
     }
 
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<TestEntityResult>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, $"{FailureType.Generic.ToMessage<TestEntityResult>()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, 1);
     }
 
     public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
     {
         var value = new TestEntityResult(TestId.Create(1).Output);
         EntityResult<TestEntityResult> convertedResult = value;
-        ResultTestHelper.CheckSuccess(convertedResult, value);
+        convertedResult.AssertSuccessful(value);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -157,7 +157,7 @@ public class EntityResultTests : BasicResultTests
         var mapperResult = EntityResult.Pass(value);
         var result = mapperResult.ToTypedResult();
         Assert.IsType<Result<TestEntityResult>>(result);
-        ResultTestHelper.CheckSuccess(result, value);
+        result.AssertSuccessful(value);
     }
 
     public override void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -166,7 +166,7 @@ public class EntityResultTests : BasicResultTests
         var mapperResult = EntityResult.Fail<TestEntityResult>(errorMessage);
         var result = mapperResult.ToTypedResult();
         Assert.IsType<Result<TestEntityResult>>(result);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, $"{FailureType.Generic.ToMessage<TestEntityResult>()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, 1);
     }
 
     public override void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -182,70 +182,70 @@ public class EntityResultTests : BasicResultTests
         var value = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(value);    
         var copiedResult = EntityResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void WhenIHaveAValue_Then_ItCanBeImplicitlyConvertedIntoAResult()
     {
         var value = new TestEntityResult(TestId.Create(1).Output);
         EntityResult<TestEntityResult> convertedResult = value;
-        ResultTestHelper.CheckSuccess(convertedResult, value);
+        convertedResult.AssertSuccessful(value);
     }
 
     [Fact]
     public void WhenIFailTheResult_BecauseOfADomainViolation_Then_TheResultIsAFailure()
     {
         var result = EntityResult.DomainViolation();
-        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, FailureType.DomainViolation.ToMessage());    
+        result.AssertFailure(FailureType.DomainViolation, 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfADomainViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = EntityResult.DomainViolation<TestEntityResult>();
-        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, FailureType.DomainViolation.ToMessage<TestEntityResult>());    
+        result.AssertFailure(FailureType.DomainViolation, 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvalidInput_Then_TheResultIsAFailure()
     {
         var result = EntityResult.InvalidInput();
-        ResultTestHelper.CheckFailure(result, FailureType.InvalidInput, FailureType.InvalidInput.ToMessage());    
+        result.AssertFailure(FailureType.InvalidInput, 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvalidInput_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = EntityResult.InvalidInput<TestEntityResult>();
-        ResultTestHelper.CheckFailure(result, FailureType.InvalidInput, FailureType.InvalidInput.ToMessage<TestEntityResult>());    
+        result.AssertFailure(FailureType.InvalidInput, 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfANotFoundError_Then_TheResultIsAFailure()
     {
         var result = EntityResult.NotFound();
-        ResultTestHelper.CheckFailure(result, FailureType.NotFound, FailureType.NotFound.ToMessage());    
+        result.AssertFailure(FailureType.NotFound, 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfANotFoundError_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = EntityResult.NotFound<int>();
-        ResultTestHelper.CheckFailure(result, FailureType.NotFound, FailureType.NotFound.ToMessage<int>());    
+        result.AssertFailure(FailureType.NotFound, 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvariantViolation_Then_TheResultIsAFailure()
     {
         var result = EntityResult.InvariantViolation();
-        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailureType.InvariantViolation.ToMessage());    
+        result.AssertFailure(FailureType.InvariantViolation, 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvariantViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = EntityResult.InvariantViolation<int>();
-        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, FailureType.InvariantViolation.ToMessage<int>());    
+        result.AssertFailure(FailureType.InvariantViolation, 1);    
     }
     
     [Fact]
@@ -254,7 +254,7 @@ public class EntityResultTests : BasicResultTests
         var obj = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(obj);    
         var convertedResult = result.ToTypedMapperResult();
-        ResultTestHelper.CheckSuccess(convertedResult, obj);
+        convertedResult.AssertSuccessful(obj);
     }
     
     [Fact]
@@ -263,7 +263,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
         var convertedResult = result.ToTypedMapperResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage<TestEntityResult>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, 1);
     }
     
     [Fact]
@@ -272,7 +272,7 @@ public class EntityResultTests : BasicResultTests
         var obj = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(obj);    
         var convertedResult = result.ToMapperResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful();
     }
     
     [Fact]
@@ -281,7 +281,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
         var convertedResult = result.ToMapperResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage<TestEntityResult>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, 1);
     }
     
     [Fact]
@@ -289,7 +289,7 @@ public class EntityResultTests : BasicResultTests
     {
         var result = EntityResult.Pass();    
         var convertedResult = result.ToMapperResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful();
     }
     
     [Fact]
@@ -298,7 +298,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail(errorMessage);    
         var convertedResult = result.ToMapperResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, 1);
     }
     
     [Fact]
@@ -307,7 +307,7 @@ public class EntityResultTests : BasicResultTests
         var obj = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(obj);    
         var convertedResult = result.ToTypedRepoResult();
-        ResultTestHelper.CheckSuccess(convertedResult, obj);
+        convertedResult.AssertSuccessful(convertedResult, ResultLayer.Infrastructure);
     }
     
     [Fact]
@@ -316,7 +316,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
         var convertedResult = result.ToTypedRepoResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure, $"{FailureType.Generic.ToMessage<TestEntityResult>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -325,7 +325,7 @@ public class EntityResultTests : BasicResultTests
         var obj = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(obj);    
         var convertedResult = result.ToTypedInfraResult();
-        ResultTestHelper.CheckSuccess(convertedResult, obj);
+        convertedResult.AssertSuccessful(obj, ResultLayer.Infrastructure);
     }
     
     [Fact]
@@ -334,7 +334,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
         var convertedResult = result.ToTypedInfraResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure, $"{FailureType.Generic.ToMessage<TestEntityResult>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -343,7 +343,7 @@ public class EntityResultTests : BasicResultTests
         var obj = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(obj);    
         var convertedResult = result.ToInfraResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.Infrastructure);
     }
     
     [Fact]
@@ -352,7 +352,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
         var convertedResult = result.ToInfraResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure, $"{FailureType.Generic.ToMessage<TestEntityResult>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -360,7 +360,7 @@ public class EntityResultTests : BasicResultTests
     {
         var result = EntityResult.Pass();    
         var convertedResult = result.ToInfraResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.Infrastructure);
     }
     
     [Fact]
@@ -369,7 +369,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail(errorMessage);    
         var convertedResult = result.ToInfraResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -378,7 +378,7 @@ public class EntityResultTests : BasicResultTests
         var obj = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(obj);    
         var convertedResult = result.ToTypedServiceResult();
-        ResultTestHelper.CheckSuccess(convertedResult, obj);
+        convertedResult.AssertSuccessful(obj, ResultLayer.Service);
     }
     
     [Fact]
@@ -387,7 +387,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
         var convertedResult = result.ToTypedServiceResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage<TestEntityResult>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -396,7 +396,7 @@ public class EntityResultTests : BasicResultTests
         var obj = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(obj);    
         var convertedResult = result.ToServiceResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.Service);
     }
     
     [Fact]
@@ -405,7 +405,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
         var convertedResult = result.ToServiceResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage<TestEntityResult>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -413,7 +413,7 @@ public class EntityResultTests : BasicResultTests
     {
         var result = EntityResult.Pass();    
         var convertedResult = result.ToServiceResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.Service);
     }
     
     [Fact]
@@ -422,7 +422,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail(errorMessage);    
         var convertedResult = result.ToServiceResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -431,7 +431,7 @@ public class EntityResultTests : BasicResultTests
         var obj = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(obj);    
         var convertedResult = result.ToTypedUseCaseResult();
-        ResultTestHelper.CheckSuccess(convertedResult, obj);
+        convertedResult.AssertSuccessful(obj, ResultLayer.UseCase);
     }
     
     [Fact]
@@ -440,7 +440,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
         var convertedResult = result.ToTypedUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.UseCase, $"{FailureType.Generic.ToMessage<TestEntityResult>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -449,7 +449,7 @@ public class EntityResultTests : BasicResultTests
         var obj = new TestEntityResult(TestId.Create(1).Output);
         var result = EntityResult.Pass(obj);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.UseCase);
     }
     
     [Fact]
@@ -458,7 +458,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<TestEntityResult>(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.UseCase,$"{FailureType.Generic.ToMessage<TestEntityResult>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -466,7 +466,7 @@ public class EntityResultTests : BasicResultTests
     {
         var result = EntityResult.Pass();    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.UseCase);
     }
     
     [Fact]
@@ -475,7 +475,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.UseCase, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -484,7 +484,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail(errorMessage);    
         var convertedResult = result.ToTypedEntityResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, 1);
     }
     
     [Fact]
@@ -493,6 +493,6 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<int>(errorMessage);    
         var convertedResult = result.ToTypedEntityResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, 1);
     }
 }

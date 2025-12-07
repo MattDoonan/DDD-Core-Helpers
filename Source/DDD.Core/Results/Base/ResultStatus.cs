@@ -56,12 +56,16 @@ public abstract class ResultStatus : IResultStatus
     public bool IsInvariantViolation => _errors.Contains(FailureType.InvariantViolation);
     public bool IsConcurrencyViolation => _errors.Contains(FailureType.ConcurrencyViolation);
 
-    public bool IsFailureType(FailureType failureType)
+    public bool ContainsFailureType(FailureType failureType)
     {
+        if (_errors.Count == 0 && failureType is FailureType.None)
+        {
+            return true;
+        }
         return _errors.Contains(failureType);
     }
     
-    public bool IsFailedLayer(ResultLayer failedLayer)
+    public bool IsFromLayer(ResultLayer failedLayer)
     {
         return _errors.Contains(failedLayer);
     }

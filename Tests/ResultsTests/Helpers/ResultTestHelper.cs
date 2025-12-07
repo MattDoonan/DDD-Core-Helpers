@@ -40,6 +40,7 @@ public static class ResultTestHelper
         Assert.Equal(expectedResult.IsFailure, result.IsFailure);
         Assert.Equal(expectedResult.CurrentFailureType, result.CurrentFailureType);
         Assert.Equal(expectedResult.CurrentLayer, result.CurrentLayer);
+        Assert.Equal(expectedResult.Errors, result.Errors);
         Assert.Equal(expectedResult.ErrorMessages, result.ErrorMessages);
     }
     
@@ -49,6 +50,7 @@ public static class ResultTestHelper
         Assert.False(result.IsFailure);
         Assert.Equal(FailureType.None, result.CurrentFailureType);
         Assert.Equal(expectedLayer, result.CurrentLayer);
+        Assert.Empty(result.Errors);
         Assert.Empty(result.ErrorMessages);
         CheckFailureTypes(result, FailureType.None);
     }
@@ -80,6 +82,6 @@ public static class ResultTestHelper
         Assert.Equal(FailureType.AlreadyExists == expectedFailureType, result.DoesAlreadyExists);
         Assert.Equal(FailureType.InvariantViolation == expectedFailureType, result.IsInvariantViolation);
         Assert.Equal(FailureType.ConcurrencyViolation == expectedFailureType, result.IsConcurrencyViolation);
-        Assert.True(result.IsFailureType(expectedFailureType));
+        Assert.True(result.ContainsFailureType(expectedFailureType));
     }
 }

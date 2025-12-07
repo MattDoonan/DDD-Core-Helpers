@@ -10,7 +10,7 @@ internal static class ResultCreationHelper
     {
         var allSuccessful = results.All(r => r.IsSuccessful);
         return allSuccessful
-            ? CreateResult(TResult.Pass(), results)
+            ? TResult.Pass()
             : CreateResult(TResult.Fail($"Not all {nameof(TResult)} were successful"), results);
     }
     
