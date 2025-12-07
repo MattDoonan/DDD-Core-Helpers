@@ -119,9 +119,9 @@ public class EntityResultTests : BasicResultTests
         var mergedResult = EntityResult.Merge(r1, r2, r3, r4);
         Assert.True(mergedResult.IsFailure);
         Assert.False(mergedResult.IsSuccessful);
-        Assert.Equal(FailureType.Generic, mergedResult.FailureType);
-        Assert.Equal(ResultLayer.Unknown, mergedResult.FailedLayer);
-        Assert.Equal(3, mergedResult.ErrorMessages.Count);
+        Assert.Equal(FailureType.Generic, mergedResult.CurrentFailureType);
+        Assert.Equal(ResultLayer.Unknown, mergedResult.CurrentLayer);
+        Assert.Equal(3, mergedResult.ErrorMessages.Count());
     }
 
     public override void WhenIPassTheResult_WithAValue_Then_TheResultIsSuccessful_AndHasTheValue()

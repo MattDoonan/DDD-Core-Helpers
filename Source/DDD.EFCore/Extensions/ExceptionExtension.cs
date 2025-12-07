@@ -8,17 +8,14 @@ internal static class ExceptionExtension
     {
         public RepoResult<T> ToRepoResult<T>()
         {
-            return ToRepoResult(e).ToTypedRepoResult<T>();
-        }
-
-        public RepoResult ToRepoResult()
-        {
             return e switch
             {
-                DbUpdateConcurrencyException => RepoResult.ConcurrencyViolation($"of this error: {e.Message}"),
-                DbUpdateException => RepoResult.InvalidRequest($"the update operation failed because of {e.Message}"),
-                _ => RepoResult.Fail($"{e.Message}")
+                DbUpdateConcurrencyException => RepoResult.ConcurrencyViolation<T>($"of this error: {e.Message}"),
+                DbUpdateException => RepoResult.InvalidRequest<T>($"the update operation failed because of {e.Message}"),
+                _ => RepoResult.Fail<T>($"{e.Message}")
             };
         }
+
+        
     }
 }

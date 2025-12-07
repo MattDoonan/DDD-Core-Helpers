@@ -6,7 +6,7 @@ using DDD.Core.ValueObjects.Identifiers.Interfaces;
 
 namespace DDD.Core.Queries;
 
-public static class Get
+internal static class Get
 {
     public static Expression<Func<TAggregate, bool>> ById<TId, TAggregate>(TId id)
         where TId : ValueObject, IAggregateRootId

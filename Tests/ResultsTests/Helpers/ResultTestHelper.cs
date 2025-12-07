@@ -16,9 +16,9 @@ public static class ResultTestHelper
         }
     }
     
-    public static void CheckSuccess<T>(TypedResult<T> result, T expectedValue)
+    public static void CheckSuccess<T>(TypedResult<T> result, T expectedValue, ResultLayer expectedLayer = ResultLayer.Unknown)
     {
-        CheckSuccess(result);
+        CheckSuccess(result, expectedLayer);
         Assert.Equal(expectedValue, result.Output);
     }
     
@@ -38,17 +38,17 @@ public static class ResultTestHelper
     {
         Assert.Equal(expectedResult.IsSuccessful, result.IsSuccessful);
         Assert.Equal(expectedResult.IsFailure, result.IsFailure);
-        Assert.Equal(expectedResult.FailureType, result.FailureType);
-        Assert.Equal(expectedResult.FailedLayer, result.FailedLayer);
+        Assert.Equal(expectedResult.CurrentFailureType, result.CurrentFailureType);
+        Assert.Equal(expectedResult.CurrentLayer, result.CurrentLayer);
         Assert.Equal(expectedResult.ErrorMessages, result.ErrorMessages);
     }
     
-    public static void CheckSuccess(ResultStatus result)
+    public static void CheckSuccess(ResultStatus result, ResultLayer expectedLayer = ResultLayer.Unknown)
     {
         Assert.True(result.IsSuccessful);
         Assert.False(result.IsFailure);
-        Assert.Equal(FailureType.None, result.FailureType);
-        Assert.Equal(ResultLayer.None, result.FailedLayer);
+        Assert.Equal(FailureType.None, result.CurrentFailureType);
+        Assert.Equal(expectedLayer, result.CurrentLayer);
         Assert.Empty(result.ErrorMessages);
         CheckFailureTypes(result, FailureType.None);
     }
@@ -62,8 +62,8 @@ public static class ResultTestHelper
     {
         Assert.True(result.IsFailure);
         Assert.False(result.IsSuccessful);
-        Assert.Equal(expectedFailureType, result.FailureType);
-        Assert.Equal(failedLayer, result.FailedLayer);
+        Assert.Equal(expectedFailureType, result.CurrentFailureType);
+        Assert.Equal(failedLayer, result.CurrentLayer);
         Assert.Single(result.ErrorMessages);
         Assert.Equal(expectedErrorMessage, result.ErrorMessagesToString());
         CheckFailureTypes(result, expectedFailureType);

@@ -187,9 +187,9 @@ public class RepoResultTests : BasicResultTests
         var mergedResult = RepoResult.Merge(r1, r2, r3, r4);
         Assert.True(mergedResult.IsFailure);
         Assert.False(mergedResult.IsSuccessful);
-        Assert.Equal(FailureType.Generic, mergedResult.FailureType);
-        Assert.Equal(ResultLayer.Infrastructure, mergedResult.FailedLayer);
-        Assert.Equal(3, mergedResult.ErrorMessages.Count);
+        Assert.Equal(FailureType.Generic, mergedResult.CurrentFailureType);
+        Assert.Equal(ResultLayer.Infrastructure, mergedResult.CurrentLayer);
+        Assert.Equal(3, mergedResult.ErrorMessages.Count());
     }
 
     [Fact]

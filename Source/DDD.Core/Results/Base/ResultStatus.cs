@@ -76,7 +76,15 @@ public abstract class ResultStatus : IResultStatus
         return string.Join(Environment.NewLine, ErrorMessages.ToArray());
     }
 
-    public void Merge(IResultStatus resultStatus)
+    public void CombineWith(params IResultStatus[] resultStatuses)
+    {
+        foreach (var status in resultStatuses)
+        {
+            CombineWith(status);
+        }
+    }
+
+    public void CombineWith(IResultStatus resultStatus)
     {
         if (resultStatus.IsSuccessful && IsSuccessful)
         {
@@ -89,9 +97,8 @@ public abstract class ResultStatus : IResultStatus
         if (IsSuccessful && resultStatus.IsFailure)
         {
             CurrentFailureType = resultStatus.CurrentFailureType;
-            CurrentLayer = resultStatus.CurrentLayer;
         }
-        _errors.AddRange(resultStatus.Errors);
+        _errors.AddRange(resultStatus.Errors.AddLayer(CurrentLayer));
     }
 
     public void Add(ResultError error)

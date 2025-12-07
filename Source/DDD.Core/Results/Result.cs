@@ -6,7 +6,7 @@ using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
-public class Result : ResultStatus, IResultFactory<Result>
+public class Result : NonTypedResult, IResultFactory<Result>
 {
     private Result(ResultLayer resultLayer = ResultLayer.Unknown) 
         : base(resultLayer)

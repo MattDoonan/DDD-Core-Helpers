@@ -145,9 +145,9 @@ public class ResultTests
         var mergedResult = Result.Merge(r1, r2, r3, r4);
         Assert.True(mergedResult.IsFailure);
         Assert.False(mergedResult.IsSuccessful);
-        Assert.Equal(FailureType.Generic, mergedResult.FailureType);
-        Assert.Equal(ResultLayer.Unknown, mergedResult.FailedLayer);
-        Assert.Equal(3, mergedResult.ErrorMessages.Count);
+        Assert.Equal(FailureType.Generic, mergedResult.CurrentFailureType);
+        Assert.Equal(ResultLayer.Unknown, mergedResult.CurrentLayer);
+        Assert.Equal(3, mergedResult.ErrorMessages.Count());
     }
 
     [Fact]
@@ -260,20 +260,6 @@ public class ResultTests
     {
         const string errorMessage = "I want it to fail";
         Assert.ThrowsAny<Exception>(() => Result.Fail<long>(FailureType.None, errorMessage));
-    }
-    
-    [Fact]
-    public void WhenIFailTheResult_WithNoFailedLevel_Then_TheResultShouldThrowError()
-    {
-        const string errorMessage = "I want it to fail";
-        Assert.ThrowsAny<Exception>(() => Result.Fail(ResultLayer.None, errorMessage));
-    }
-    
-    [Fact]
-    public void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithANoFailedLevel_Then_TheResultShouldThrowError()
-    {
-        const string errorMessage = "I want it to fail";
-        Assert.ThrowsAny<Exception>(() => Result.Fail<long>(ResultLayer.None, errorMessage));
     }
     
     [Fact]
