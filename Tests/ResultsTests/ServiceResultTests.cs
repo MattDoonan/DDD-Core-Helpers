@@ -1,6 +1,7 @@
 ﻿using DDD.Core.Results;
 using DDD.Core.Results.ValueObjects;
-using OutputTests.Helpers;
+using OutputTests.Extensions;
+using OutputTests.TestStructures;
 using Xunit;
 
 namespace OutputTests;
@@ -10,27 +11,27 @@ public class ServiceResultTests : BasicResultTests
     public override void WhenIPassTheResult_Then_TheResultIsSuccessful()
     {
         var result = ServiceResult.Pass();
-        ResultTestHelper.CheckSuccess(result);
+        result.AssertSuccessful(ResultLayer.Service);
     }
 
     public override void WhenIFailTheResult_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.Fail();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Service, FailureType.Generic.ToMessage());
+        result.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
     }
 
     public override void WhenIFailTheResult_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic,  ResultLayer.Service, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic,  ResultLayer.Service, 1);
     }
 
     public override void GivenIHaveASuccessfulResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
     {
         var serviceResult = ServiceResult.Pass();
         var result = serviceResult.ToResult();
-        ResultTestHelper.CheckSuccess(result);
+        result.AssertSuccessful(ResultLayer.Service);
     }
 
     public override void GivenIHaveAFailureResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -38,7 +39,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var serviceResult = ServiceResult.Fail(errorMessage);
         var result = serviceResult.ToResult();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Service, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully()
@@ -47,7 +48,7 @@ public class ServiceResultTests : BasicResultTests
         var serviceResult = ServiceResult.Pass(value);
         var result = serviceResult.RemoveType();
         Assert.IsType<ServiceResult>(result);
-        ResultTestHelper.CheckSuccess(result);
+        result.AssertSuccessful(ResultLayer.Service);
     }
 
     public override void GivenIHaveAFailureResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -55,14 +56,14 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail(errorMessage);
         var copiedResult = ServiceResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void GivenIHaveASuccessfulResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
     {
         var result = ServiceResult.Pass();    
         var copiedResult = ServiceResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void GivenIHaveAFailureResult_WithoutAValue_ThenICanConvertItIntoATypedResult()
@@ -70,7 +71,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail(errorMessage);
         ServiceResult<int> convertedResult = result;
-        ResultTestHelper.Equivalent(result, convertedResult);
+        result.AssertEquivalent(convertedResult);
         Assert.ThrowsAny<Exception>(() => convertedResult.Output);
     }
 
@@ -89,7 +90,7 @@ public class ServiceResultTests : BasicResultTests
         var r2 = ServiceResult.Pass();
         var r3 = ServiceResult.Pass(5);
         var mergedResult = ServiceResult.Merge(r1, r2, r3);
-        ResultTestHelper.CheckSuccess(mergedResult);
+        mergedResult.AssertSuccessful(ResultLayer.Service);
     }
 
     public override void GivenIHaveASomeSuccessfulAndSomeFailureResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully_AsAFailureResult()
@@ -110,27 +111,27 @@ public class ServiceResultTests : BasicResultTests
     {
         const int value = 10;
         var result = ServiceResult.Pass(value);
-        ResultTestHelper.CheckSuccess(result, value);    
+        result.AssertSuccessful(value, ResultLayer.Service);    
     }
 
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.Fail<int>();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Service, FailureType.Generic.ToMessage<int>());    
+        result.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);    
     }
 
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Service, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
     }
 
     public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
     {
         const int value = 10;
         ServiceResult<int> convertedResult = value;
-        ResultTestHelper.CheckSuccess(convertedResult, value);
+        convertedResult.AssertSuccessful(value, ResultLayer.Service);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -139,7 +140,7 @@ public class ServiceResultTests : BasicResultTests
         var serviceResult = ServiceResult.Pass(value);
         var result = serviceResult.ToTypedResult();
         Assert.IsType<Result<int>>(result);
-        ResultTestHelper.CheckSuccess(result, value);
+        result.AssertSuccessful(value, ResultLayer.Service);
     }
 
     public override void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -148,7 +149,7 @@ public class ServiceResultTests : BasicResultTests
         var serviceResult = ServiceResult.Fail<int>(errorMessage);
         var result = serviceResult.ToTypedResult();
         Assert.IsType<Result<int>>(result);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Service, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
     }
 
     public override void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -156,7 +157,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail<int>(errorMessage);
         var copiedResult = ServiceResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -164,14 +165,14 @@ public class ServiceResultTests : BasicResultTests
         const byte value = 20;
         var result = ServiceResult.Pass(value);    
         var copiedResult = ServiceResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void WhenIHaveAValue_Then_ItCanBeImplicitlyConvertedIntoAResult()
     {
         const uint value = 11;
         ServiceResult<uint> result = value;
-        ResultTestHelper.CheckSuccess(result, value);
+        result.AssertSuccessful(value, ResultLayer.Service);
     }
 
     [Fact]
@@ -179,7 +180,7 @@ public class ServiceResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.DomainViolation(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, ResultLayer.Service, $"{FailureType.DomainViolation.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.DomainViolation, ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -187,7 +188,7 @@ public class ServiceResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.NotAllowed(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.NotAllowed, ResultLayer.Service, $"{FailureType.NotAllowed.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.NotAllowed, ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -195,7 +196,7 @@ public class ServiceResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.DomainViolation<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.DomainViolation, ResultLayer.Service, $"{FailureType.DomainViolation.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.DomainViolation, ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -203,35 +204,35 @@ public class ServiceResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.NotAllowed<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.NotAllowed, ResultLayer.Service, $"{FailureType.NotAllowed.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.NotAllowed, ResultLayer.Service, 1);
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfANotFoundError_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.NotFound();
-        ResultTestHelper.CheckFailure(result, FailureType.NotFound, ResultLayer.Service, FailureType.NotFound.ToMessage());    
+        result.AssertFailure(FailureType.NotFound, ResultLayer.Service, 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfANotFoundError_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.NotFound<int>();
-        ResultTestHelper.CheckFailure(result, FailureType.NotFound, ResultLayer.Service, FailureType.NotFound.ToMessage<int>());    
+        result.AssertFailure(FailureType.NotFound, ResultLayer.Service, 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvariantViolation_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.InvariantViolation();
-        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, ResultLayer.Service, FailureType.InvariantViolation.ToMessage());    
+        result.AssertFailure(FailureType.InvariantViolation, ResultLayer.Service, 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvariantViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = ServiceResult.InvariantViolation<int>();
-        ResultTestHelper.CheckFailure(result, FailureType.InvariantViolation, ResultLayer.Service, FailureType.InvariantViolation.ToMessage<int>());    
+        result.AssertFailure(FailureType.InvariantViolation, ResultLayer.Service, 1);    
     }
     
     [Fact]
@@ -239,7 +240,7 @@ public class ServiceResultTests : BasicResultTests
     {
         string? value = null;
         var result = ServiceResult.Pass(value);
-        ResultTestHelper.CheckSuccess(result, value);  
+        result.AssertSuccessful(value, ResultLayer.Service);  
     }
     
     [Fact]
@@ -248,7 +249,7 @@ public class ServiceResultTests : BasicResultTests
         const long value = 10;
         var result = ServiceResult.Pass(value);    
         var convertedResult = result.ToTypedUseCaseResult();
-        ResultTestHelper.CheckSuccess(convertedResult, value);
+        convertedResult.AssertSuccessful(value, ResultLayer.UseCase);
     }
     
     [Fact]
@@ -257,7 +258,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToTypedUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -266,7 +267,7 @@ public class ServiceResultTests : BasicResultTests
         const long value = 10;
         var result = ServiceResult.Pass(value);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.UseCase);
     }
     
     [Fact]
@@ -275,7 +276,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -283,7 +284,7 @@ public class ServiceResultTests : BasicResultTests
     {
         var result = ServiceResult.Pass();    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.UseCase);
     }
     
     [Fact]
@@ -292,7 +293,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase,1);
     }
     
     [Fact]
@@ -301,7 +302,7 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail(errorMessage);    
         var convertedResult = result.ToTypedServiceResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service,1);
     }
     
     [Fact]
@@ -310,6 +311,6 @@ public class ServiceResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = ServiceResult.Fail<int>(errorMessage);    
         var convertedResult = result.ToTypedServiceResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Service,$"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service,1);
     }
 }

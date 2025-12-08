@@ -1,6 +1,7 @@
 ﻿using DDD.Core.Results;
 using DDD.Core.Results.ValueObjects;
-using OutputTests.Helpers;
+using OutputTests.Extensions;
+using OutputTests.TestStructures;
 using Xunit;
 
 namespace OutputTests;
@@ -10,27 +11,27 @@ public class InfraResultTests : BasicResultTests
     public override void WhenIPassTheResult_Then_TheResultIsSuccessful()
     {
         var result = InfraResult.Pass();
-        ResultTestHelper.CheckSuccess(result);
+        result.AssertSuccessful(ResultLayer.Infrastructure);
     }
 
     public override void WhenIFailTheResult_Then_TheResultIsAFailure()
     {
         var result = InfraResult.Fail();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Infrastructure, FailureType.Generic.ToMessage());
+        result.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
     }
 
     public override void WhenIFailTheResult_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Infrastructure, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
     }
 
     public override void GivenIHaveASuccessfulResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
     {
         var mapperResult = InfraResult.Pass();
         var result = mapperResult.ToResult();
-        ResultTestHelper.CheckSuccess(result);
+        result.AssertSuccessful(ResultLayer.Infrastructure);
     }
 
     public override void GivenIHaveAFailureResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -38,7 +39,7 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var mapperResult = InfraResult.Fail(errorMessage);
         var result = mapperResult.ToResult();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Infrastructure, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully()
@@ -47,7 +48,7 @@ public class InfraResultTests : BasicResultTests
         var mapperResult = InfraResult.Pass(value);
         var result = mapperResult.RemoveType();
         Assert.IsType<InfraResult>(result);
-        ResultTestHelper.CheckSuccess(result);
+        result.AssertSuccessful(ResultLayer.Infrastructure);
     }
 
     public override void GivenIHaveAFailureResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -55,14 +56,14 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail(errorMessage);
         var copiedResult = InfraResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void GivenIHaveASuccessfulResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
     {
         var result = InfraResult.Pass();    
         var copiedResult = InfraResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void GivenIHaveAFailureResult_WithoutAValue_ThenICanConvertItIntoATypedResult()
@@ -70,7 +71,7 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail(errorMessage);
         InfraResult<int> convertedResult = result;
-        ResultTestHelper.Equivalent(result, convertedResult);
+        result.AssertEquivalent(convertedResult);
         Assert.ThrowsAny<Exception>(() => convertedResult.Output);
     }
 
@@ -89,7 +90,7 @@ public class InfraResultTests : BasicResultTests
         var r2 = InfraResult.Pass();
         var r3 = InfraResult.Pass(20);
         var mergedResult = InfraResult.Merge(r1, r2, r3);
-        ResultTestHelper.CheckSuccess(mergedResult);
+        mergedResult.AssertSuccessful(ResultLayer.Infrastructure);
     }
 
     public override void GivenIHaveASomeSuccessfulAndSomeFailureResults_WhenIMergeThem_Then_TheResultIsMergedSuccessfully_AsAFailureResult()
@@ -110,27 +111,27 @@ public class InfraResultTests : BasicResultTests
     {
         const int value = 10;
         var result = InfraResult.Pass(value);
-        ResultTestHelper.CheckSuccess(result, value);    
+        result.AssertSuccessful(value, ResultLayer.Infrastructure);    
     }
 
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = InfraResult.Fail<int>();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Infrastructure, FailureType.Generic.ToMessage<int>());    
+        result.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);    
     }
 
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Infrastructure, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
     }
 
     public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
     {
         const int value = 10;
         InfraResult<int> convertedResult = value;
-        ResultTestHelper.CheckSuccess(convertedResult, value);
+        convertedResult.AssertSuccessful(value, ResultLayer.Infrastructure);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -139,7 +140,7 @@ public class InfraResultTests : BasicResultTests
         var mapperResult = InfraResult.Pass(value);
         var result = mapperResult.ToTypedResult();
         Assert.IsType<Result<int>>(result);
-        ResultTestHelper.CheckSuccess(result, value);
+        result.AssertSuccessful(value, ResultLayer.Infrastructure);
     }
 
     public override void GivenIHaveAFailureResult_ThatIsMeantToHaveAValue_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -148,7 +149,7 @@ public class InfraResultTests : BasicResultTests
         var mapperResult = InfraResult.Fail<int>(errorMessage);
         var result = mapperResult.ToTypedResult();
         Assert.IsType<Result<int>>(result);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, ResultLayer.Infrastructure, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
     }
 
     public override void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -156,7 +157,7 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail<int>(errorMessage);
         var copiedResult = InfraResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -164,14 +165,14 @@ public class InfraResultTests : BasicResultTests
         const long value = 10;
         var result = InfraResult.Pass(value);    
         var copiedResult = InfraResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void WhenIHaveAValue_Then_ItCanBeImplicitlyConvertedIntoAResult()
     {
         const int value = 1;
         InfraResult<int> result = value;
-        ResultTestHelper.CheckSuccess(result, value);
+        result.AssertSuccessful(value, ResultLayer.Infrastructure);
     }
 
     [Fact]
@@ -179,7 +180,7 @@ public class InfraResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = InfraResult.NotFound(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.NotFound, ResultLayer.Infrastructure, $"{FailureType.NotFound.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.NotFound, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -187,7 +188,7 @@ public class InfraResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = InfraResult.AlreadyExists(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.AlreadyExists, ResultLayer.Infrastructure, $"{FailureType.AlreadyExists.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.AlreadyExists, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -195,15 +196,15 @@ public class InfraResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = InfraResult.InvalidRequest(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.InvalidRequest, ResultLayer.Infrastructure, $"{FailureType.InvalidRequest.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.InvalidRequest, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
-    public void WhenITimoutAnOperation_Then_TheResultIsAFailure_WithTheFullErrorMessage()
+    public void WhenITimeoutAnOperation_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = InfraResult.OperationTimout(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.OperationTimeout, ResultLayer.Infrastructure, $"{FailureType.OperationTimeout.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.OperationTimeout, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -211,7 +212,7 @@ public class InfraResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = InfraResult.NotFound<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.NotFound, ResultLayer.Infrastructure, $"{FailureType.NotFound.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.NotFound, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -219,7 +220,7 @@ public class InfraResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = InfraResult.AlreadyExists<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.AlreadyExists, ResultLayer.Infrastructure, $"{FailureType.AlreadyExists.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.AlreadyExists, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -227,15 +228,15 @@ public class InfraResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = InfraResult.InvalidRequest<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.InvalidRequest, ResultLayer.Infrastructure, $"{FailureType.InvalidRequest.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.InvalidRequest, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
-    public void WhenITimoutAnOperation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure_WithTheFullErrorMessage()
+    public void WhenITimeoutAnOperation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = InfraResult.OperationTimout<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.OperationTimeout, ResultLayer.Infrastructure, $"{FailureType.OperationTimeout.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.OperationTimeout, ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -244,7 +245,7 @@ public class InfraResultTests : BasicResultTests
         const long value = 10;
         var result = InfraResult.Pass(value);    
         var convertedResult = result.ToTypedServiceResult();
-        ResultTestHelper.CheckSuccess(convertedResult, value);
+        convertedResult.AssertSuccessful(value, ResultLayer.Service);
     }
     
     [Fact]
@@ -253,7 +254,7 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToTypedServiceResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -262,7 +263,7 @@ public class InfraResultTests : BasicResultTests
         const long value = 10;
         var result = InfraResult.Pass(value);    
         var convertedResult = result.ToServiceResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.Service);
     }
     
     [Fact]
@@ -271,7 +272,7 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToServiceResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -279,7 +280,7 @@ public class InfraResultTests : BasicResultTests
     {
         var result = InfraResult.Pass();    
         var convertedResult = result.ToServiceResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.Service);
     }
     
     [Fact]
@@ -288,7 +289,7 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail(errorMessage);    
         var convertedResult = result.ToServiceResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service,1);
     }
     
     [Fact]
@@ -297,7 +298,7 @@ public class InfraResultTests : BasicResultTests
         const long value = 10;
         var result = InfraResult.Pass(value);    
         var convertedResult = result.ToTypedUseCaseResult();
-        ResultTestHelper.CheckSuccess(convertedResult, value);
+        convertedResult.AssertSuccessful(value, ResultLayer.UseCase);
     }
     
     [Fact]
@@ -306,7 +307,7 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToTypedUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -315,7 +316,7 @@ public class InfraResultTests : BasicResultTests
         const long value = 10;
         var result = InfraResult.Pass(value);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.UseCase);
     }
     
     [Fact]
@@ -324,7 +325,7 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure,$"{FailureType.Generic.ToMessage<string>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -332,7 +333,7 @@ public class InfraResultTests : BasicResultTests
     {
         var result = InfraResult.Pass();    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckSuccess(convertedResult);
+        convertedResult.AssertSuccessful(ResultLayer.UseCase);
     }
     
     [Fact]
@@ -341,7 +342,7 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -350,7 +351,7 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail(errorMessage);    
         var convertedResult = result.ToTypedInfraResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure,$"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure,1);
     }
     
     [Fact]
@@ -359,6 +360,6 @@ public class InfraResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = InfraResult.Fail<int>(errorMessage);    
         var convertedResult = result.ToTypedInfraResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, ResultLayer.Infrastructure,$"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure,1);
     }
 }

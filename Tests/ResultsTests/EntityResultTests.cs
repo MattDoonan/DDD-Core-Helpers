@@ -2,7 +2,8 @@
 using DDD.Core.Results;
 using DDD.Core.Results.ValueObjects;
 using DDD.Core.ValueObjects.Identifiers;
-using OutputTests.Helpers;
+using OutputTests.Extensions;
+using OutputTests.TestStructures;
 using Xunit;
 
 namespace OutputTests;
@@ -174,7 +175,7 @@ public class EntityResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = EntityResult.Fail<TestEntityResult>(errorMessage);
         var copiedResult = EntityResult.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+        result.AssertEquivalent(copiedResult);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()

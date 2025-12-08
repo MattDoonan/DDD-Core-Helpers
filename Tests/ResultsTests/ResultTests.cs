@@ -1,6 +1,6 @@
 ﻿using DDD.Core.Results;
 using DDD.Core.Results.ValueObjects;
-using OutputTests.Helpers;
+using OutputTests.Extensions;
 using Xunit;
 
 namespace OutputTests;
@@ -11,14 +11,14 @@ public class ResultTests
     public void WhenIPassTheResult_Then_TheResultIsSuccessful()
     {
         var result = Result.Pass();
-        ResultTestHelper.CheckSuccess(result);
+        result.AssertSuccessful();
     }
 
     [Fact]
     public void WhenIFailTheResult_Then_TheResultIsAFailure()
     {
         var result = Result.Fail();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailureType.Generic.ToMessage());
+        result.AssertFailure(FailureType.Generic, 1);
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class ResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, 1);
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class ResultTests
         const string errorMessage = "I want it to fail";
         var result = Result.Fail(errorMessage);
         var copiedResult = Result.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+       result.AssertEquivalent(copiedResult);
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class ResultTests
     {
         var result = Result.Pass();    
         var copiedResult = Result.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+       result.AssertEquivalent(copiedResult);
     }
     
     [Fact]
@@ -53,7 +53,7 @@ public class ResultTests
         var result = Result.Pass(value);
         var resultConverted = result.RemoveType();
         Assert.IsType<Result>(resultConverted);
-        ResultTestHelper.CheckSuccess(resultConverted);
+        resultConverted.AssertSuccessful();
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class ResultTests
         const string errorMessage = "I want it to fail";
         var result = Result.Fail(errorMessage);
         Result<int> convertedResult = result;
-        ResultTestHelper.Equivalent(result, convertedResult);
+       result.AssertEquivalent(convertedResult);
         Assert.ThrowsAny<Exception>(() => convertedResult.Output);
     }
 
@@ -81,14 +81,14 @@ public class ResultTests
     {
         const int value = 10;
         var result = Result.Pass(value);
-        ResultTestHelper.CheckSuccess(result, value);    
+        result.AssertSuccessful(value);    
     }
 
     [Fact]
     public void WhenIFailTheResult_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = Result.Fail<int>();
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, FailureType.Generic.ToMessage<int>());    
+        result.AssertFailure(FailureType.Generic, 1);    
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class ResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail<int>(errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, 1);
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public class ResultTests
     {
         const int value = 10;
         Result<int> convertedResult = value;
-        ResultTestHelper.CheckSuccess(convertedResult, value);
+        convertedResult.AssertSuccessful(value);
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class ResultTests
         const string errorMessage = "I want it to fail";
         var result = Result.Fail<int>(errorMessage);
         var copiedResult = Result.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+       result.AssertEquivalent(copiedResult);
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class ResultTests
         const byte value = 20;
         var result = Result.Pass(value);    
         var copiedResult = Result.Copy(result);
-        ResultTestHelper.Equivalent(result, copiedResult);
+       result.AssertEquivalent(copiedResult);
     }
     
     [Fact]
@@ -132,7 +132,7 @@ public class ResultTests
         var r2 = Result.Pass();
         var r3 = Result.Pass(5);
         var mergedResult = Result.Merge(r1, r2, r3);
-        ResultTestHelper.CheckSuccess(mergedResult);
+        mergedResult.AssertSuccessful();
     }
     
     [Fact]
@@ -155,7 +155,7 @@ public class ResultTests
     {
         const int value = 1111;
         Result<int> result = value;
-        ResultTestHelper.CheckSuccess(result, value);
+        result.AssertSuccessful(value);
     }
 
     public static IEnumerable<object[]> FailureTypes =>
@@ -200,7 +200,7 @@ public class ResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail(failureType, errorMessage);
-        ResultTestHelper.CheckFailure(result, failureType, $"{failureType.ToMessage()} because {errorMessage}");
+        result.AssertFailure(failureType, 1);
     }
     
     [Theory, MemberData(nameof(FailureTypes))]
@@ -209,7 +209,7 @@ public class ResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail<int>(failureType, errorMessage);
-        ResultTestHelper.CheckFailure(result, failureType, $"{failureType.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(failureType, 1);
     }
     
     [Theory, MemberData(nameof(FailedLayers))]
@@ -218,7 +218,7 @@ public class ResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail(failedLayer, errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, failedLayer, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, failedLayer, 1);
     }
     
     [Theory, MemberData(nameof(FailedLayers))]
@@ -227,7 +227,7 @@ public class ResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail<int>(failedLayer, errorMessage);
-        ResultTestHelper.CheckFailure(result, FailureType.Generic, failedLayer, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(FailureType.Generic, failedLayer, 1);
     }
     
     [Theory, MemberData(nameof(FailureTypesAndLayers))]
@@ -236,7 +236,7 @@ public class ResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail(failureType, failedLayer, errorMessage);
-        ResultTestHelper.CheckFailure(result, failureType, failedLayer, $"{failureType.ToMessage()} because {errorMessage}");
+        result.AssertFailure(failureType, failedLayer, 1);
     }
     
     [Theory, MemberData(nameof(FailureTypesAndLayers))]
@@ -245,7 +245,7 @@ public class ResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = Result.Fail<int>(failureType, failedLayer, errorMessage);
-        ResultTestHelper.CheckFailure(result, failureType, failedLayer, $"{failureType.ToMessage<int>()} because {errorMessage}");
+        result.AssertFailure(failureType, failedLayer, 1);
     }
     
     [Fact]
@@ -268,7 +268,7 @@ public class ResultTests
         const string errorMessage = "I want it to fail";
         var result = Result.Fail(errorMessage);    
         var convertedResult = result.ToTypedResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, 1);
     }
     
     [Fact]
@@ -277,6 +277,6 @@ public class ResultTests
         const string errorMessage = "I want it to fail";
         var result = Result.Fail<int>(errorMessage);    
         var convertedResult = result.ToTypedResult<string>();
-        ResultTestHelper.CheckFailure(convertedResult, FailureType.Generic, $"{FailureType.Generic.ToMessage<int>()} because {errorMessage}");
+        convertedResult.AssertFailure(FailureType.Generic, 1);
     }
 }

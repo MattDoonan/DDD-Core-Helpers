@@ -2,7 +2,7 @@
 using DDD.Core.Results.ValueObjects;
 using Xunit;
 
-namespace OutputTests.Helpers;
+namespace OutputTests.Extensions;
 
 public static class ResultChecker
 {

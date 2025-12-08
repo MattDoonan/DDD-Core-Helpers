@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace OutputTests.Helpers;
+namespace OutputTests.TestStructures;
 
 public abstract class BasicValueResultTests
 {
