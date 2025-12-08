@@ -1,20 +1,19 @@
 ﻿using DDD.Core.Results.Base.Interfaces;
 using DDD.Core.Results.Exceptions;
 using DDD.Core.Results.Extensions;
-using DDD.Core.Results.Helpers;
 using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Base;
 
 public abstract class ResultStatus : IResultStatus
 {
-    public FailureType CurrentFailureType { get; private set; }
+    public FailureType PrimaryFailureType { get; private set; }
     public ResultLayer CurrentLayer { get; private set; }
     public bool IsSuccessful => !IsFailure;
-    public bool IsFailure => CurrentFailureType is not FailureType.None;
+    public bool IsFailure => PrimaryFailureType is not FailureType.None;
     public IEnumerable<string> ErrorMessages => _errors.ToErrorMessages();
     public IReadOnlyCollection<ResultError> Errors => _errors.AsReadOnly();
-    public string MainError => $"{CurrentFailureType.ToMessage()} on the {CurrentLayer.ToMessage()}";
+    public string MainError => $"{PrimaryFailureType.ToMessage()} on the {CurrentLayer.ToMessage()}";
     
     private readonly List<ResultError> _errors = [];
     
@@ -25,13 +24,13 @@ public abstract class ResultStatus : IResultStatus
     
     protected ResultStatus(ResultLayer layer) 
     {
-        CurrentFailureType = FailureType.None;
+        PrimaryFailureType = FailureType.None;
         CurrentLayer = layer;
     }
     
     protected ResultStatus(IResultStatus result, ResultLayer? newResultLayer = null)
     {
-        CurrentFailureType = result.CurrentFailureType;
+        PrimaryFailureType = result.PrimaryFailureType;
         CurrentLayer = newResultLayer ?? result.CurrentLayer;
         _errors.AddRange(
             newResultLayer is not null
@@ -41,21 +40,31 @@ public abstract class ResultStatus : IResultStatus
     
     protected ResultStatus(ResultError error)
     {
-        CurrentFailureType = error.FailureType;
+        PrimaryFailureType = error.FailureType;
         CurrentLayer = error.ResultLayer;
         _errors.Add(error);
     }
 
-    public bool OperationTimedOut => _errors.Contains(FailureType.OperationTimeout);
-    public bool IsAnInvalidRequest => _errors.Contains(FailureType.InvalidRequest);
-    public bool IsInvalidInput => _errors.Contains(FailureType.InvalidInput);
-    public bool IsADomainViolation => _errors.Contains(FailureType.DomainViolation);
-    public bool IsNotAllowed => _errors.Contains(FailureType.NotAllowed);
-    public bool IsNotFound => _errors.Contains(FailureType.NotFound);
-    public bool DoesAlreadyExists => _errors.Contains(FailureType.AlreadyExists);
-    public bool IsInvariantViolation => _errors.Contains(FailureType.InvariantViolation);
-    public bool IsConcurrencyViolation => _errors.Contains(FailureType.ConcurrencyViolation);
+    public bool OperationTimedOut => ContainsFailureType(FailureType.OperationTimeout);
+    public bool IsAnInvalidRequest => ContainsFailureType(FailureType.InvalidRequest);
+    public bool IsInvalidInput => ContainsFailureType(FailureType.InvalidInput);
+    public bool IsADomainViolation => ContainsFailureType(FailureType.DomainViolation);
+    public bool IsNotAllowed => ContainsFailureType(FailureType.NotAllowed);
+    public bool IsNotFound => ContainsFailureType(FailureType.NotFound);
+    public bool DoesAlreadyExists => ContainsFailureType(FailureType.AlreadyExists);
+    public bool IsInvariantViolation => ContainsFailureType(FailureType.InvariantViolation);
+    public bool IsConcurrencyViolation => ContainsFailureType(FailureType.ConcurrencyViolation);
 
+    public bool IsPrimaryFailure(FailureType expectedFailure)
+    {
+        return PrimaryFailureType == expectedFailure;
+    }
+    
+    public bool IsFromLayer(ResultLayer failedLayer)
+    {
+        return _errors.Contains(failedLayer);
+    }
+    
     public bool ContainsFailureType(FailureType failureType)
     {
         if (_errors.Count == 0 && failureType is FailureType.None)
@@ -64,10 +73,77 @@ public abstract class ResultStatus : IResultStatus
         }
         return _errors.Contains(failureType);
     }
-    
-    public bool IsFromLayer(ResultLayer failedLayer)
+
+    public void CombineWith(params IResultStatus[] resultStatuses)
     {
-        return _errors.Contains(failedLayer);
+        foreach (var status in resultStatuses)
+        {
+            CombineWith(status);
+        }
+    }
+
+    public void CombineWith(IResultStatus otherResult)
+    {
+        if (BothSuccessful(otherResult))
+        {
+            return;
+        }
+        if (IsFailure && otherResult.IsSuccessful)
+        {
+            return;
+        }
+        if (IsSuccessful && otherResult.IsFailure)
+        {
+            PrimaryFailureType = otherResult.PrimaryFailureType;
+        }
+        AddRange(otherResult.Errors);
+    }
+    
+    public void AddRange(IEnumerable<ResultError> errors)
+    {
+        _errors.AddRange(errors.AddLayer(CurrentLayer));
+    }
+
+    public void Add(ResultError error)
+    {
+        _errors.Add(error.AddLayer(CurrentLayer));
+    }
+    
+    public void AddErrorMessage(params string[] messages)
+    {
+        if (IsPrimaryFailure(FailureType.None))
+        {
+            Throw("Cannot add an error message to a successful result");
+        }
+        foreach (var message in messages)
+        {
+            Add(new ResultError(PrimaryFailureType, CurrentLayer, message));
+        }
+    }
+    
+    public IEnumerable<ResultError> GetErrorsBy(FailureType failureType)
+    {
+        return GetErrorsBy(e => e.IsFailureType(failureType));
+    }
+
+    public IEnumerable<ResultError> GetErrorsBy(ResultLayer layer)
+    {
+        return GetErrorsBy(e => e.IsLayer(layer));
+    }
+
+    public IEnumerable<ResultError> GetErrorsOfType<T>()
+    {
+        return GetErrorsBy(e => e.IsOfType<T>());
+    }
+
+    public IEnumerable<ResultError> GetErrorsBy(Func<ResultError, bool> predicate)
+    {
+        return _errors.Where(predicate);
+    }
+
+    public bool BothSuccessful(IResultStatus otherResult)
+    {
+        return IsSuccessful && otherResult.IsSuccessful;
     }
     
     public void LogMessage()
@@ -79,56 +155,24 @@ public abstract class ResultStatus : IResultStatus
     {
         return string.Join(Environment.NewLine, ErrorMessages.ToArray());
     }
-
-    public void CombineWith(params IResultStatus[] resultStatuses)
-    {
-        foreach (var status in resultStatuses)
-        {
-            CombineWith(status);
-        }
-    }
-
-    public void CombineWith(IResultStatus resultStatus)
-    {
-        if (resultStatus.IsSuccessful && IsSuccessful)
-        {
-            return;
-        }
-        if (IsFailure && resultStatus.IsSuccessful)
-        {
-            return;
-        }
-        if (IsSuccessful && resultStatus.IsFailure)
-        {
-            CurrentFailureType = resultStatus.CurrentFailureType;
-        }
-        _errors.AddRange(resultStatus.Errors.AddLayer(CurrentLayer));
-    }
-
-    public void Add(ResultError error)
-    {
-        _errors.Add(error);
-    }
     
-    public void AddErrorMessage(params string[] messages)
+    public void Throw(string message)
     {
-        if (CurrentFailureType is FailureType.None)
-        {
-            throw new ResultException(this, "Cannot add an error message to a successful result");
-        }
-        foreach (var message in messages)
-        {
-            _errors.AddRange(new ResultError(CurrentFailureType, CurrentLayer, message));
-        }
+        throw ToException(message);
+    }
+
+    public void Throw()
+    {
+        throw ToException();
+    }
+
+    public ResultException ToException(string message)
+    {
+        return new ResultException(this);
     }
     
     public ResultException ToException()
     {
         return new ResultException(this);
-    }
-    
-    public void Throw()
-    {
-        throw new ResultException(this);
     }
 }

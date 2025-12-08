@@ -101,7 +101,7 @@ public class UseCaseResultTests : BasicResultTests
         var mergedResult = UseCaseResult.Merge(r1, r2, r3, r4);
         Assert.True(mergedResult.IsFailure);
         Assert.False(mergedResult.IsSuccessful);
-        Assert.Equal(FailureType.Generic, mergedResult.CurrentFailureType);
+        Assert.Equal(FailureType.Generic, mergedResult.PrimaryFailureType);
         Assert.Equal(ResultLayer.UseCase, mergedResult.CurrentLayer);
         Assert.Equal(3, mergedResult.ErrorMessages.Count());
     }

@@ -85,6 +85,11 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
         return _output;
     }
     
+    public IEnumerable<ResultError> GetErrorsOfType()
+    {
+        return GetErrorsBy(e => e.IsOfType<T>());
+    }
+    
     public static implicit operator T(TypedResult<T> result)
     {
         return result.Output;

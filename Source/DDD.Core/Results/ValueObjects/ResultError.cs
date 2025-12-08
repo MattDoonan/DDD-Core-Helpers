@@ -30,6 +30,26 @@ public record ResultError
         Because = because;
         OutputType = outputType;
     }
+    
+    public bool IsOfType<T>()
+    {
+        return IsOfType(typeof(T));
+    }
+    
+    public bool IsOfType(Type type)
+    {
+        return OutputType == type;
+    }
+
+    public bool IsFailureType(FailureType failureType)
+    {
+        return FailureType == failureType;
+    }
+
+    public bool IsLayer(ResultLayer layer)
+    {
+        return ResultLayer == layer;
+    }
 
     public override string ToString()
     {

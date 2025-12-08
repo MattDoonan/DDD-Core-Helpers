@@ -6,7 +6,7 @@ namespace DDD.Core.Results.Exceptions;
 public class ResultException : Exception
 {
     public ResultLayer ResultLayer => _result.CurrentLayer;
-    public FailureType FailureType => _result.CurrentFailureType;
+    public FailureType FailureType => _result.PrimaryFailureType;
     public IEnumerable<string> ErrorMessages => _result.ErrorMessages;
     public bool ResultWasSuccessful => _result.IsSuccessful;
     public bool ResultWasFailure => _result.IsFailure;

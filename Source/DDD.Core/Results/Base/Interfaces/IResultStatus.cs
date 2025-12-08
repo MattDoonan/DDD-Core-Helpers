@@ -14,7 +14,7 @@ public interface IResultFailure
 public interface IResultStatus : IResultFailure
 {
     public bool IsSuccessful => !IsFailure;
-    public FailureType CurrentFailureType { get; }
+    public FailureType PrimaryFailureType { get; }
     public ResultLayer CurrentLayer { get; }
     public string MainError { get; }
 }

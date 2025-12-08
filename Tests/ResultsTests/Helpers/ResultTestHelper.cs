@@ -38,7 +38,7 @@ public static class ResultTestHelper
     {
         Assert.Equal(expectedResult.IsSuccessful, result.IsSuccessful);
         Assert.Equal(expectedResult.IsFailure, result.IsFailure);
-        Assert.Equal(expectedResult.CurrentFailureType, result.CurrentFailureType);
+        Assert.Equal(expectedResult.PrimaryFailureType, result.PrimaryFailureType);
         Assert.Equal(expectedResult.CurrentLayer, result.CurrentLayer);
         Assert.Equal(expectedResult.Errors, result.Errors);
         Assert.Equal(expectedResult.ErrorMessages, result.ErrorMessages);
@@ -48,7 +48,7 @@ public static class ResultTestHelper
     {
         Assert.True(result.IsSuccessful);
         Assert.False(result.IsFailure);
-        Assert.Equal(FailureType.None, result.CurrentFailureType);
+        Assert.Equal(FailureType.None, result.PrimaryFailureType);
         Assert.Equal(expectedLayer, result.CurrentLayer);
         Assert.Empty(result.Errors);
         Assert.Empty(result.ErrorMessages);
@@ -64,7 +64,7 @@ public static class ResultTestHelper
     {
         Assert.True(result.IsFailure);
         Assert.False(result.IsSuccessful);
-        Assert.Equal(expectedFailureType, result.CurrentFailureType);
+        Assert.Equal(expectedFailureType, result.PrimaryFailureType);
         Assert.Equal(failedLayer, result.CurrentLayer);
         Assert.Single(result.ErrorMessages);
         Assert.Equal(expectedErrorMessage, result.ErrorMessagesToString());

@@ -38,7 +38,7 @@ public static class ResultChecker
         {
             Assert.Equal(resultStatus.IsSuccessful, secondResultStatus.IsSuccessful);
             Assert.Equal(resultStatus.IsFailure, secondResultStatus.IsFailure);
-            Assert.Equal(resultStatus.CurrentFailureType, secondResultStatus.CurrentFailureType);
+            Assert.Equal(resultStatus.PrimaryFailureType, secondResultStatus.PrimaryFailureType);
             Assert.Equal(resultStatus.CurrentLayer, secondResultStatus.CurrentLayer);
             Assert.Equal(resultStatus.Errors, secondResultStatus.Errors);
             Assert.Equal(resultStatus.ErrorMessages, secondResultStatus.ErrorMessages);
@@ -53,7 +53,7 @@ public static class ResultChecker
         {
             Assert.True(resultStatus.IsSuccessful);
             Assert.False(resultStatus.IsFailure);
-            Assert.Equal(FailureType.None, resultStatus.CurrentFailureType);
+            Assert.Equal(FailureType.None, resultStatus.PrimaryFailureType);
             Assert.Equal(expectedLayer, resultStatus.CurrentLayer);
             Assert.Empty(resultStatus.Errors);
             Assert.Empty(resultStatus.ErrorMessages);
@@ -64,7 +64,7 @@ public static class ResultChecker
         {
             Assert.True(resultStatus.IsFailure);
             Assert.False(resultStatus.IsSuccessful);
-            Assert.Equal(expectedFailureType, resultStatus.CurrentFailureType);
+            Assert.Equal(expectedFailureType, resultStatus.PrimaryFailureType);
             Assert.Equal(expectedLayer, resultStatus.CurrentLayer);
             Assert.Equal(expectedErrors, resultStatus.Errors.Count);
             AssertFailureTypes(resultStatus, expectedFailureType);
