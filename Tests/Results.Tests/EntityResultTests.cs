@@ -2,11 +2,11 @@
 using DDD.Core.Results;
 using DDD.Core.Results.ValueObjects;
 using DDD.Core.ValueObjects.Identifiers;
-using OutputTests.Extensions;
-using OutputTests.TestStructures;
+using Results.Tests.Extensions;
+using Results.Tests.TestStructures;
 using Xunit;
 
-namespace OutputTests;
+namespace Results.Tests;
 
 public class EntityResultTests : BasicResultTests
 {

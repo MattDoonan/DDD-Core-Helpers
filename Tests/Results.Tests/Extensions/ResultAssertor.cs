@@ -2,11 +2,10 @@
 using DDD.Core.Results.ValueObjects;
 using Xunit;
 
-namespace OutputTests.Extensions;
+namespace Results.Tests.Extensions;
 
-public static class ResultChecker
+public static class ResultAssertor
 {
-    
     extension<T>(TypedResult<T> typedResult)
     {
         public void AssertEquivalent(TypedResult<T> secondTypedResult)
@@ -57,7 +56,7 @@ public static class ResultChecker
             Assert.Equal(expectedLayer, resultStatus.CurrentLayer);
             Assert.Empty(resultStatus.Errors);
             Assert.Empty(resultStatus.ErrorMessages);
-            AssertFailureTypes(resultStatus, FailureType.None);
+            AssertFailureType(resultStatus, FailureType.None);
         }
         
         public void AssertFailure(FailureType expectedFailureType, ResultLayer expectedLayer, int expectedErrors)
@@ -67,10 +66,10 @@ public static class ResultChecker
             Assert.Equal(expectedFailureType, resultStatus.PrimaryFailureType);
             Assert.Equal(expectedLayer, resultStatus.CurrentLayer);
             Assert.Equal(expectedErrors, resultStatus.Errors.Count);
-            AssertFailureTypes(resultStatus, expectedFailureType);
+            AssertFailureType(resultStatus, expectedFailureType);
         }
 
-        private void AssertFailureTypes(FailureType expectedFailureType)
+        public void AssertFailureType(FailureType expectedFailureType)
         {
             Assert.Equal(FailureType.OperationTimeout == expectedFailureType, resultStatus.OperationTimedOut);
             Assert.Equal(FailureType.InvalidRequest == expectedFailureType, resultStatus.IsAnInvalidRequest);

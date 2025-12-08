@@ -3,11 +3,11 @@ using DDD.Core.Results.ValueObjects;
 using DDD.Core.ValueObjects.Base;
 using DDD.Core.ValueObjects.Factories;
 using DDD.Core.ValueObjects.SingleValueObjects.Types;
-using OutputTests.Extensions;
-using OutputTests.TestStructures;
+using Results.Tests.Extensions;
+using Results.Tests.TestStructures;
 using Xunit;
 
-namespace OutputTests;
+namespace Results.Tests;
 
 public class ValueObjectResultTests : BasicValueResultTests
 {

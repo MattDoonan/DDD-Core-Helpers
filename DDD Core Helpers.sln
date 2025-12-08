@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDD.Core", "Source\DDD.Core
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueObjectTests", "Tests\ValueObjectTests\ValueObjectTests.csproj", "{245B3361-91A3-41BF-A56A-92F76A5E0A78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultsTests", "Tests\ResultsTests\ResultsTests.csproj", "{19D666C6-8146-42E9-9541-0BE80685E82D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Results.Tests", "Tests\Results.Tests\Results.Tests.csproj", "{19D666C6-8146-42E9-9541-0BE80685E82D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDD.EFCore", "Source\DDD.EFCore\DDD.EFCore.csproj", "{951A505E-A2B0-4BB0-8C62-01E2E248CE95}"
 EndProject

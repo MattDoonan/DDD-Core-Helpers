@@ -1,9 +1,9 @@
 ﻿using DDD.Core.Results;
 using DDD.Core.Results.ValueObjects;
-using OutputTests.Extensions;
+using Results.Tests.Extensions;
 using Xunit;
 
-namespace OutputTests;
+namespace Results.Tests;
 
 public class ResultTests
 {
