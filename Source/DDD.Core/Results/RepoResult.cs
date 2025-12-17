@@ -1,19 +1,19 @@
-﻿using DDD.Core.Results.Base.Interfaces;
-using DDD.Core.Results.Convertables;
-using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Helpers;
+﻿using DDD.Core.Results.Convertibles;
+using DDD.Core.Results.Convertibles.Interfaces;
+using DDD.Core.Results.Extensions;
+using DDD.Core.Results.Interfaces;
 using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
-public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
+public class RepoResult : ServiceConvertible, IResultFactory<RepoResult>
 {
     
     private RepoResult() 
         : base(ResultLayer.Infrastructure)
     {
     }
-    private RepoResult(IServiceConvertable resultStatus) 
+    private RepoResult(IResultStatus resultStatus) 
         : base(resultStatus, ResultLayer.Infrastructure)
     {
     }
@@ -67,27 +67,32 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
         return new RepoResult(FailureType.OperationTimeout, because);
     }
     
-    public static RepoResult Merge(params IServiceConvertable[] results)
+    public static RepoResult OperationCancelled(string? because = null)
     {
-        return ResultCreationHelper.Merge<RepoResult, IServiceConvertable>(results);
+        return new RepoResult(FailureType.OperationCancelled, because);
+    }
+    
+    public static RepoResult Merge(params IResultStatus[] results)
+    {
+        return results.AggregateTo<RepoResult>();
     }
 
-    public static RepoResult From(IServiceConvertable result)
+    public static RepoResult From(IResultStatus result)
     {
         return new RepoResult(result);
     }
     
-    public static RepoResult From(Exception exception)
+    public static RepoResult From(Exception exception, FailureType failureType = FailureType.Generic)
     {
-        return new RepoResult(FailureType.Generic, ResultErrorMessage.ExceptionToMessage(exception));
+        return new RepoResult(failureType, exception.ToResultMessage());
     }
     
-    public static RepoResult<T> From<T>(IServiceConvertable<T> result)
+    public static RepoResult<T> From<T>(ITypedResult<T> result)
     {
         return RepoResult<T>.From(result);
     }
     
-    public static RepoResult<T> From<T>(IServiceConvertable result)
+    public static RepoResult<T> From<T>(IResultStatus result)
     {
         return RepoResult<T>.From(result);
     }
@@ -127,18 +132,23 @@ public class RepoResult : ServiceConvertable, IResultFactory<RepoResult>
         return RepoResult<T>.Fail(FailureType.OperationTimeout, because);
     }
     
+    public static RepoResult<T> OperationCancelled<T>(string? because = null)
+    {
+        return RepoResult<T>.Fail(FailureType.OperationCancelled, because);
+    }
+    
     public static RepoResult<T> Copy<T>(RepoResult<T> result)
     {
         return RepoResult<T>.From(result);
     }
     
-    public static RepoResult<T> From<T>(Exception exception)
+    public static RepoResult<T> From<T>(Exception exception, FailureType failureType = FailureType.Generic)
     {
-        return RepoResult<T>.Fail(FailureType.Generic, ResultErrorMessage.ExceptionToMessage(exception));
+        return RepoResult<T>.Fail(failureType, ResultErrorMessageExtension.ToResultMessage(exception));
     }
 }
 
-public class RepoResult<T> : ServiceConvertable<T>
+public class RepoResult<T> : ServiceConvertible<T>
 {
     private RepoResult(T value) 
         : base(value, ResultLayer.Infrastructure)
@@ -150,19 +160,19 @@ public class RepoResult<T> : ServiceConvertable<T>
     {
     }
     
-    private RepoResult(IServiceConvertable<T> result) 
+    private RepoResult(ITypedResult<T> result) 
         : base(result, ResultLayer.Infrastructure)
     {
     }
     
-    private RepoResult(IServiceConvertable result) 
+    private RepoResult(IResultStatus result) 
         : base(result, ResultLayer.Infrastructure)
     {
     }
     
     public RepoResult RemoveType()
     {
-        return RepoResult.From((IServiceConvertable)this);
+        return RepoResult.From((IResultStatus)this);
     }
     
     public RepoResult<T2> ToTypedRepoResult<T2>()
@@ -180,12 +190,12 @@ public class RepoResult<T> : ServiceConvertable<T>
         return new RepoResult<T>(failureType, because);
     }
     
-    internal static RepoResult<T> From(IServiceConvertable<T> result)
+    internal static RepoResult<T> From(ITypedResult<T> result)
     {
         return new RepoResult<T>(result);
     }
     
-    internal static RepoResult<T> From(IServiceConvertable result)
+    internal static RepoResult<T> From(IResultStatus result)
     {
         return new RepoResult<T>(result);
     }
@@ -200,7 +210,7 @@ public class RepoResult<T> : ServiceConvertable<T>
         return result.RemoveType();
     }
     
-    public static implicit operator RepoResult<T>(ServiceConvertable result)
+    public static implicit operator RepoResult<T>(ServiceConvertible result)
     {
         return new RepoResult<T>(result);
     }

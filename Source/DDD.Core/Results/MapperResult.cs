@@ -1,14 +1,14 @@
-﻿using DDD.Core.Results.Base.Interfaces;
-using DDD.Core.Results.Convertables;
-using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Helpers;
+﻿using DDD.Core.Results.Convertibles;
+using DDD.Core.Results.Convertibles.Interfaces;
+using DDD.Core.Results.Extensions;
+using DDD.Core.Results.Interfaces;
 using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
-public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
+public class MapperResult : InfraConvertible, IResultFactory<MapperResult>
 {
-    private MapperResult(IInfraConvertable resultStatus) 
+    private MapperResult(IResultStatus resultStatus) 
         : base(resultStatus)
     {
     }
@@ -53,9 +53,9 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
         return new MapperResult(FailureType.InvalidInput, because);
     }
     
-    public static MapperResult Merge(params IInfraConvertable[] results)
+    public static MapperResult Merge(params IResultStatus[] results)
     {
-        return ResultCreationHelper.Merge<MapperResult, IInfraConvertable>(results);
+        return results.AggregateTo<MapperResult>();
     }
     
     public static MapperResult Copy(MapperResult result)
@@ -63,17 +63,17 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
         return From(result);
     }
     
-    public static MapperResult From(IInfraConvertable status)
+    public static MapperResult From(IResultStatus status)
     {
         return new MapperResult(status);
     }
     
-    public static MapperResult<T> From<T>(IInfraConvertable<T> result)
+    public static MapperResult<T> From<T>(ITypedResult<T> result)
     {
         return MapperResult<T>.From(result);
     }
     
-    public static MapperResult<T> From<T>(IInfraConvertable result)
+    public static MapperResult<T> From<T>(IResultStatus result)
     {
         return MapperResult<T>.From(result);
     }
@@ -109,7 +109,7 @@ public class MapperResult : InfraConvertable, IResultFactory<MapperResult>
     }
 }
 
-public class MapperResult<T> : InfraConvertable<T>
+public class MapperResult<T> : InfraConvertible<T>
 {
     private MapperResult(T value) : base(value, ResultLayer.Unknown)
     {
@@ -120,19 +120,19 @@ public class MapperResult<T> : InfraConvertable<T>
     {
     }
     
-    private MapperResult(IInfraConvertable<T> result) 
+    private MapperResult(ITypedResult<T> result) 
         : base(result)
     {
     }
     
-    private MapperResult(IInfraConvertable result) 
+    private MapperResult(IResultStatus result) 
         : base(result)
     {
     }
     
     public MapperResult RemoveType()
     {
-        return MapperResult.From((IInfraConvertable)this);
+        return MapperResult.From((IResultStatus)this);
     }
     
     public MapperResult<T2> ToTypedMapperResult<T2>()
@@ -150,12 +150,12 @@ public class MapperResult<T> : InfraConvertable<T>
         return new MapperResult<T>(failureType, because);
     }
     
-    internal static MapperResult<T> From(IInfraConvertable<T> result)
+    internal static MapperResult<T> From(ITypedResult<T> result)
     {
         return new MapperResult<T>(result);
     }
     
-    internal static MapperResult<T> From(IInfraConvertable result)
+    internal static MapperResult<T> From(IResultStatus result)
     {
         return new MapperResult<T>(result);
     }
@@ -170,7 +170,7 @@ public class MapperResult<T> : InfraConvertable<T>
         return result.RemoveType();
     }
     
-    public static implicit operator MapperResult<T>(InfraConvertable result)
+    public static implicit operator MapperResult<T>(InfraConvertible result)
     {
         return new MapperResult<T>(result);
     }

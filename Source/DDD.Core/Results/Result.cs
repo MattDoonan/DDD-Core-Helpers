@@ -1,7 +1,7 @@
 ﻿using DDD.Core.Constants;
-using DDD.Core.Results.Base;
-using DDD.Core.Results.Base.Interfaces;
-using DDD.Core.Results.Helpers;
+using DDD.Core.Results.Abstract;
+using DDD.Core.Results.Extensions;
+using DDD.Core.Results.Interfaces;
 using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
@@ -90,7 +90,7 @@ public class Result : NonTypedResult, IResultFactory<Result>
     
     public static Result Merge(params IResultStatus[] results)
     {
-        return ResultCreationHelper.Merge<Result, IResultStatus>(results);
+        return results.AggregateTo<Result>();
     }
     
     public static Result<T> Pass<T>(T value)

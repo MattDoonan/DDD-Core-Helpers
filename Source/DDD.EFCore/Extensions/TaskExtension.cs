@@ -2,7 +2,7 @@
 
 namespace DDD.Core.Extensions;
 
-public static class TaskExtension
+internal static class TaskExtension
 {
     public static async Task<RepoResult<List<TSource>>> ToRepoResultAsync<TSource>(this Task<List<TSource>> task)
     {

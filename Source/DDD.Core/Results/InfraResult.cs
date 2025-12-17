@@ -1,19 +1,19 @@
-﻿using DDD.Core.Results.Base.Interfaces;
-using DDD.Core.Results.Convertables;
-using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Helpers;
+﻿using DDD.Core.Results.Convertibles;
+using DDD.Core.Results.Convertibles.Interfaces;
+using DDD.Core.Results.Extensions;
+using DDD.Core.Results.Interfaces;
 using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
-public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
+public class InfraResult : RepoConvertible, IResultFactory<InfraResult>
 {
     private InfraResult() 
         : base(ResultLayer.Infrastructure)
     {
     }
     
-    private InfraResult(IRepoConvertable resultStatus) 
+    private InfraResult(IResultStatus resultStatus) 
         : base(resultStatus, ResultLayer.Infrastructure)
     {
     }
@@ -58,27 +58,27 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
         return new InfraResult(FailureType.InvalidRequest, because);
     }
     
-    public static InfraResult OperationTimout(string? because = null)
+    public static InfraResult OperationTimeout(string? because = null)
     {
         return new InfraResult(FailureType.OperationTimeout, because);
     }
     
-    public static InfraResult Merge(params IRepoConvertable[] results)
+    public static InfraResult Merge(params IResultStatus[] results)
     {
-        return ResultCreationHelper.Merge<InfraResult, IRepoConvertable>(results);
+        return results.AggregateTo<InfraResult>();
     }
     
-    public static InfraResult From(IRepoConvertable result)
+    public static InfraResult From(IResultStatus result)
     {
         return new InfraResult(result);
     }
     
-    public static InfraResult<T> From<T>(IRepoConvertable<T> result)
+    public static InfraResult<T> From<T>(ITypedResult<T> result)
     {
         return InfraResult<T>.From(result);
     }
     
-    public static InfraResult<T> From<T>(IRepoConvertable result)
+    public static InfraResult<T> From<T>(IResultStatus result)
     {
         return InfraResult<T>.From(result);
     }
@@ -108,7 +108,7 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
         return InfraResult<T>.Fail(FailureType.InvalidRequest, because);
     }
     
-    public static InfraResult<T> OperationTimout<T>(string? because = null)
+    public static InfraResult<T> OperationTimeout<T>(string? because = null)
     {
         return InfraResult<T>.Fail(FailureType.OperationTimeout, because);
     }
@@ -119,7 +119,7 @@ public class InfraResult : RepoConvertable, IResultFactory<InfraResult>
     }
 }
 
-public class InfraResult<T> : RepoConvertable<T>
+public class InfraResult<T> : RepoConvertible<T>
 {
     private InfraResult(T value) 
         : base(value, ResultLayer.Infrastructure)
@@ -131,19 +131,19 @@ public class InfraResult<T> : RepoConvertable<T>
     {
     }
     
-    private InfraResult(IRepoConvertable<T> result) 
+    private InfraResult(ITypedResult<T> result) 
         : base(result, ResultLayer.Infrastructure)
     {
     }
     
-    private InfraResult(IRepoConvertable result) 
+    private InfraResult(IResultStatus result) 
         : base(result, ResultLayer.Infrastructure)
     {
     }
     
     public InfraResult RemoveType()
     {
-        return InfraResult.From((IRepoConvertable)this);
+        return InfraResult.From((IResultStatus)this);
     }
     
     public InfraResult<T2> ToTypedInfraResult<T2>()
@@ -161,12 +161,12 @@ public class InfraResult<T> : RepoConvertable<T>
         return new InfraResult<T>(failureType, because);
     }
     
-    internal static InfraResult<T> From(IRepoConvertable<T> result)
+    internal static InfraResult<T> From(ITypedResult<T> result)
     {
         return new InfraResult<T>(result);
     }
     
-    internal static InfraResult<T> From(IRepoConvertable result)
+    internal static InfraResult<T> From(IResultStatus result)
     {
         return new InfraResult<T>(result);
     }
@@ -181,7 +181,7 @@ public class InfraResult<T> : RepoConvertable<T>
         return result.RemoveType();
     }
     
-    public static implicit operator InfraResult<T>(RepoConvertable result)
+    public static implicit operator InfraResult<T>(RepoConvertible result)
     {
         return new InfraResult<T>(result);
     }

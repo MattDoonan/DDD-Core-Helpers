@@ -1,6 +1,6 @@
 ﻿using DDD.Core.Entities;
 using DDD.Core.Results;
-using DDD.Core.Results.Base.Interfaces;
+using DDD.Core.Results.Interfaces;
 
 namespace DDD.Core.Interfaces.Factories;
 

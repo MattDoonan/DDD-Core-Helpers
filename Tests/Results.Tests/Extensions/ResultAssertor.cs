@@ -1,4 +1,5 @@
-﻿using DDD.Core.Results.Base;
+﻿using DDD.Core.Results.Abstract;
+using DDD.Core.Results.Exceptions;
 using DDD.Core.Results.ValueObjects;
 using Xunit;
 
@@ -20,12 +21,14 @@ public static class ResultAssertor
         public void AssertFailure(FailureType expectedFailureType, ResultLayer expectedLayer, int expectedErrors)
         {
             AssertFailure((ResultStatus)typedResult, expectedFailureType, expectedLayer, expectedErrors);
-            Assert.ThrowsAny<Exception>(() => typedResult.Output);
+            Assert.False(typedResult.HasOutput);
+            Assert.Throws<ResultOutputAccessException>(() => typedResult.Output);
         }
 
         public void AssertSuccessful(T expectedValue, ResultLayer expectedLayer = ResultLayer.Unknown)
         {
             AssertSuccessful(typedResult, expectedLayer);
+            Assert.True(typedResult.HasOutput);
             Assert.Equal(expectedValue, typedResult.Output);
         }
     }
@@ -56,7 +59,6 @@ public static class ResultAssertor
             Assert.Equal(expectedLayer, resultStatus.CurrentLayer);
             Assert.Empty(resultStatus.Errors);
             Assert.Empty(resultStatus.ErrorMessages);
-            AssertFailureType(resultStatus, FailureType.None);
         }
         
         public void AssertFailure(FailureType expectedFailureType, ResultLayer expectedLayer, int expectedErrors)
@@ -66,21 +68,21 @@ public static class ResultAssertor
             Assert.Equal(expectedFailureType, resultStatus.PrimaryFailureType);
             Assert.Equal(expectedLayer, resultStatus.CurrentLayer);
             Assert.Equal(expectedErrors, resultStatus.Errors.Count);
-            AssertFailureType(resultStatus, expectedFailureType);
         }
 
-        public void AssertFailureType(FailureType expectedFailureType)
+        public void AssertFailureType(params FailureType[] expectedFailureTypes)
         {
-            Assert.Equal(FailureType.OperationTimeout == expectedFailureType, resultStatus.OperationTimedOut);
-            Assert.Equal(FailureType.InvalidRequest == expectedFailureType, resultStatus.IsAnInvalidRequest);
-            Assert.Equal(FailureType.DomainViolation == expectedFailureType, resultStatus.IsADomainViolation);
-            Assert.Equal(FailureType.NotAllowed == expectedFailureType, resultStatus.IsNotAllowed);
-            Assert.Equal(FailureType.InvalidInput == expectedFailureType, resultStatus.IsInvalidInput);
-            Assert.Equal(FailureType.NotFound == expectedFailureType, resultStatus.IsNotFound);
-            Assert.Equal(FailureType.AlreadyExists == expectedFailureType, resultStatus.DoesAlreadyExists);
-            Assert.Equal(FailureType.InvariantViolation == expectedFailureType, resultStatus.IsInvariantViolation);
-            Assert.Equal(FailureType.ConcurrencyViolation == expectedFailureType, resultStatus.IsConcurrencyViolation);
-            Assert.True(resultStatus.ContainsFailureType(expectedFailureType));
+            Assert.Equal(expectedFailureTypes.Contains(FailureType.OperationTimeout), resultStatus.OperationTimedOut);
+            Assert.Equal(expectedFailureTypes.Contains(FailureType.InvalidRequest), resultStatus.IsAnInvalidRequest);
+            Assert.Equal(expectedFailureTypes.Contains(FailureType.DomainViolation), resultStatus.IsDomainViolation);
+            Assert.Equal(expectedFailureTypes.Contains(FailureType.NotAllowed), resultStatus.IsNotAllowed);
+            Assert.Equal(expectedFailureTypes.Contains(FailureType.InvalidInput), resultStatus.IsInvalidInput);
+            Assert.Equal(expectedFailureTypes.Contains(FailureType.NotFound), resultStatus.IsNotFound);
+            Assert.Equal(expectedFailureTypes.Contains(FailureType.AlreadyExists), resultStatus.AlreadyExisting);
+            Assert.Equal(expectedFailureTypes.Contains(FailureType.InvariantViolation), resultStatus.IsInvariantViolation);
+            Assert.Equal(expectedFailureTypes.Contains(FailureType.ConcurrencyViolation), resultStatus.IsConcurrencyViolation);
+            Assert.Equal(expectedFailureTypes.Contains(FailureType.OperationCancelled), resultStatus.OperationIsCancelled);
         }
+        
     }
 }

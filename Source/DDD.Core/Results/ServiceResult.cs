@@ -1,19 +1,19 @@
-﻿using DDD.Core.Results.Base.Interfaces;
-using DDD.Core.Results.Convertables;
-using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Helpers;
+﻿using DDD.Core.Results.Convertibles;
+using DDD.Core.Results.Convertibles.Interfaces;
+using DDD.Core.Results.Extensions;
+using DDD.Core.Results.Interfaces;
 using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
-public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
+public class ServiceResult : UseCaseConvertible, IResultFactory<ServiceResult>
 {
     private ServiceResult() 
         : base(ResultLayer.Service)
     {
     }
     
-     private ServiceResult(IUseCaseConvertable resultStatus) 
+     private ServiceResult(IResultStatus resultStatus) 
          : base(resultStatus, ResultLayer.Service)
     {
     }
@@ -58,22 +58,22 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
         return new ServiceResult(FailureType.InvariantViolation, because);
     }
     
-    public static ServiceResult Merge(params IUseCaseConvertable[] results)
+    public static ServiceResult Merge(params IResultStatus[] results)
     {
-        return ResultCreationHelper.Merge<ServiceResult, IUseCaseConvertable>(results);
+        return results.AggregateTo<ServiceResult>();
     }
     
-    public static ServiceResult From(IUseCaseConvertable result)
+    public static ServiceResult From(IResultStatus result)
     {
         return new ServiceResult(result);
     }
     
-    public static ServiceResult<T> From<T>(IUseCaseConvertable<T> result)
+    public static ServiceResult<T> From<T>(ITypedResult<T> result)
     {
         return ServiceResult<T>.From(result);
     }
     
-    public static ServiceResult<T> From<T>(IUseCaseConvertable result)
+    public static ServiceResult<T> From<T>(IResultStatus result)
     {
         return ServiceResult<T>.From(result);
     }
@@ -119,7 +119,7 @@ public class ServiceResult : UseCaseConvertable, IResultFactory<ServiceResult>
     }
 }
 
-public class ServiceResult<T> : UseCaseConvertable<T>
+public class ServiceResult<T> : UseCaseConvertible<T>
 {
     private ServiceResult(T value) 
         : base(value, ResultLayer.Service)
@@ -131,19 +131,19 @@ public class ServiceResult<T> : UseCaseConvertable<T>
     {
     }
     
-    private ServiceResult(IUseCaseConvertable<T> result) 
+    private ServiceResult(ITypedResult<T> result) 
         : base(result, ResultLayer.Service)
     {
     }
     
-    private ServiceResult(IUseCaseConvertable result)
+    private ServiceResult(IResultStatus result)
         : base(result, ResultLayer.Service)
     {
     }
     
     public ServiceResult RemoveType()
     {
-        return ServiceResult.From((IUseCaseConvertable)this);
+        return ServiceResult.From((IResultStatus)this);
     }
     
     public ServiceResult<T2> ToTypedServiceResult<T2>()
@@ -161,12 +161,12 @@ public class ServiceResult<T> : UseCaseConvertable<T>
         return new ServiceResult<T>(failureType, because);
     }
     
-    internal static ServiceResult<T> From(IUseCaseConvertable<T> result)
+    internal static ServiceResult<T> From(ITypedResult<T> result)
     {
         return new ServiceResult<T>(result);
     }
     
-    internal static ServiceResult<T> From(IUseCaseConvertable result)
+    internal static ServiceResult<T> From(IResultStatus result)
     {
         return new ServiceResult<T>(result);
     }
@@ -181,7 +181,7 @@ public class ServiceResult<T> : UseCaseConvertable<T>
         return result.RemoveType();
     }
     
-    public static implicit operator ServiceResult<T>(UseCaseConvertable result)
+    public static implicit operator ServiceResult<T>(UseCaseConvertible result)
     {
         return new ServiceResult<T>(result);
     }

@@ -1,4 +1,5 @@
 ﻿using DDD.Core.Results.Exceptions;
+using DDD.Core.Results.Extensions;
 
 namespace DDD.Core.Results.ValueObjects;
 
@@ -14,7 +15,7 @@ public record ResultError
     {
     }
     
-    public ResultError(FailureType failureType, ResultLayer resultLayer, Type? outputType) 
+    public ResultError(FailureType failureType, ResultLayer resultLayer, Type outputType) 
         : this(failureType, resultLayer, null, outputType)
     {
     }
@@ -51,7 +52,7 @@ public record ResultError
         return ResultLayer == layer;
     }
 
-    public override string ToString()
+    public string ToErrorMessage()
     {
         var sentenceStarter = $"{FailureType.ToMessage(OutputType)} on the {ResultLayer.ToMessage()}";
         return string.IsNullOrWhiteSpace(Because) 
@@ -65,5 +66,4 @@ public record ResultError
             ? new ResultError(FailureType, layer, Because, OutputType) 
             : this;
     }
-
 }

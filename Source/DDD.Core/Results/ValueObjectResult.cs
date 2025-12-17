@@ -1,5 +1,5 @@
-﻿using DDD.Core.Results.Convertables;
-using DDD.Core.Results.Convertables.Interfaces;
+﻿using DDD.Core.Results.Convertibles;
+using DDD.Core.Results.Convertibles.Interfaces;
 using DDD.Core.Results.ValueObjects;
 using DDD.Core.ValueObjects.Base;
 
@@ -39,7 +39,7 @@ public static class ValueObjectResult
 }
 
 
-public class ValueObjectResult<T> : EntityConvertable<T>
+public class ValueObjectResult<T> : EntityConvertible<T>
 {
     private ValueObjectResult(T value) 
         : base(value, ResultLayer.Unknown)
@@ -51,11 +51,11 @@ public class ValueObjectResult<T> : EntityConvertable<T>
     {
     }
     
-    private ValueObjectResult(IEntityConvertable<T> result) : base(result)
+    private ValueObjectResult(IEntityConvertible<T> result) : base(result)
     {
     }
     
-    private ValueObjectResult(IEntityConvertable result) : base(result)
+    private ValueObjectResult(IEntityConvertible result) : base(result)
     {
     }
     
@@ -75,12 +75,12 @@ public class ValueObjectResult<T> : EntityConvertable<T>
         return new ValueObjectResult<T>(failureType, because);
     }
     
-    internal static ValueObjectResult<T> Create(IEntityConvertable<T> result)
+    internal static ValueObjectResult<T> Create(IEntityConvertible<T> result)
     {
         return new ValueObjectResult<T>(result);
     }
     
-    private static ValueObjectResult<T> Create(IEntityConvertable result)
+    private static ValueObjectResult<T> Create(IEntityConvertible result)
     {
         return new ValueObjectResult<T>(result);
     }
@@ -90,7 +90,7 @@ public class ValueObjectResult<T> : EntityConvertable<T>
         return Pass(value);
     }
     
-    public static implicit operator ValueObjectResult<T>(EntityConvertable result)
+    public static implicit operator ValueObjectResult<T>(EntityConvertible result)
     {
         return new ValueObjectResult<T>(result);
     }

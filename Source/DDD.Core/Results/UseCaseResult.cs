@@ -1,18 +1,18 @@
-﻿using DDD.Core.Results.Base.Interfaces;
-using DDD.Core.Results.Convertables;
-using DDD.Core.Results.Convertables.Interfaces;
-using DDD.Core.Results.Helpers;
+﻿using DDD.Core.Results.Convertibles;
+using DDD.Core.Results.Convertibles.Interfaces;
+using DDD.Core.Results.Extensions;
+using DDD.Core.Results.Interfaces;
 using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
-public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
+public class UseCaseResult : ResultConvertible, IResultFactory<UseCaseResult>
 {
     private UseCaseResult() 
         : base(ResultLayer.UseCase)
     {
     }
-    private UseCaseResult(IResultConvertable resultStatus) 
+    private UseCaseResult(IResultStatus resultStatus) 
         : base(resultStatus, ResultLayer.UseCase)
     {
     }
@@ -42,22 +42,22 @@ public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
         return new UseCaseResult(FailureType.InvariantViolation, because);
     }
     
-    public static UseCaseResult Merge(params IResultConvertable[] results)
+    public static UseCaseResult Merge(params IResultStatus[] results)
     {
-        return ResultCreationHelper.Merge<UseCaseResult, IResultConvertable>(results);
+        return results.AggregateTo<UseCaseResult>();
     }
     
-    public static UseCaseResult From(IResultConvertable result)
+    public static UseCaseResult From(IResultStatus result)
     {
         return new UseCaseResult(result);
     }
     
-    public static UseCaseResult<T> From<T>(IResultConvertable<T> result)
+    public static UseCaseResult<T> From<T>(ITypedResult<T> result)
     {
         return UseCaseResult<T>.From(result);
     }
     
-    public static UseCaseResult<T> From<T>(IResultConvertable result)
+    public static UseCaseResult<T> From<T>(IResultStatus result)
     {
         return UseCaseResult<T>.From(result);
     }
@@ -88,7 +88,7 @@ public class UseCaseResult : ResultConvertable, IResultFactory<UseCaseResult>
     }
 }
 
-public class UseCaseResult<T> : ResultConvertable<T>
+public class UseCaseResult<T> : ResultConvertible<T>
 {
     private UseCaseResult(T value) 
         : base(value, ResultLayer.UseCase)
@@ -100,19 +100,19 @@ public class UseCaseResult<T> : ResultConvertable<T>
     {
     }
 
-    private UseCaseResult(IResultConvertable<T> result) 
+    private UseCaseResult(ITypedResult<T> result) 
         : base(result, ResultLayer.UseCase)
     {
     }
     
-    private UseCaseResult(IResultConvertable result) 
+    private UseCaseResult(IResultStatus result) 
         : base(result, ResultLayer.UseCase)
     {
     }
     
     public UseCaseResult RemoveType()
     {
-        return UseCaseResult.From((IResultConvertable)this);
+        return UseCaseResult.From((IResultStatus)this);
     }
     
     public UseCaseResult<T2> ToTypedUseCaseResult<T2>()
@@ -130,12 +130,12 @@ public class UseCaseResult<T> : ResultConvertable<T>
         return new UseCaseResult<T>(failureType, because);
     }
     
-    internal static UseCaseResult<T> From(IResultConvertable<T> result)
+    internal static UseCaseResult<T> From(ITypedResult<T> result)
     {
         return new UseCaseResult<T>(result);
     }
     
-    internal static UseCaseResult<T> From(IResultConvertable result)
+    internal static UseCaseResult<T> From(IResultStatus result)
     {
         return new UseCaseResult<T>(result);
     }
@@ -150,7 +150,7 @@ public class UseCaseResult<T> : ResultConvertable<T>
         return result.RemoveType();
     }
     
-    public static implicit operator UseCaseResult<T>(ResultConvertable result)
+    public static implicit operator UseCaseResult<T>(ResultConvertible result)
     {
         return new UseCaseResult<T>(result);
     }
