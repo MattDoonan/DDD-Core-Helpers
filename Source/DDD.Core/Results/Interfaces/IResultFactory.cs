@@ -6,5 +6,7 @@ public interface IResultFactory<TResult>
     static abstract TResult Pass();
     static abstract TResult Fail(string because = "");
     static abstract TResult Copy(TResult result);
+    static abstract TResult From(IResultStatus result);
+    static abstract TResult Merge(params IResultStatus[] results);
 
 }

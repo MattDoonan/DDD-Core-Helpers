@@ -5,7 +5,7 @@ using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Convertibles;
 
-public abstract class ResultConvertible : NonTypedResult, IResultConvertible
+public abstract class ResultConvertible : UntypedResult, IResultConvertible
 {
     protected ResultConvertible(FailureType failureType, ResultLayer failedLayer, string? because) 
         : base(failureType, failedLayer, because)

@@ -3,19 +3,19 @@ using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results.Abstract;
 
-public abstract class NonTypedResult : ResultStatus
+public abstract class UntypedResult : ResultStatus
 {
-    protected NonTypedResult(FailureType failureType, ResultLayer failedLayer, string? because) 
+    protected UntypedResult(FailureType failureType, ResultLayer failedLayer, string? because) 
         : base(new ResultError(failureType, failedLayer, because))
     {
     }
 
-    protected NonTypedResult(IResultStatus result, ResultLayer? newResultLayer = null) 
+    protected UntypedResult(IResultStatus result, ResultLayer? newResultLayer = null) 
         : base(result, newResultLayer)
     {
     }
     
-    protected NonTypedResult(ResultLayer resultLayer) 
+    protected UntypedResult(ResultLayer resultLayer) 
         : base(resultLayer) 
     {
     }

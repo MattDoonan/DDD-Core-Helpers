@@ -3,7 +3,7 @@ using DDD.Core.Results.Exceptions;
 using DDD.Core.Results.ValueObjects;
 using Xunit;
 
-namespace Results.Tests.Extensions;
+namespace Results.Tests.Results.Extensions;
 
 public static class ResultAssertor
 {

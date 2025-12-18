@@ -21,15 +21,11 @@ public static class ResultErrorExtension
             return errors.Select(e => e.FailureType).Contains(type);
         }
 
-        public IEnumerable<ResultError> AddLayer(ResultLayer layer)
+        public IEnumerable<ResultError> WithLayer(ResultLayer layer)
         {
-            return errors.Select(e => e.AddLayer(layer));
+            return errors.Select(e => e.WithLayer(layer));
         }
-    }
-    
-    
-    extension(IEnumerable<ResultError> errors)
-    {
+        
         /// <summary>
         /// Retrieves all errors that match the specified failure type.
         /// </summary>

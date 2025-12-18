@@ -2,10 +2,10 @@
 using DDD.Core.Results.Exceptions;
 using DDD.Core.Results.Interfaces;
 using DDD.Core.Results.ValueObjects;
-using Results.Tests.Extensions;
+using Results.Tests.Results.Extensions;
 using Xunit;
 
-namespace Results.Tests;
+namespace Results.Tests.Results.Abstract;
 
 public class ResultStatusTests
 {
@@ -70,35 +70,6 @@ public class ResultStatusTests
         result.AssertFailureType(failureType);
     }
     
-    public static IEnumerable<object[]> FailureTypeInErrorsTestCases =>
-        new List<object[]>
-        {
-            new object[] { 
-                CreateMultiErroredResult(
-                    new TestResult(FailureType.Generic, ResultLayer.Infrastructure, null), 
-                    new ResultError(FailureType.AlreadyExists, ResultLayer.Unknown),
-                    new ResultError(FailureType.InvalidInput, ResultLayer.Unknown)),
-            },
-            
-            new object[] { 
-                CreateMultiErroredResult(
-                    new TestResult(FailureType.ConcurrencyViolation, ResultLayer.UseCase, null), 
-                    new ResultError(FailureType.InvariantViolation, ResultLayer.Infrastructure),
-                    new ResultError(FailureType.DomainViolation, ResultLayer.Unknown),
-                    new ResultError(FailureType.NotAllowed, ResultLayer.Infrastructure)),
-            },
-            new object[] { 
-                CreateMultiErroredResult(
-                    new TestResult(FailureType.ConcurrencyViolation, ResultLayer.UseCase, null), 
-                    new ResultError(FailureType.OperationTimeout, ResultLayer.Service)),
-            },
-            new object[] { 
-                CreateMultiErroredResult(
-                    new TestResult(FailureType.OperationCancelled, ResultLayer.UseCase, null), 
-                    new ResultError(FailureType.InvalidRequest, ResultLayer.Service)),
-            },
-        };
-    
     [Theory, MemberData(nameof(FailureTypeInErrorsTestCases))]
     public void Create_Failure_WithManyFailureTypes_Should_SetCorrectVariables(TestResult result)
     {
@@ -119,6 +90,31 @@ public class ResultStatusTests
     {
         var result = new TestResult(ResultLayer.Unknown);
         Assert.False(result.IsPrimaryFailure(failureType));
+    }
+    
+    [Theory, MemberData(nameof(AllFailureTypes))]
+    public void SetPrimaryFailure_Should_UpdatePrimaryFailureType(FailureType failureType)
+    {
+        var result = new TestResult(ResultLayer.Unknown);
+        result.SetPrimaryFailure(failureType);
+        result.AssertFailure(failureType, ResultLayer.Unknown, 0);
+    }
+    
+    [Fact]
+    public void SetPrimaryFailure_WhenNewFailureTypeIsNone_ButThereAreNoErrors_Should_ConvertResultToSuccess()
+    {
+        var result = new TestResult(ResultLayer.Unknown);
+        result.SetPrimaryFailure(FailureType.AlreadyExists);
+        result.SetPrimaryFailure(FailureType.None);
+        result.AssertSuccessful();
+    }
+    
+    [Fact]
+    public void SetPrimaryFailure_WhenNewFailureTypeIsNone_AndThereAreErrors_Should_ConvertResultToSuccess()
+    {
+        var result = new TestResult(FailureType.Generic, ResultLayer.Unknown, "test");
+        Assert.Throws<ResultException>(() => result.SetPrimaryFailure(FailureType.None));
+        result.AssertFailure(FailureType.Generic, ResultLayer.Unknown, 1);
     }
     
     [Theory, MemberData(nameof(AllLayers))]
@@ -416,6 +412,35 @@ public class ResultStatusTests
         {
         }
     }
+    
+    public static IEnumerable<object[]> FailureTypeInErrorsTestCases =>
+        new List<object[]>
+        {
+            new object[] { 
+                CreateMultiErroredResult(
+                    new TestResult(FailureType.Generic, ResultLayer.Infrastructure, null), 
+                    new ResultError(FailureType.AlreadyExists, ResultLayer.Unknown),
+                    new ResultError(FailureType.InvalidInput, ResultLayer.Unknown)),
+            },
+            
+            new object[] { 
+                CreateMultiErroredResult(
+                    new TestResult(FailureType.ConcurrencyViolation, ResultLayer.UseCase, null), 
+                    new ResultError(FailureType.InvariantViolation, ResultLayer.Infrastructure),
+                    new ResultError(FailureType.DomainViolation, ResultLayer.Unknown),
+                    new ResultError(FailureType.NotAllowed, ResultLayer.Infrastructure)),
+            },
+            new object[] { 
+                CreateMultiErroredResult(
+                    new TestResult(FailureType.ConcurrencyViolation, ResultLayer.UseCase, null), 
+                    new ResultError(FailureType.OperationTimeout, ResultLayer.Service)),
+            },
+            new object[] { 
+                CreateMultiErroredResult(
+                    new TestResult(FailureType.OperationCancelled, ResultLayer.UseCase, null), 
+                    new ResultError(FailureType.InvalidRequest, ResultLayer.Service)),
+            },
+        };
     
     public static IEnumerable<object[]> AllFailureTypes =>
         Enum.GetValues<FailureType>().Where(ft => ft != FailureType.None)

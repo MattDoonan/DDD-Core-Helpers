@@ -1,6 +1,6 @@
 ﻿using DDD.Core.Results;
 using DDD.Core.Results.ValueObjects;
-using Results.Tests.Extensions;
+using Results.Tests.Results.Extensions;
 using Results.Tests.TestStructures;
 using Xunit;
 

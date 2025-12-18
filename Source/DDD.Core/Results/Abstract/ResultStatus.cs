@@ -76,7 +76,7 @@ public abstract class ResultStatus : IResultStatus
         PrimaryFailureType = result.PrimaryFailureType;
         CurrentLayer = newResultLayer ?? result.CurrentLayer;
         _errors.AddRange(newResultLayer is not null
-                ? result.Errors.AddLayer(newResultLayer.Value) 
+                ? result.Errors.WithLayer(newResultLayer.Value) 
                 : result.Errors);
     }
     
@@ -174,7 +174,7 @@ public abstract class ResultStatus : IResultStatus
     /// </exception>
     public void SetPrimaryFailure(FailureType newPrimaryFailure)
     {
-        ThrowIfErrorsExist(newPrimaryFailure);
+        ThrowIfTypeIsNoneAndErrorsExist(newPrimaryFailure);
         PrimaryFailureType = newPrimaryFailure;
     }
 
@@ -309,7 +309,7 @@ public abstract class ResultStatus : IResultStatus
     public void AddError(FailureType newPrimaryFailure, params ResultError[] errors)
     {
         SetPrimaryFailure(newPrimaryFailure);
-        _errors.AddRange(errors.AddLayer(CurrentLayer));
+        _errors.AddRange(errors.WithLayer(CurrentLayer));
     }
 
     /// <summary>
@@ -435,7 +435,7 @@ public abstract class ResultStatus : IResultStatus
     public ResultException ToException() => new (this);
     
     
-    private void ThrowIfErrorsExist(FailureType failureType)
+    private void ThrowIfTypeIsNoneAndErrorsExist(FailureType failureType)
     {
         if (failureType == FailureType.None && 0 < _errors.Count)
             Throw("Cannot set primary failure to 'None' whe the result is already a failure and errors are present.");

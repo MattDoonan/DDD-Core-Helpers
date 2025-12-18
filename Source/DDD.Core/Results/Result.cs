@@ -6,7 +6,7 @@ using DDD.Core.Results.ValueObjects;
 
 namespace DDD.Core.Results;
 
-public class Result : NonTypedResult, IResultFactory<Result>
+public class Result : UntypedResult, IResultFactory<Result>
 {
     private Result(ResultLayer resultLayer = ResultLayer.Unknown) 
         : base(resultLayer)
@@ -193,7 +193,7 @@ public class Result<T> : TypedResult<T>
         return result.RemoveType();
     }
     
-    public static implicit operator Result<T>(NonTypedResult result)
+    public static implicit operator Result<T>(UntypedResult result)
     {
         return new Result<T>(result);
     }

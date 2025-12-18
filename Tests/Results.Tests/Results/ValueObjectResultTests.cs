@@ -3,7 +3,7 @@ using DDD.Core.Results.ValueObjects;
 using DDD.Core.ValueObjects.Base;
 using DDD.Core.ValueObjects.Factories;
 using DDD.Core.ValueObjects.SingleValueObjects.Types;
-using Results.Tests.Extensions;
+using Results.Tests.Results.Extensions;
 using Results.Tests.TestStructures;
 using Xunit;
 

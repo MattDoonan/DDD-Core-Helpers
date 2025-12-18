@@ -1,4 +1,5 @@
-﻿using DDD.Core.Results.Convertibles;
+﻿using DDD.Core.Results.Abstract;
+using DDD.Core.Results.Convertibles;
 using DDD.Core.Results.Convertibles.Interfaces;
 using DDD.Core.Results.Extensions;
 using DDD.Core.Results.Interfaces;
@@ -41,7 +42,7 @@ public class EntityResult : MapperConvertible, IResultFactory<EntityResult>
     }
     
     /// <summary>
-    /// A factory method to create a successful <see cref="EntityResult"/>.
+    /// A factory method that creates a successful <see cref="EntityResult"/>.
     /// </summary>
     /// <returns>
     /// A new instance of <see cref="EntityResult"/> indicating a successful operation.
@@ -52,7 +53,7 @@ public class EntityResult : MapperConvertible, IResultFactory<EntityResult>
     }
     
     /// <summary>
-    /// A factory method to create a failed <see cref="EntityResult"/> with an optional reason.
+    /// A factory method that creates a failed <see cref="EntityResult"/> with an optional reason.
     /// </summary>
     /// <param name="because">
     /// The reason why the operation failed. This parameter is optional.
@@ -66,7 +67,7 @@ public class EntityResult : MapperConvertible, IResultFactory<EntityResult>
     }
     
     /// <summary>
-    /// A factory method to create a copy of an existing <see cref="EntityResult"/>.
+    /// A factory method that creates a copy of an existing <see cref="EntityResult"/>.
     /// </summary>
     /// <param name="result">
     /// The <see cref="EntityResult"/> to be copied.
@@ -78,7 +79,7 @@ public class EntityResult : MapperConvertible, IResultFactory<EntityResult>
     }
     
     /// <summary>
-    /// A factory method to create a failed <see cref="EntityResult"/> due to a domain violation, with an optional reason.
+    /// A factory method that creates a failed <see cref="EntityResult"/> due to a domain violation, with an optional reason.
     /// </summary>
     /// <param name="because">
     /// The reason why the domain violation occurred. This parameter is optional.
@@ -92,10 +93,10 @@ public class EntityResult : MapperConvertible, IResultFactory<EntityResult>
     }
     
     /// <summary>
-    /// A factory method to create a failed <see cref="EntityResult"/> due to invalid input, with an optional reason.
+    /// A factory method that creates a failed <see cref="EntityResult"/> due to invalid input, with an optional reason.
     /// </summary>
     /// <param name="because">
-    /// The reason why the input was considered invalid. This parameter is optional.
+    /// The reason why the operation was considered invalid. This parameter is optional.
     /// </param>
     /// <returns>
     /// A new instance of <see cref="EntityResult"/> indicating an invalid input failure.
@@ -106,7 +107,7 @@ public class EntityResult : MapperConvertible, IResultFactory<EntityResult>
     }
     
     /// <summary>
-    /// A factory method to create a failed <see cref="EntityResult"/>
+    /// A factory method that creates a failed <see cref="EntityResult"/>
     /// indicating that the operation failed because it could not find an object, with an optional reason.
     /// </summary>
     /// <param name="because">
@@ -121,7 +122,7 @@ public class EntityResult : MapperConvertible, IResultFactory<EntityResult>
     }
     
     /// <summary>
-    /// A factory method to create a failed <see cref="EntityResult"/> due to an invariant violation, with an optional reason.
+    /// A factory method that creates a failed <see cref="EntityResult"/> due to an invariant violation, with an optional reason.
     /// </summary>
     /// <param name="because">
     /// The reason why the invariant was violated. This parameter is optional.
@@ -135,7 +136,7 @@ public class EntityResult : MapperConvertible, IResultFactory<EntityResult>
     }
     
     /// <summary>
-    /// Merges multiple <see cref="IResultStatus"/> results into a single <see cref="EntityResult"/>.
+    /// A factory method to merge multiple <see cref="IResultStatus"/> results into a single <see cref="EntityResult"/>.
     /// </summary>
     /// <param name="results"></param>
     /// <returns></returns>
@@ -144,57 +145,177 @@ public class EntityResult : MapperConvertible, IResultFactory<EntityResult>
         return results.AggregateTo<EntityResult>();
     }
     
+    /// <summary>
+    /// A factory method that creates an <see cref="EntityResult"/> from an existing <see cref="IResultStatus"/>.
+    /// </summary>
+    /// <param name="result">
+    /// The <see cref="IResultStatus"/> to convert into an <see cref="EntityResult"/>.
+    /// </param>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult"/> based on the provided <see cref="IResultStatus"/>.
+    /// </returns>
     public static EntityResult From(IResultStatus result)
     {
         return new EntityResult(result);
     }
     
+    /// <summary>
+    /// A factory method that creates a typed <see cref="EntityResult{T}"/> from an existing <see cref="ITypedResult{T}"/>.
+    /// </summary>
+    /// <param name="result">
+    /// The <see cref="ITypedResult{T}"/> to convert into an <see cref="EntityResult{T}"/>.
+    /// </param>
+    /// <typeparam name="T">
+    /// The type of the output value for the typed entity result.
+    /// </typeparam>
+    /// <returns></returns>
     public static EntityResult<T> From<T>(ITypedResult<T> result)
     {
         return EntityResult<T>.From(result);
     }
     
+    /// <summary>
+    /// A factory method that creates a typed <see cref="EntityResult{T}"/> from an existing <see cref="IResultStatus"/>.
+    /// An exception will be thrown if the result is successful.
+    /// </summary>
+    /// <param name="result">
+    /// The <see cref="IResultStatus"/> to convert into an <see cref="EntityResult{T}"/>.
+    /// </param>
+    /// <typeparam name="T">
+    /// The type of the output value for the typed entity result.
+    /// </typeparam>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult{T}"/> based on the provided <see cref="IResultStatus"/>.
+    /// </returns>
     public static EntityResult<T> From<T>(IResultStatus result)
     {
         return EntityResult<T>.From(result);
     }
     
+    /// <summary>
+    /// A factory method that creates a successful <see cref="EntityResult{T}"/> with the provided value.
+    /// </summary>
+    /// <param name="value">
+    /// The output value of type T for the successful entity result.
+    /// </param>
+    /// <typeparam name="T">
+    /// The type of the output value for the typed entity result.
+    /// </typeparam>
+    /// <returns></returns>
     public static EntityResult<T> Pass<T>(T value)
     {
         return EntityResult<T>.Pass(value);
     }
     
+    /// <summary>
+    /// A factory method that creates a failed <see cref="EntityResult{T}"/> with an optional reason.
+    /// </summary>
+    /// <param name="because">
+    /// The reason why the operation failed. This parameter is optional.
+    /// </param>
+    /// <typeparam name="T">
+    /// The type of the output value for the typed entity result.
+    /// </typeparam>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult{T}"/> indicating a failed operation.
+    /// </returns>
     public static EntityResult<T> Fail<T>(string? because = null)
     {
         return EntityResult<T>.Fail(FailureType.Generic, because);
     }
     
+    /// <summary>
+    /// A factory method that creates a failed <see cref="EntityResult{T}"/> due to a domain violation, with an optional reason.
+    /// </summary>
+    /// <param name="because">
+    /// The reason why the domain violation occurred. This parameter is optional.
+    /// </param>
+    /// <typeparam name="T">
+    /// The type of the output value for the typed entity result.
+    /// </typeparam>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult{T}"/> indicating a domain violation failure.
+    /// </returns>
     public static EntityResult<T> DomainViolation<T>(string? because = null)
     {
         return EntityResult<T>.Fail(FailureType.DomainViolation, because);
     }
     
+    /// <summary>
+    /// A factory method that creates a failed <see cref="EntityResult{T}"/> due to invalid input, with an optional reason.
+    /// </summary>
+    /// <param name="because">
+    /// The reason why the input was considered invalid. This parameter is optional.
+    /// </param>
+    /// <typeparam name="T">
+    /// The type of the output value for the typed entity result.
+    /// </typeparam>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult{T}"/> indicating an invalid input failure.
+    /// </returns>
     public static EntityResult<T> InvalidInput<T>(string? because = null)
     {
         return EntityResult<T>.Fail(FailureType.InvalidInput, because);
     }
     
+    /// <summary>
+    /// A factory method that creates a failed <see cref="EntityResult{T}"/> due to not finding an object, with an optional reason.
+    /// </summary>
+    /// <param name="because">
+    /// The reason why the object was not found. This parameter is optional.
+    /// </param>
+    /// <typeparam name="T">
+    /// The type of the output value for the typed entity result.
+    /// </typeparam>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult{T}"/> indicating a not found failure.
+    /// </returns>
     public static EntityResult<T> NotFound<T>(string? because = null)
     {
         return EntityResult<T>.Fail(FailureType.NotFound, because);
     }
     
+    /// <summary>
+    /// A factory method that creates a failed <see cref="EntityResult{T}"/> due to an invariant violation, with an optional reason.
+    /// </summary>
+    /// <param name="because">
+    /// The reason why the invariant was violated. This parameter is optional.
+    /// </param>
+    /// <typeparam name="T">
+    /// The type of the output value for the typed entity result.
+    /// </typeparam>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult{T}"/> indicating an invariant violation failure.
+    /// </returns>
     public static EntityResult<T> InvariantViolation<T>(string? because = null)
     {
         return EntityResult<T>.Fail(FailureType.InvariantViolation, because);
     }
     
+    /// <summary>
+    /// A factory method that creates a copy of an existing <see cref="EntityResult{T}"/>.
+    /// </summary>
+    /// <param name="result">
+    /// The <see cref="EntityResult{T}"/> to be copied.
+    /// </param>
+    /// <typeparam name="T">
+    /// The type of the output value for the typed entity result.
+    /// </typeparam>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult{T}"/> that is a copy of the provided result.
+    /// </returns>
     public static EntityResult<T> Copy<T>(EntityResult<T> result)
     {
         return EntityResult<T>.From(result);
     }
 }
 
+/// <summary>
+/// A typed version of <see cref="EntityResult"/> that carries an output value of type T when successful.
+/// </summary>
+/// <typeparam name="T">
+/// The type of the output value for the typed entity result.
+/// </typeparam>
 public class EntityResult<T> : MapperConvertible<T>
 {
     private EntityResult(T value) 
@@ -215,11 +336,27 @@ public class EntityResult<T> : MapperConvertible<T>
     {
     }
     
+    
+    /// <summary>
+    /// Converts this <see cref="EntityResult{T}"/> to a non-typed EntityResult: <see cref="EntityResult"/>.
+    /// </summary>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult"/> without the output value.
+    /// </returns>
     public EntityResult RemoveType()
     {
         return EntityResult.From((IResultStatus)this);
     }
     
+    /// <summary>
+    /// Converts this <see cref="EntityResult{T}"/> to another typed EntityResult of type T2: <see cref="EntityResult{T2}"/>.
+    /// </summary>
+    /// <typeparam name="T2">
+    /// The type to which the <see cref="EntityResult{T}"/> should be converted.
+    /// </typeparam>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult{T2}"/> based on this result.
+    /// </returns>
     public EntityResult<T2> ToTypedEntityResult<T2>()
     {
         return EntityResult<T2>.From(this);
@@ -245,17 +382,44 @@ public class EntityResult<T> : MapperConvertible<T>
         return new EntityResult<T>(result);
     }
     
+    /// <summary>
+    /// Implicitly converts a value of type T to a successful <see cref="EntityResult{T}"/>.
+    /// </summary>
+    /// <param name="value">
+    /// The value of type T to be wrapped in a successful EntityResult.
+    /// </param>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult{T}"/> indicating a successful operation with the provided value.
+    /// </returns>
     public static implicit operator EntityResult<T>(T value)
     {
         return Pass(value);
     }
     
+    /// <summary>
+    /// Implicitly converts a <see cref="EntityResult{T}"/> to a non-typed <see cref="EntityResult"/>.
+    /// </summary>
+    /// <param name="result">
+    /// The <see cref="EntityResult{T}"/> to be converted to a non-typed EntityResult.
+    /// </param>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult"/> without the output value.
+    /// </returns>
     public static implicit operator EntityResult(EntityResult<T> result)
     {
         return result.RemoveType();
     }
     
-    public static implicit operator EntityResult<T>(MapperConvertible result)
+    /// <summary>
+    /// Implicitly converts a <see cref="UntypedResult"/> to a typed <see cref="EntityResult{T}"/>.
+    /// </summary>
+    /// <param name="result">
+    /// The <see cref="UntypedResult"/> to be converted to a typed EntityResult.
+    /// </param>
+    /// <returns>
+    /// A new instance of <see cref="EntityResult{T}"/> based on the provided <see cref="UntypedResult"/>.
+    /// </returns>
+    public static implicit operator EntityResult<T>(UntypedResult result)
     {
         return new EntityResult<T>(result);
     }

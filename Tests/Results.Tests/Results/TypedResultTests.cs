@@ -3,10 +3,10 @@ using DDD.Core.Results.Abstract;
 using DDD.Core.Results.Exceptions;
 using DDD.Core.Results.Interfaces;
 using DDD.Core.Results.ValueObjects;
-using Results.Tests.Extensions;
+using Results.Tests.Results.Extensions;
 using Xunit;
 
-namespace Results.Tests;
+namespace Results.Tests.Results.Abstract;
 
 public class TypedResultTests
 {
