@@ -6,7 +6,7 @@ using DDD.Core.Results.ValueObjects;
 using Results.Tests.Results.Extensions;
 using Xunit;
 
-namespace Results.Tests.Results.Abstract;
+namespace Results.Tests.Results;
 
 public class TypedResultTests
 {

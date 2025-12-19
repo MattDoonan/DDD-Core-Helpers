@@ -1,7 +1,7 @@
 ﻿using DDD.Core.Results;
 using DDD.Core.Results.ValueObjects;
 using Results.Tests.Results.Extensions;
-using Results.Tests.TestStructures;
+using Results.Tests.Results.TestStructures;
 using Xunit;
 
 namespace Results.Tests.Results;

@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Results.Tests.TestStructures;
+namespace Results.Tests.Results.TestStructures;
 
 public abstract class BasicResultTests : BasicValueResultTests
 {

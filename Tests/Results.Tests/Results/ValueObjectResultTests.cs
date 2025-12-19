@@ -4,7 +4,7 @@ using DDD.Core.ValueObjects.Base;
 using DDD.Core.ValueObjects.Factories;
 using DDD.Core.ValueObjects.SingleValueObjects.Types;
 using Results.Tests.Results.Extensions;
-using Results.Tests.TestStructures;
+using Results.Tests.Results.TestStructures;
 using Xunit;
 
 namespace Results.Tests.Results;
