@@ -1,4 +1,5 @@
-﻿using DDD.Core.Statuses.Abstract;
+﻿using DDD.Core.Statuses;
+using DDD.Core.Statuses.Abstract;
 
 namespace DDD.Core.Exceptions;
 
@@ -7,15 +8,15 @@ namespace DDD.Core.Exceptions;
 /// </summary>
 public class NotAllowedException : OperationException
 {
-    public NotAllowedException(FailedOperationStatus failure) : base(failure)
+    public NotAllowedException(NotAllowed failure) : base(failure)
     {
     }
 
-    public NotAllowedException(FailedOperationStatus failure, string message) : base(failure, message)
+    public NotAllowedException(NotAllowed failure, string message) : base(failure, message)
     {
     }
 
-    public NotAllowedException(FailedOperationStatus failure, string message, Exception inner) : base(failure, message, inner)
+    public NotAllowedException(NotAllowed failure, string message, Exception inner) : base(failure, message, inner)
     {
     }
 }

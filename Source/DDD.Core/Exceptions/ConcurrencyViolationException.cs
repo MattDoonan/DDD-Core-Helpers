@@ -1,4 +1,5 @@
-﻿using DDD.Core.Statuses.Abstract;
+﻿using DDD.Core.Statuses;
+using DDD.Core.Statuses.Abstract;
 
 namespace DDD.Core.Exceptions;
 
@@ -7,15 +8,15 @@ namespace DDD.Core.Exceptions;
 /// </summary>
 public class ConcurrencyViolationException : OperationException
 {
-    public ConcurrencyViolationException(FailedOperationStatus failure) : base(failure)
+    public ConcurrencyViolationException(ConcurrencyViolation failure) : base(failure)
     {
     }
 
-    public ConcurrencyViolationException(FailedOperationStatus failure, string message) : base(failure, message)
+    public ConcurrencyViolationException(ConcurrencyViolation failure, string message) : base(failure, message)
     {
     }
 
-    public ConcurrencyViolationException(FailedOperationStatus failure, string message, Exception inner) : base(failure, message, inner)
+    public ConcurrencyViolationException(ConcurrencyViolation failure, string message, Exception inner) : base(failure, message, inner)
     {
     }
 }

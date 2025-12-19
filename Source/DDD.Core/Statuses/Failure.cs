@@ -9,12 +9,17 @@ namespace DDD.Core.Statuses;
 /// </summary>
 public record Failure : FailedOperationStatus
 {
-    public Failure() : base(StatusType.GenericFailure, "The operation was a failure")
+    internal Failure() : base(StatusType.GenericFailure, "The operation was a failure")
     {
     }
     
-    public Failure(Type expectedType) 
+    internal Failure(Type expectedType) 
         : base(StatusType.GenericFailure, $"The operation to retrieve {expectedType.Name} was a failure")
+    {
+    }
+    
+    protected Failure(string message) 
+        : base(StatusType.GenericFailure, message)
     {
     }
     
@@ -26,5 +31,23 @@ public record Failure : FailedOperationStatus
     public override OperationException ToException()
     {
         return new OperationException(this);
+    }
+}
+
+/// <summary>
+/// Generic version of Failure status for specific types.
+/// </summary>
+/// <typeparam name="T">
+/// The type associated with the failure.
+/// </typeparam>
+public record Failure<T> : Failure
+{
+    internal Failure() : base(typeof(T))
+    {
+    }
+    
+    protected Failure(string message) 
+        : base(message)
+    {
     }
 }

@@ -1,4 +1,5 @@
-﻿using DDD.Core.Statuses.Abstract;
+﻿using DDD.Core.Statuses;
+using DDD.Core.Statuses.Abstract;
 
 namespace DDD.Core.Exceptions;
 
@@ -7,15 +8,15 @@ namespace DDD.Core.Exceptions;
 /// </summary>
 public class OperationTimeoutException : OperationException
 {
-    public OperationTimeoutException(FailedOperationStatus failure) : base(failure)
+    public OperationTimeoutException(TimedOut failure) : base(failure)
     {
     }
 
-    public OperationTimeoutException(FailedOperationStatus failure, string message) : base(failure, message)
+    public OperationTimeoutException(TimedOut failure, string message) : base(failure, message)
     {
     }
 
-    public OperationTimeoutException(FailedOperationStatus failure, string message, Exception inner) : base(failure, message, inner)
+    public OperationTimeoutException(TimedOut failure, string message, Exception inner) : base(failure, message, inner)
     {
     }
 }

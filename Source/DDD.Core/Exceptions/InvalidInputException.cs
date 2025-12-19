@@ -1,4 +1,5 @@
-﻿using DDD.Core.Statuses.Abstract;
+﻿using DDD.Core.Statuses;
+using DDD.Core.Statuses.Abstract;
 
 namespace DDD.Core.Exceptions;
 
@@ -7,15 +8,15 @@ namespace DDD.Core.Exceptions;
 /// </summary>
 public class InvalidInputException : OperationException
 {
-    public InvalidInputException(FailedOperationStatus failure) : base(failure)
+    public InvalidInputException(InvalidInput failure) : base(failure)
     {
     }
 
-    public InvalidInputException(FailedOperationStatus failure, string message) : base(failure, message)
+    public InvalidInputException(InvalidInput failure, string message) : base(failure, message)
     {
     }
 
-    public InvalidInputException(FailedOperationStatus failure, string message, Exception inner) : base(failure, message, inner)
+    public InvalidInputException(InvalidInput failure, string message, Exception inner) : base(failure, message, inner)
     {
     }
 }

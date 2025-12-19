@@ -1,4 +1,5 @@
-﻿using DDD.Core.Statuses.Abstract;
+﻿using DDD.Core.Statuses;
+using DDD.Core.Statuses.Abstract;
 
 namespace DDD.Core.Exceptions;
 
@@ -7,15 +8,15 @@ namespace DDD.Core.Exceptions;
 /// </summary>
 public class DomainViolationException : OperationException
 {
-    public DomainViolationException(FailedOperationStatus failure) : base(failure)
+    public DomainViolationException(DomainViolation failure) : base(failure)
     {
     }
 
-    public DomainViolationException(FailedOperationStatus failure, string message) : base(failure, message)
+    public DomainViolationException(DomainViolation failure, string message) : base(failure, message)
     {
     }
 
-    public DomainViolationException(FailedOperationStatus failure, string message, Exception inner) : base(failure, message, inner)
+    public DomainViolationException(DomainViolation failure, string message, Exception inner) : base(failure, message, inner)
     {
     }
 }

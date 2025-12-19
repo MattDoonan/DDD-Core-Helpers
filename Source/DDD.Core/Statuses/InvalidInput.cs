@@ -9,13 +9,18 @@ namespace DDD.Core.Statuses;
 /// </summary>
 public record InvalidInput : FailedOperationStatus
 {
-    public InvalidInput()
+    internal InvalidInput()
         : base(StatusType.InvalidInput, "The input is invalid")
     {
     }
     
-    public InvalidInput(Type expectedType) 
+    internal InvalidInput(Type expectedType) 
         : base(StatusType.InvalidInput, $"The input for {expectedType.Name} is invalid")
+    {
+    }
+    
+    protected InvalidInput(string message) 
+        : base(StatusType.InvalidInput, message)
     {
     }
 
@@ -27,5 +32,23 @@ public record InvalidInput : FailedOperationStatus
     public override OperationException ToException()
     {
         return new InvalidInputException(this);
+    }
+}
+
+/// <summary>
+/// Generic version of InvalidInput status for specific types.
+/// </summary>
+/// <typeparam name="T">
+/// The type of the input that is invalid.
+/// </typeparam>
+public record InvalidInput<T> : InvalidInput
+{
+    internal InvalidInput() : base(typeof(T))
+    {
+    }
+    
+    protected InvalidInput(string message) 
+        : base(message)
+    {
     }
 }

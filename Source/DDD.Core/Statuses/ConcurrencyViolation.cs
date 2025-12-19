@@ -9,13 +9,18 @@ namespace DDD.Core.Statuses;
 /// </summary>
 public record ConcurrencyViolation : FailedOperationStatus
 {
-    public ConcurrencyViolation() 
+    internal ConcurrencyViolation() 
         : base(StatusType.ConcurrencyViolation, "The operation failed due to a concurrency violation")
     {
     }
     
-    public ConcurrencyViolation(Type expectedType) 
+    internal ConcurrencyViolation(Type expectedType) 
         : base(StatusType.ConcurrencyViolation, $"The operation retrieving {expectedType.Name} failed due to a concurrency violation")
+    {
+    }
+    
+    protected ConcurrencyViolation(string message) 
+        : base(StatusType.ConcurrencyViolation, message)
     {
     }
 
@@ -27,5 +32,24 @@ public record ConcurrencyViolation : FailedOperationStatus
     public override OperationException ToException()
     {
         return new ConcurrencyViolationException(this);
+    }
+}
+
+
+/// <summary>
+/// Generic version of ConcurrencyViolation status for specific types.
+/// </summary>
+/// <typeparam name="T">
+/// The type of the resource related to the concurrency violation.
+/// </typeparam>
+public record ConcurrencyViolation<T> : ConcurrencyViolation
+{
+    internal ConcurrencyViolation() : base(typeof(T))
+    {
+    }
+    
+    protected ConcurrencyViolation(string message) 
+        : base(message)
+    {
     }
 }

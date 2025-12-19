@@ -1,4 +1,5 @@
-﻿using DDD.Core.Statuses.Abstract;
+﻿using DDD.Core.Statuses;
+using DDD.Core.Statuses.Abstract;
 
 namespace DDD.Core.Exceptions;
 
@@ -7,15 +8,15 @@ namespace DDD.Core.Exceptions;
 /// </summary>
 public class InvariantViolationException : OperationException
 {
-    public InvariantViolationException(FailedOperationStatus failure) : base(failure)
+    public InvariantViolationException(InvariantViolation failure) : base(failure)
     {
     }
 
-    public InvariantViolationException(FailedOperationStatus failure, string message) : base(failure, message)
+    public InvariantViolationException(InvariantViolation failure, string message) : base(failure, message)
     {
     }
 
-    public InvariantViolationException(FailedOperationStatus failure, string message, Exception inner) : base(failure, message, inner)
+    public InvariantViolationException(InvariantViolation failure, string message, Exception inner) : base(failure, message, inner)
     {
     }
 }

@@ -9,11 +9,18 @@ namespace DDD.Core.Statuses;
 /// </summary>
 public record NotFound : FailedOperationStatus
 {
-    public NotFound() : base(StatusType.NotFound, "Requested resource was not found")
+    internal NotFound() 
+        : base(StatusType.NotFound, "Requested resource was not found")
     {
     }
     
-    public NotFound(Type expectedType) : base(StatusType.NotFound, $"Requested resource of type {expectedType.Name} was not found")
+    internal NotFound(Type expectedType) 
+        : base(StatusType.NotFound, $"Requested resource of type {expectedType.Name} was not found")
+    {
+    }
+    
+    protected NotFound(string message) 
+        : base(StatusType.NotFound, message)
     {
     }
 
@@ -25,5 +32,24 @@ public record NotFound : FailedOperationStatus
     public override OperationException ToException()
     {
         throw new NotFoundException(this);
+    }
+}
+
+/// <summary>
+/// Represents a not found operation status for a specific type.
+/// </summary>
+/// <typeparam name="T">
+/// The type associated with the not found status.
+/// </typeparam>
+public record NotFound<T> : NotFound
+{
+    internal NotFound() 
+        : base(typeof(T))
+    {
+    }
+    
+    protected NotFound(string message) 
+        : base(message)
+    {
     }
 }

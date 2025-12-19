@@ -1,4 +1,5 @@
-﻿using DDD.Core.Statuses.Abstract;
+﻿using DDD.Core.Statuses;
+using DDD.Core.Statuses.Abstract;
 
 namespace DDD.Core.Exceptions;
 
@@ -7,15 +8,15 @@ namespace DDD.Core.Exceptions;
 /// </summary>
 public class InvalidRequestException : OperationException
 {
-    public InvalidRequestException(FailedOperationStatus failure) : base(failure)
+    public InvalidRequestException(InvalidRequest failure) : base(failure)
     {
     }
 
-    public InvalidRequestException(FailedOperationStatus failure, string message) : base(failure, message)
+    public InvalidRequestException(InvalidRequest failure, string message) : base(failure, message)
     {
     }
 
-    public InvalidRequestException(FailedOperationStatus failure, string message, Exception inner) : base(failure, message, inner)
+    public InvalidRequestException(InvalidRequest failure, string message, Exception inner) : base(failure, message, inner)
     {
     }
 }

@@ -9,13 +9,18 @@ namespace DDD.Core.Statuses;
 /// </summary>
 public record InvalidRequest : FailedOperationStatus
 {
-    public InvalidRequest() 
+    internal InvalidRequest() 
         : base(StatusType.InvalidRequest, "The request is invalid")
     {
     }
     
-    public InvalidRequest(Type expectedType) 
+    internal InvalidRequest(Type expectedType) 
         : base(StatusType.InvalidRequest, $"The request for {expectedType.Name} is invalid")
+    {
+    }
+    
+    protected InvalidRequest(string message) 
+        : base(StatusType.InvalidRequest, message)
     {
     }
 
@@ -27,5 +32,25 @@ public record InvalidRequest : FailedOperationStatus
     public override OperationException ToException()
     {
         return new InvalidRequestException(this);
+    }
+}
+
+
+/// <summary>
+/// Represents an invalid request operation status for a specific type.
+/// </summary>
+/// <typeparam name="T">
+/// The type associated with the invalid request.
+/// </typeparam>
+public record InvalidRequest<T> : InvalidRequest
+{
+    internal InvalidRequest() 
+        : base(typeof(T))
+    {
+    }
+    
+    protected InvalidRequest(string message) 
+        : base(message)
+    {
     }
 }

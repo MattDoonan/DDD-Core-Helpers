@@ -9,13 +9,18 @@ namespace DDD.Core.Statuses;
 /// </summary>
 public record InvariantViolation : FailedOperationStatus
 {
-    public InvariantViolation() 
+    internal InvariantViolation() 
         : base(StatusType.InvariantViolation, "An unexpected failure occured")
     {
     }
     
-    public InvariantViolation(Type expectedType) 
+    internal InvariantViolation(Type expectedType) 
         : base(StatusType.InvariantViolation, $"An unexpected failure occured when retrieving {expectedType.Name}")
+    {
+    }
+    
+    protected InvariantViolation(string message) 
+        : base(StatusType.InvariantViolation, message)
     {
     }
     
@@ -27,5 +32,24 @@ public record InvariantViolation : FailedOperationStatus
     public override OperationException ToException()
     {
         return new InvariantViolationException(this);
+    }
+}
+
+/// <summary>
+/// Represents an invariant violation operation status for a specific type.
+/// </summary>
+/// <typeparam name="T">
+/// The type associated with the invariant violation.
+/// </typeparam>
+public record InvariantViolation<T> : InvariantViolation
+{
+    internal InvariantViolation() 
+        : base(typeof(T))
+    {
+    }
+    
+    protected InvariantViolation(string message) 
+        : base(message)
+    {
     }
 }

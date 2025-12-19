@@ -8,13 +8,37 @@ namespace DDD.Core.Statuses;
 /// </summary>
 public record Success : OperationStatus
 {
-    public Success() 
+    internal Success() 
         : base(StatusType.Success, "The operation completed successfully")
     {
     }
     
-    public Success(Type expectedType) 
+    internal Success(Type expectedType) 
         : base(StatusType.Success, $"The operation retrieving {expectedType} completed successfully")
+    {
+    }
+    
+    internal Success(string message) 
+        : base(StatusType.Success, message)
+    {
+    }
+}
+
+/// <summary>
+/// Represents a successful operation status that returns a value of type T.
+/// </summary>
+/// <typeparam name="T">
+/// The type of the value returned by the successful operation.
+/// </typeparam>
+public record Success<T> : Success
+{
+    internal Success() 
+        : base(typeof(T))
+    {
+    }
+
+    internal Success(string message) 
+        : base(message)
     {
     }
 }

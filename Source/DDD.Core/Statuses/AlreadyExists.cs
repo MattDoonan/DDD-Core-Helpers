@@ -9,14 +9,20 @@ namespace DDD.Core.Statuses;
 /// </summary>
 public record AlreadyExists : FailedOperationStatus
 {
-    public AlreadyExists() : base(StatusType.AlreadyExists, "Resource already exists")
+    internal AlreadyExists() 
+        : base(StatusType.AlreadyExists, "Resource already exists")
     {
     }
 
-    public AlreadyExists(Type expectedType)
+    internal AlreadyExists(Type expectedType)
         : base(StatusType.AlreadyExists, $"Resource of type {expectedType.Name} already exists")
     {
         
+    }
+    
+    protected AlreadyExists(string message) 
+        : base(StatusType.AlreadyExists, message)
+    {
     }
 
     public override void Throw()
@@ -27,5 +33,23 @@ public record AlreadyExists : FailedOperationStatus
     public override OperationException ToException()
     {
         throw new AlreadyExistsException(this);
+    }
+}
+
+/// <summary>
+/// Generic version of AlreadyExists status for specific types.
+/// </summary>
+/// <typeparam name="T">
+/// The type of the resource that already exists.
+/// </typeparam>
+public record AlreadyExists<T> : AlreadyExists
+{
+    internal AlreadyExists() : base(typeof(T))
+    {
+    }
+    
+    protected AlreadyExists(string message) 
+        : base(message)
+    {
     }
 }

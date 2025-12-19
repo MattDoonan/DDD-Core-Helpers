@@ -1,4 +1,5 @@
-﻿using DDD.Core.Statuses.Abstract;
+﻿using DDD.Core.Statuses;
+using DDD.Core.Statuses.Abstract;
 
 namespace DDD.Core.Exceptions;
 
@@ -7,15 +8,15 @@ namespace DDD.Core.Exceptions;
 /// </summary>
 public class OperationCancelledException : OperationException
 {
-    public OperationCancelledException(FailedOperationStatus failure) : base(failure)
+    public OperationCancelledException(Cancelled failure) : base(failure)
     {
     }
 
-    public OperationCancelledException(FailedOperationStatus failure, string message) : base(failure, message)
+    public OperationCancelledException(Cancelled failure, string message) : base(failure, message)
     {
     }
 
-    public OperationCancelledException(FailedOperationStatus failure, string message, Exception inner) : base(failure, message, inner)
+    public OperationCancelledException(Cancelled failure, string message, Exception inner) : base(failure, message, inner)
     {
     }
 }

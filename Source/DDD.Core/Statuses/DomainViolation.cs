@@ -9,13 +9,18 @@ namespace DDD.Core.Statuses;
 /// </summary>
 public record DomainViolation : FailedOperationStatus
 {
-    public DomainViolation() 
+    internal DomainViolation() 
         : base(StatusType.DomainViolation, "A domain violation has occurred")
     {
     }
     
-    protected DomainViolation(Type expectedType) 
+    internal DomainViolation(Type expectedType) 
         : base(StatusType.DomainViolation, $"A domain violation has occurred while retrieving {expectedType.Name}")
+    {
+    }
+    
+    protected DomainViolation(string message) 
+        : base(StatusType.DomainViolation, message)
     {
     }
 
@@ -27,5 +32,23 @@ public record DomainViolation : FailedOperationStatus
     public override OperationException ToException()
     {
         return new DomainViolationException(this);
+    }
+}
+
+/// <summary>
+/// Generic version of DomainViolation status for specific types.
+/// </summary>
+/// <typeparam name="T">
+/// The type associated with the domain violation.
+/// </typeparam>
+public record DomainViolation<T> : DomainViolation
+{
+    internal DomainViolation() : base(typeof(T))
+    {
+    }
+    
+    protected DomainViolation(string message) 
+        : base(message)
+    {
     }
 }
