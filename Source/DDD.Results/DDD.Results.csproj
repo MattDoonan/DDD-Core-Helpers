@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>DDD.Results</AssemblyName>
+        <RootNamespace>DDD.Core</RootNamespace>
+        <Version>1.2.1</Version>
+        <Authors>Matt Doonan</Authors>
+    </PropertyGroup>
+
+</Project>

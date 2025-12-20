@@ -1,5 +1,4 @@
-﻿using DDD.Core.Entities;
-using DDD.Core.Results;
+﻿using DDD.Core.Results;
 using DDD.Core.ValueObjects.Factories;
 using DDD.Core.ValueObjects.Identifiers.Types;
 

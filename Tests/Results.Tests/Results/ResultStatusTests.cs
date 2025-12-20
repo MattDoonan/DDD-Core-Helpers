@@ -1,7 +1,10 @@
-﻿using DDD.Core.Results.Abstract;
+﻿using DDD.Core.Operations.Statuses;
+using DDD.Core.Operations.Statuses.Abstract;
+using DDD.Core.Results.Abstract;
 using DDD.Core.Results.Exceptions;
 using DDD.Core.Results.Interfaces;
 using DDD.Core.Results.ValueObjects;
+using Results.Tests.Helpers;
 using Results.Tests.Results.Extensions;
 using Xunit;
 
@@ -13,31 +16,19 @@ public class ResultStatusTests
     public void Create_ExpectedSuccessfulResultStatus_Should_BeSuccessful()
     {
         const ResultLayer layer = ResultLayer.Infrastructure;
-        var result = new TestResult(layer);
+        var result = new TestResult(OperationStatus.Success(), layer);
         result.AssertSuccessful(layer);
     }
     
     [Fact]
     public void Create_ExpectedFailureResultStatus_Should_BeFailure()
     {
-        const FailureType failureType = FailureType.DomainViolation;
+        var operationStatus = OperationStatus.DomainViolation();
         const ResultLayer layer = ResultLayer.Infrastructure;
         const string message = "i said so";
-        var result = new TestResult(failureType, layer, message);
-        result.AssertFailure(failureType, layer, 1);
-        var expectedError = new ResultError(failureType, layer, message);
-        Assert.Equivalent(expectedError, result.Errors.FirstOrDefault());
-    }
-    
-    [Fact]
-    public void Create_ResultStatusFromError_Should_BeFailure()
-    {
-        const FailureType failureType = FailureType.DomainViolation;
-        const ResultLayer layer = ResultLayer.Infrastructure;
-        const string message = "i said so";
-        var expectedError = new ResultError(failureType, layer, message, typeof(string));
+        var expectedError = new ResultError(operationStatus, layer, message);
         var result = new TestResult(expectedError);
-        result.AssertFailure(failureType, layer, 1);
+        result.AssertFailure(operationStatus, layer, 1);
         Assert.Equivalent(expectedError, result.Errors.FirstOrDefault());
     }
     
@@ -45,7 +36,7 @@ public class ResultStatusTests
     public void Create_ResultStatusFromPreviousSuccessfulResult_Should_BeSuccessful()
     {
         const ResultLayer layer = ResultLayer.Infrastructure;
-        var firsResult = new TestResult(layer);
+        var firsResult = new TestResult(OperationStatus.Success(), layer);
         var secondResult = new TestResult(firsResult);
         secondResult.AssertSuccessful(layer);
     }
@@ -53,74 +44,80 @@ public class ResultStatusTests
     [Fact]
     public void Create_ResultStatusFromPreviousFailureResult_Should_BeFailure()
     {
-        const FailureType failureType = FailureType.DomainViolation;
+        var operationStatus = OperationStatus.DomainViolation<string>();
         const ResultLayer layer = ResultLayer.Infrastructure;
         const string message = "i said so";
-        var expectedError = new ResultError(failureType, layer, message, typeof(string));
+        var expectedError = new ResultError(operationStatus, layer, message);
         var firstResult = new TestResult(expectedError);
         var secondResult = new TestResult(firstResult);
-        secondResult.AssertFailure(failureType, layer, 1);
+        secondResult.AssertFailure(operationStatus, layer, 1);
+        firstResult.AssertEquivalent(secondResult);
         Assert.Equivalent(expectedError, secondResult.Errors.FirstOrDefault());
     }
 
     [Theory, MemberData(nameof(AllFailureTypes))]
-    public void Create_Failure_WithFailureType_Should_SetCorrectVariables(FailureType failureType)
+    public void Create_Failure_WithFailureType_Should_SetCorrectVariables(FailedOperationStatus failedOperationStatus)
     {
-        var result = new TestResult(failureType, ResultLayer.Unknown, string.Empty);
-        result.AssertFailureType(failureType);
+        var error = new ResultError(failedOperationStatus, ResultLayer.Unknown, string.Empty);
+        var result = new TestResult(error);
+        result.AssertFailureType(failedOperationStatus.Type);
     }
     
     [Theory, MemberData(nameof(FailureTypeInErrorsTestCases))]
     public void Create_Failure_WithManyFailureTypes_Should_SetCorrectVariables(TestResult result)
     {
-        var expectedFailureType = result.Errors.Select(e => e.FailureType).ToList();
-        expectedFailureType.Add(result.PrimaryFailureType);
+        var expectedFailureType = result.Errors.Select(e => e.Failure.Type).ToList();
+        expectedFailureType.Add(result.PrimaryStatus.Type);
         result.AssertFailureType(expectedFailureType.ToArray());
     }
     
     [Theory, MemberData(nameof(AllFailureTypes))]
-    public void IsPrimaryFailure_Should_BeTrue_When_InputIsPrimaryFailureType(FailureType failureType)
+    public void IsPrimaryStatus_Should_BeTrue_When_InputIsPrimaryFailureType(FailedOperationStatus operationStatus)
     {
-        var result = new TestResult(failureType, ResultLayer.Unknown, string.Empty);
-        Assert.True(result.IsPrimaryFailure(failureType));
+        var error = new ResultError(operationStatus, ResultLayer.Unknown, string.Empty);
+        var result = new TestResult(error);
+        Assert.True(result.IsPrimaryStatus(operationStatus));
+        Assert.True(result.IsPrimaryStatus(operationStatus.Type));
     }
     
     [Theory, MemberData(nameof(AllFailureTypes))]
-    public void IsPrimaryFailure_Should_BeFalse_WhenInputIsNotPrimaryFailureType(FailureType failureType)
+    public void IsPrimaryStatus_Should_BeFalse_WhenInputIsNotPrimaryFailureType(FailedOperationStatus operationStatus)
     {
-        var result = new TestResult(ResultLayer.Unknown);
-        Assert.False(result.IsPrimaryFailure(failureType));
+        var result = new TestResult(OperationStatus.Success<string>(), ResultLayer.Unknown);
+        Assert.False(result.IsPrimaryStatus(operationStatus));
+        Assert.False(result.IsPrimaryStatus(operationStatus.Type));
     }
     
     [Theory, MemberData(nameof(AllFailureTypes))]
-    public void SetPrimaryFailure_Should_UpdatePrimaryFailureType(FailureType failureType)
+    public void SetPrimaryFailure_Should_UpdatePrimaryFailureType(FailedOperationStatus operationStatus)
     {
-        var result = new TestResult(ResultLayer.Unknown);
-        result.SetPrimaryFailure(failureType);
-        result.AssertFailure(failureType, ResultLayer.Unknown, 0);
+        var result = new TestResult(OperationStatus.Success<string>(), ResultLayer.Unknown);
+        result.SetPrimaryStatus(operationStatus);
+        result.AssertFailure(operationStatus, ResultLayer.Unknown, 0);
     }
     
     [Fact]
     public void SetPrimaryFailure_WhenNewFailureTypeIsNone_ButThereAreNoErrors_Should_ConvertResultToSuccess()
     {
-        var result = new TestResult(ResultLayer.Unknown);
-        result.SetPrimaryFailure(FailureType.AlreadyExists);
-        result.SetPrimaryFailure(FailureType.None);
-        result.AssertSuccessful();
+        var result = new TestResult(OperationStatus.Success(), ResultLayer.Unknown);
+        result.SetPrimaryStatus(OperationStatus.AlreadyExists<string>());
+        result.SetPrimaryStatus(OperationStatus.Success<int>());
+        result.AssertSuccessful(OperationStatus.Success<int>());
     }
     
     [Fact]
     public void SetPrimaryFailure_WhenNewFailureTypeIsNone_AndThereAreErrors_Should_ConvertResultToSuccess()
     {
-        var result = new TestResult(FailureType.Generic, ResultLayer.Unknown, "test");
-        Assert.Throws<ResultException>(() => result.SetPrimaryFailure(FailureType.None));
-        result.AssertFailure(FailureType.Generic, ResultLayer.Unknown, 1);
+        var error = new ResultError(OperationStatus.InvalidInput(), ResultLayer.Unknown, "test");
+        var result = new TestResult(error);
+        Assert.Throws<ResultException>(() => result.SetPrimaryStatus(OperationStatus.Success()));
+        result.AssertFailure(OperationStatus.InvalidInput(), ResultLayer.Unknown, 1);
     }
     
     [Theory, MemberData(nameof(AllLayers))]
     public void IsCurrentLayer_Should_BeTrue_WhenInputIsCurrentLayer(ResultLayer resultLayer)
     {
-        var result = new TestResult(resultLayer);
+        var result = new TestResult(OperationStatus.Success<byte>(), resultLayer);
         Assert.True(result.IsCurrentLayer(resultLayer));
     }
     
@@ -128,7 +125,7 @@ public class ResultStatusTests
     public void IsCurrentLayer_Should_BeFalse_WhenInputIsNotCurrentLayer(ResultLayer resultLayer)
     {
         var insertedLayer = (ResultLayer)(((int)resultLayer + 1) % Enum.GetValues<ResultLayer>().Length);
-        var result = new TestResult(insertedLayer);
+        var result = new TestResult(OperationStatus.Success(), insertedLayer);
         Assert.False(result.IsCurrentLayer(resultLayer));
     }
 
@@ -136,25 +133,27 @@ public class ResultStatusTests
     public void ContainsErrorWithLayer_Should_BeTrue_WhenErrorsContainLayer(ResultLayer resultLayer)
     {
         var errors = CreateErrorsWithAllLayers().ToList();
-        var result = new TestResult(FailureType.Generic, ResultLayer.Unknown, "test");
+        var error = new ResultError(OperationStatus.Failure(), resultLayer, "test");
+        var result = new TestResult(error);
         result.AddErrors(errors);
         Assert.True(result.ContainsErrorWith(resultLayer));
     }
     
     [Theory, MemberData(nameof(AllFailureTypes))]
-    public void ContainsErrorWithFailureType_Should_BeTrue_WhenErrorsContainFailureType(FailureType failureType)
+    public void ContainsErrorWithFailureType_Should_BeTrue_WhenErrorsContainFailureType(FailedOperationStatus operationStatus)
     {
         var errors = CreateErrorsWithAllFailureTypes().ToList();
-        var result = new TestResult(FailureType.Generic, ResultLayer.Unknown, "test");
+        var error = new ResultError(operationStatus, ResultLayer.Unknown, "test");
+        var result = new TestResult(error);
         result.AddErrors(errors);
-        Assert.True(result.ContainsErrorWith(failureType));
+        Assert.True(result.ContainsErrorWith(operationStatus.Type));
     }
     
     [Theory, MemberData(nameof(CombineWithSuccessfulResultTestCases))]
     public void CombineWith_WithASuccessfulResult_AndAnotherSuccessfulResult_Should_RemainSuccessful(ResultLayer firstResultsLayer, ResultLayer secondResultsLayer)
     {
-        var firstResult = new TestResult(firstResultsLayer);
-        var secondResult = new TestResult(secondResultsLayer);
+        var firstResult = new TestResult(OperationStatus.Success(), firstResultsLayer);
+        var secondResult = new TestResult(OperationStatus.Success(), secondResultsLayer);
         firstResult.CombineWith(secondResult);
         firstResult.AssertSuccessful(firstResultsLayer);
     }
@@ -163,14 +162,14 @@ public class ResultStatusTests
     public void CombineWith_WithASuccessfulResult_AndAnotherFailureResult_Should_TurnToFailure(TestResult successfulResult, TestResult failureResult)
     {
         successfulResult.CombineWith(failureResult);
-        successfulResult.AssertFailure(FailureType.Generic, successfulResult.CurrentLayer, failureResult.Errors.Count);
+        successfulResult.AssertFailure(OperationStatus.Failure(), successfulResult.CurrentLayer, failureResult.Errors.Count);
     }
     
     [Theory, MemberData(nameof(CombineWithOneFailureResultTestCases))]
     public void CombineWith_WithAFailureResult_AndAnotherSuccessfulResult_Should_TurnToFailure(TestResult successfulResult, TestResult failureResult)
     {
         failureResult.CombineWith(successfulResult);
-        failureResult.AssertFailure(failureResult.PrimaryFailureType, failureResult.CurrentLayer, failureResult.Errors.Count);
+        failureResult.AssertFailure((FailedOperationStatus) failureResult.PrimaryStatus, failureResult.CurrentLayer, failureResult.Errors.Count);
     }
     
     [Theory, MemberData(nameof(CombineWithBothFailureResultTestCases))]
@@ -178,81 +177,86 @@ public class ResultStatusTests
     {
         var errorsCount = firstFailureResult.Errors.Count + secondFailureResult.Errors.Count;
         firstFailureResult.CombineWith(secondFailureResult);
-        firstFailureResult.AssertFailure(FailureType.Generic, firstFailureResult.CurrentLayer, errorsCount);
+        firstFailureResult.AssertFailure(OperationStatus.Failure(), firstFailureResult.CurrentLayer, errorsCount);
     }
     
     [Fact]
     public void CombineWith_WithTwoFailureResults_AndFailureType_Should_RemainFailure_AndSetFailure()
     {
-        var firstFailureResult = new TestResult(FailureType.InvalidInput, ResultLayer.Service, "first failure");
-        var secondFailureResult = new TestResult(FailureType.DomainViolation, ResultLayer.Infrastructure, "second failure");
+        var firstError = new ResultError(OperationStatus.InvalidInput(), ResultLayer.Service, "first failure");
+        var firstFailureResult = new TestResult(firstError);
+        var secondError = new ResultError(OperationStatus.DomainViolation(), ResultLayer.Infrastructure, "second failure");
+        var secondFailureResult = new TestResult(secondError);
         var errorsCount = firstFailureResult.Errors.Count + secondFailureResult.Errors.Count;
-        firstFailureResult.CombineWith(FailureType.NotAllowed, secondFailureResult);
-        firstFailureResult.AssertFailure(FailureType.NotAllowed, firstFailureResult.CurrentLayer, errorsCount);
+        firstFailureResult.CombineWith(OperationStatus.NotAllowed(), secondFailureResult);
+        firstFailureResult.AssertFailure(OperationStatus.NotAllowed(), firstFailureResult.CurrentLayer, errorsCount);
     }
     
     [Fact]
     public void CombineWithMany_WithMoreThanOneResult_Should_Update()
     {
-        var startingResult = new TestResult(ResultLayer.Unknown);
-        var result1 = new TestResult(FailureType.Generic, ResultLayer.Unknown, "first failure");
-        var result2 = new TestResult(ResultLayer.Service);
+        var startingResult = new TestResult(OperationStatus.Success(), ResultLayer.Unknown);
+        var result1 = new TestResult(new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, "first failure"));
+        var result2 = new TestResult(OperationStatus.Success<string>(), ResultLayer.Service);
         var result3 = CreateMultiErroredResult(
-            new TestResult(FailureType.DomainViolation, ResultLayer.Infrastructure, "second failure"),
-            new ResultError(FailureType.InvalidInput, ResultLayer.Service, "extra error"));
+            new TestResult(new ResultError(OperationStatus.DomainViolation(), ResultLayer.Infrastructure, "second failure")),
+            new ResultError(OperationStatus.InvalidInput(), ResultLayer.Service, "extra error"));
         var result4 = CreateMultiErroredResult(
-            new TestResult(FailureType.InvariantViolation, ResultLayer.Infrastructure, "second failure"),
-            new ResultError(FailureType.NotAllowed, ResultLayer.UseCase, "extra error"),
-            new ResultError(FailureType.OperationCancelled, ResultLayer.UseCase, "extra error"));
+            new TestResult(new ResultError(OperationStatus.InvariantViolation(), ResultLayer.Infrastructure, "second failure")),
+            new ResultError(OperationStatus.NotAllowed(), ResultLayer.UseCase, "extra error"),
+            new ResultError(OperationStatus.Cancelled(), ResultLayer.UseCase, "extra error"));
         startingResult.CombineWith(result1, result2, result3, result4);
-        startingResult.AssertFailure(FailureType.Generic, ResultLayer.Unknown, 6);
+        startingResult.AssertFailure(OperationStatus.Failure(), ResultLayer.Unknown, 6);
     }
     
     [Fact]
     public void CombineWithMany_WithMoreThanOneResult_AndAFailureType_Should_Update()
     {
-        var startingResult = new TestResult(ResultLayer.Unknown);
-        var result1 = new TestResult(FailureType.Generic, ResultLayer.Unknown, "first failure");
-        var result2 = new TestResult(ResultLayer.Service);
+        var startingResult = new TestResult(OperationStatus.Success(), ResultLayer.Unknown);
+        var result1 = new TestResult(new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, "first failure"));
+        var result2 = new TestResult(OperationStatus.Success<byte>(), ResultLayer.Service);
         var result3 = CreateMultiErroredResult(
-            new TestResult(FailureType.DomainViolation, ResultLayer.Infrastructure, "second failure"),
-            new ResultError(FailureType.InvalidInput, ResultLayer.Service, "extra error"));
+            new TestResult(new ResultError(OperationStatus.DomainViolation(), ResultLayer.Infrastructure, "second failure")),
+            new ResultError(OperationStatus.InvalidInput(), ResultLayer.Service, "extra error"));
         var result4 = CreateMultiErroredResult(
-            new TestResult(FailureType.InvariantViolation, ResultLayer.Infrastructure, "second failure"),
-            new ResultError(FailureType.NotAllowed, ResultLayer.UseCase, "extra error"),
-            new ResultError(FailureType.OperationCancelled, ResultLayer.UseCase, "extra error"));
-        startingResult.CombineWith(FailureType.InvariantViolation, result1, result2, result3, result4);
-        startingResult.AssertFailure(FailureType.InvariantViolation, ResultLayer.Unknown, 6);
+            new TestResult(new ResultError(OperationStatus.InvariantViolation(), ResultLayer.Infrastructure, "second failure")),
+            new ResultError(OperationStatus.NotAllowed(), ResultLayer.UseCase, "extra error"),
+            new ResultError(OperationStatus.Cancelled(), ResultLayer.UseCase, "extra error"));
+        startingResult.CombineWith(OperationStatus.InvariantViolation(), result1, result2, result3, result4);
+        startingResult.AssertFailure(OperationStatus.InvariantViolation(), ResultLayer.Unknown, 6);
     }
     
     [Fact]
     public void AddError_WhenResultIsFailure_Should_AddError()
     {
-        var result = new TestResult(FailureType.Generic, ResultLayer.Unknown, "initial failure");
-        var newError = new ResultError(FailureType.InvalidInput, ResultLayer.Service, "added failure");
+        var oldError = new ResultError(OperationStatus.NotFound(), ResultLayer.Unknown, "initial failure");
+        var result = new TestResult(oldError);
+        var newError = new ResultError(OperationStatus.InvalidInput<string>(), ResultLayer.Service, "added failure");
         result.AddError(newError);
-        result.AssertFailure(FailureType.Generic, ResultLayer.Unknown, 2);
+        result.AssertFailure(OperationStatus.Failure(), ResultLayer.Unknown, 2);
+        Assert.Contains(oldError, result.Errors);
         Assert.Contains(newError, result.Errors);
     }
     
     [Fact]
     public void AddError_WhenResultIsSuccess_Should_TurnResultToFailure_AndAddError()
     {
-        var result = new TestResult(ResultLayer.Unknown);
-        var newError = new ResultError(FailureType.OperationCancelled, ResultLayer.Service, "added failure");
+        var result = new TestResult(OperationStatus.Success<string>(), ResultLayer.Unknown);
+        var newError = new ResultError(OperationStatus.Cancelled(), ResultLayer.Service, "added failure");
         result.AddError(newError);
-        result.AssertFailure(FailureType.Generic, ResultLayer.Unknown, 1);
+        result.AssertFailure(OperationStatus.Failure(), ResultLayer.Unknown, 1);
         Assert.Contains(newError, result.Errors);
     }
     
     [Fact]
     public void AddErrors_WhenResultIsFailure_Should_AddErrors()
     {
-        var result = new TestResult(FailureType.Generic, ResultLayer.Unknown, "initial failure");
-        var newError1 = new ResultError(FailureType.InvalidInput, ResultLayer.Service, "added failure");
-        var newError2 = new ResultError(FailureType.NotFound, ResultLayer.Infrastructure, "added failure 2");
+        var originalError = new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, "initial failure");
+        var result = new TestResult(originalError);
+        var newError1 = new ResultError(OperationStatus.InvalidInput(), ResultLayer.Service, "added failure");
+        var newError2 = new ResultError(OperationStatus.NotFound(), ResultLayer.Infrastructure, "added failure 2");
         result.AddErrors(new List<ResultError> { newError1, newError2 });
-        result.AssertFailure(FailureType.Generic, ResultLayer.Unknown, 3);
+        result.AssertFailure(OperationStatus.Failure(), ResultLayer.Unknown, 3);
         Assert.Contains(newError1, result.Errors);
         Assert.Contains(newError2, result.Errors);
     }
@@ -260,11 +264,11 @@ public class ResultStatusTests
     [Fact]
     public void AddError_WhenResultIsSuccess_Should_TurnResultToFailure_AndAddErrors()
     {
-        var result = new TestResult(ResultLayer.Unknown);
-        var newError1 = new ResultError(FailureType.ConcurrencyViolation, ResultLayer.Unknown, "added failure");
-        var newError2 = new ResultError(FailureType.AlreadyExists, ResultLayer.UseCase, "added failure 2");
+        var result = new TestResult(OperationStatus.Success(), ResultLayer.Unknown);
+        var newError1 = new ResultError(OperationStatus.ConcurrencyViolation(), ResultLayer.Unknown, "added failure");
+        var newError2 = new ResultError(OperationStatus.AlreadyExists(), ResultLayer.UseCase, "added failure 2");
         result.AddErrors(new List<ResultError> { newError1, newError2 });
-        result.AssertFailure(FailureType.Generic, ResultLayer.Unknown, 2);
+        result.AssertFailure(OperationStatus.Failure(), ResultLayer.Unknown, 2);
         Assert.Contains(newError1, result.Errors);
         Assert.Contains(newError2, result.Errors);
     }
@@ -272,30 +276,31 @@ public class ResultStatusTests
     [Fact]
     public void AddError_WithFailureType_Should_SetPrimaryType()
     {
-        var result = new TestResult(ResultLayer.Unknown);
-        var newError1 = new ResultError(FailureType.ConcurrencyViolation, ResultLayer.Unknown, "added failure");
-        result.AddError(FailureType.AlreadyExists, newError1);
-        result.AssertFailure(FailureType.AlreadyExists, ResultLayer.Unknown, 1);
+        var result = new TestResult(OperationStatus.Success(), ResultLayer.Unknown);
+        var newError1 = new ResultError(OperationStatus.ConcurrencyViolation(), ResultLayer.Unknown, "added failure");
+        result.AddError(OperationStatus.AlreadyExists(), newError1);
+        result.AssertFailure(OperationStatus.AlreadyExists(), ResultLayer.Unknown, 1);
         Assert.Contains(newError1, result.Errors);
     }
     
     [Theory, MemberData(nameof(AllFailureTypes))]
-    public void GetErrorsByFailureType_WhenResultContainsErrorType_Should_ReturnErrors(FailureType failureType)
+    public void GetErrorsByFailureType_WhenResultContainsErrorType_Should_ReturnErrors(FailedOperationStatus failedOperationStatus)
     {
         var errors = CreateErrorsWithAllFailureTypes().ToList();
-        var result = new TestResult(FailureType.Generic, ResultLayer.Unknown, "test");
+        var originalError = new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, "initial failure");
+        var result = new TestResult(originalError);
         result.AddErrors(errors);
-        var retrievedErrors = result.GetErrorsBy(failureType).ToList();
-        var expectedErrors = result.Errors.Where(e => e.FailureType == failureType).ToList();
+        var retrievedErrors = result.GetErrorsBy(failedOperationStatus.Type).ToList();
+        var expectedErrors = result.Errors.Where(e => e.Failure.Type == failedOperationStatus.Type).ToList();
         Assert.Equal(expectedErrors.Count, retrievedErrors.Count);
         Assert.All(retrievedErrors, re => Assert.Contains(re, expectedErrors));
     }
 
     [Theory, MemberData(nameof(AllFailureTypes))]
-    public void GetErrorsByFailureType_WhenResultDoesNotContainErrorType_Should_ReturnNoErrors(FailureType failureType)
+    public void GetErrorsByFailureType_WhenResultDoesNotContainErrorType_Should_ReturnNoErrors(FailedOperationStatus failedOperationStatus)
     {
-        var result = new TestResult(ResultLayer.Unknown);
-        var retrievedErrors = result.GetErrorsBy(failureType).ToList();
+        var result = new TestResult(OperationStatus.Success(), ResultLayer.Unknown);
+        var retrievedErrors = result.GetErrorsBy(failedOperationStatus.Type).ToList();
         Assert.Empty(retrievedErrors);
     }
 
@@ -303,7 +308,8 @@ public class ResultStatusTests
     public void GetErrorsByLayer_WhenResultContainsErrorLayer_Should_ReturnErrors(ResultLayer layer)
     {
         var errors = CreateErrorsWithAllLayers().ToList();
-        var result = new TestResult(FailureType.Generic, ResultLayer.Unknown, "test");
+        var originalError = new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, "initial failure");
+        var result = new TestResult(originalError);
         result.AddErrors(errors);
         var retrievedErrors = result.GetErrorsBy(layer).ToList();
         var expectedErrors = result.Errors.Where(e => e.ResultLayer == layer).ToList();
@@ -314,7 +320,7 @@ public class ResultStatusTests
     [Theory, MemberData(nameof(AllLayers))]
     public void GetErrorsByLayer_WhenResultDoesNotContainErrorLayer_Should_ReturnNoErrors(ResultLayer layer)
     {
-        var result = new TestResult(ResultLayer.Unknown);
+        var result = new TestResult(OperationStatus.Success(), ResultLayer.Unknown);
         var retrievedErrors = result.GetErrorsBy(layer).ToList();
         Assert.Empty(retrievedErrors);
     }
@@ -324,11 +330,12 @@ public class ResultStatusTests
     {
         var errors = new List<ResultError>
         {
-            new (FailureType.Generic, ResultLayer.Unknown, "test", typeof(string)),
-            new (FailureType.InvalidInput, ResultLayer.Service, "test", typeof(int)),
-            new (FailureType.DomainViolation, ResultLayer.Infrastructure, "test", typeof(string)),
+            new (OperationStatus.Failure<string>(), ResultLayer.Unknown, "test"),
+            new (OperationStatus.InvalidInput<int>(), ResultLayer.Service, "test"),
+            new (OperationStatus.DomainViolation<string>(), ResultLayer.Infrastructure, "test"),
         };
-        var result = new TestResult(FailureType.Generic, ResultLayer.Unknown, "test");
+        var originalError = new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, "initial failure");
+        var result = new TestResult(originalError);
         result.AddErrors(errors);
         var retrievedErrors = result.GetErrorsOfType<string>().ToList();
         var expectedErrors = result.Errors.Where(e => e.OutputType == typeof(string)).ToList();
@@ -341,10 +348,11 @@ public class ResultStatusTests
     {
         var errors = new List<ResultError>
         {
-            new (FailureType.Generic, ResultLayer.Unknown, "test", typeof(int)),
-            new (FailureType.InvalidInput, ResultLayer.Service, "test", typeof(double)),
+            new (OperationStatus.Failure<int>(), ResultLayer.Unknown, "test"),
+            new (OperationStatus.InvalidInput<double>(), ResultLayer.Service, "test"),
         };
-        var result = new TestResult(FailureType.Generic, ResultLayer.Unknown, "test");
+        var originalError = new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, "initial failure");
+        var result = new TestResult(originalError);
         result.AddErrors(errors);
         var retrievedErrors = result.GetErrorsOfType<string>().ToList();
         Assert.Empty(retrievedErrors);
@@ -353,31 +361,33 @@ public class ResultStatusTests
     [Fact]
     public void BothSuccessful_WhenBothResultsAreSuccessful_Should_ReturnTrue()
     {
-        var result1 = new TestResult(ResultLayer.Service);
-        var result2 = new TestResult(ResultLayer.Service);
+        var result1 = new TestResult(OperationStatus.Success(), ResultLayer.Service);
+        var result2 = new TestResult(OperationStatus.Success<double>(), ResultLayer.Service);
         Assert.True(result1.BothSuccessful(result2));
     }
 
     [Fact]
     public void BothSuccessful_WhenOneResultIsFailure_Should_ReturnFalse()
     {
-        var result1 = new TestResult(ResultLayer.Service);
-        var result2 = new TestResult(FailureType.Generic, ResultLayer.Unknown, "test");
+        var result1 = new TestResult(OperationStatus.Success(), ResultLayer.Service);
+        var error = new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, "test");
+        var result2 = new TestResult(error);
         Assert.False(result1.BothSuccessful(result2));
     }
 
     [Fact]
     public void BothSuccessful_WhenBothResultsAreFailure_Should_ReturnFalse()
     {
-        var result1 = new TestResult(FailureType.Generic, ResultLayer.Unknown, "test");
-        var result2 = new TestResult(FailureType.Generic, ResultLayer.Unknown, "test");
+        var error = new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, "test");
+        var result1 = new TestResult(error);
+        var result2 = new TestResult(error);
         Assert.False(result1.BothSuccessful(result2));
     }
     
     [Fact]
     public void Throw_Should_ThrowException()
     {
-        var result = new TestResult(ResultLayer.Unknown);
+        var result = new TestResult(OperationStatus.Success(), ResultLayer.Unknown);
         var exception = Record.Exception(() => result.Throw());
         Assert.NotNull(exception);
         Assert.IsType<ResultException>(exception);
@@ -386,7 +396,7 @@ public class ResultStatusTests
     [Fact]
     public void Throw_WithString_Should_ThrowException_WithMessage()
     {
-        var result = new TestResult(ResultLayer.Unknown);
+        var result = new TestResult(OperationStatus.Success(), ResultLayer.Unknown);
         var exception = Record.Exception(() => result.Throw("Test exception"));
         Assert.NotNull(exception);
         Assert.IsType<ResultException>(exception);
@@ -395,12 +405,7 @@ public class ResultStatusTests
     
     public sealed class TestResult : ResultStatus
     {
-        public TestResult(FailureType failureType, ResultLayer failedLayer, string? because) 
-            : base(new ResultError(failureType, failedLayer, because))
-        {
-        }
-
-        public TestResult(ResultLayer layer) : base(layer)
+        public TestResult(Success success, ResultLayer layer) : base(success, layer)
         {
         }
 
@@ -418,33 +423,32 @@ public class ResultStatusTests
         {
             new object[] { 
                 CreateMultiErroredResult(
-                    new TestResult(FailureType.Generic, ResultLayer.Infrastructure, null), 
-                    new ResultError(FailureType.AlreadyExists, ResultLayer.Unknown),
-                    new ResultError(FailureType.InvalidInput, ResultLayer.Unknown)),
+                    new TestResult(new ResultError(OperationStatus.Failure(), ResultLayer.Infrastructure, null)), 
+                    new ResultError(OperationStatus.AlreadyExists(), ResultLayer.Unknown),
+                    new ResultError(OperationStatus.InvalidInput(), ResultLayer.Unknown)),
             },
             
             new object[] { 
                 CreateMultiErroredResult(
-                    new TestResult(FailureType.ConcurrencyViolation, ResultLayer.UseCase, null), 
-                    new ResultError(FailureType.InvariantViolation, ResultLayer.Infrastructure),
-                    new ResultError(FailureType.DomainViolation, ResultLayer.Unknown),
-                    new ResultError(FailureType.NotAllowed, ResultLayer.Infrastructure)),
+                    new TestResult(new ResultError(OperationStatus.ConcurrencyViolation(), ResultLayer.UseCase, null)), 
+                    new ResultError(OperationStatus.InvariantViolation(), ResultLayer.Infrastructure),
+                    new ResultError(OperationStatus.DomainViolation(), ResultLayer.Unknown),
+                    new ResultError(OperationStatus.NotAllowed(), ResultLayer.Infrastructure)),
             },
             new object[] { 
                 CreateMultiErroredResult(
-                    new TestResult(FailureType.ConcurrencyViolation, ResultLayer.UseCase, null), 
-                    new ResultError(FailureType.OperationTimeout, ResultLayer.Service)),
+                    new TestResult(new ResultError(OperationStatus.ConcurrencyViolation(), ResultLayer.UseCase, null)), 
+                    new ResultError(OperationStatus.TimedOut(), ResultLayer.Service)),
             },
             new object[] { 
                 CreateMultiErroredResult(
-                    new TestResult(FailureType.OperationCancelled, ResultLayer.UseCase, null), 
-                    new ResultError(FailureType.InvalidRequest, ResultLayer.Service)),
+                    new TestResult(new ResultError(OperationStatus.InvalidRequest(), ResultLayer.Unknown)),
+                    new ResultError(OperationStatus.InvalidRequest(), ResultLayer.Service)),
             },
         };
-    
+
     public static IEnumerable<object[]> AllFailureTypes =>
-        Enum.GetValues<FailureType>().Where(ft => ft != FailureType.None)
-            .Select(ft => new object[] { ft });
+        OperationStatuses.GetAllFailures().Select(fs => new object[] { fs });
     
     public static IEnumerable<object[]> AllLayers =>
         Enum.GetValues<ResultLayer>()
@@ -454,32 +458,32 @@ public class ResultStatusTests
         new List<object[]>
         {
             new object[] { 
-                new TestResult(FailureType.Generic, ResultLayer.Unknown, null), 
+                new TestResult(new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, null)), 
                 CreateMultiErroredResult(
-                    new TestResult(FailureType.Generic, ResultLayer.Unknown, null), 
-                    new ResultError(FailureType.AlreadyExists, ResultLayer.Unknown, "extra error"),
-                    new ResultError(FailureType.InvalidInput, ResultLayer.Service, "another one"))
+                    new TestResult(new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, null)), 
+                    new ResultError(OperationStatus.AlreadyExists(), ResultLayer.Unknown, "extra error"),
+                    new ResultError(OperationStatus.InvalidInput(), ResultLayer.Service, "another one"))
             },
             new object[]
             {
                 CreateMultiErroredResult(
-                    new TestResult(FailureType.InvalidInput, ResultLayer.Service, "test"),
-                    new ResultError(FailureType.DomainViolation, ResultLayer.Infrastructure)),
-                new TestResult(FailureType.DomainViolation, ResultLayer.Unknown, "test")
+                    new TestResult(new ResultError(OperationStatus.InvalidInput(), ResultLayer.Service, "test")),
+                    new ResultError(OperationStatus.DomainViolation(), ResultLayer.Infrastructure)),
+                new TestResult(new ResultError(OperationStatus.DomainViolation(), ResultLayer.Unknown, "test"))
             },
-            new object[] { new TestResult(FailureType.NotAllowed, ResultLayer.Infrastructure, "test 2"),  new TestResult(FailureType.InvariantViolation, ResultLayer.Infrastructure, null) },
-            new object[] { new TestResult(FailureType.Generic, ResultLayer.Unknown, "of something"),  new TestResult(FailureType.AlreadyExists, ResultLayer.Service, "why") },
-            new object[] { new TestResult(FailureType.OperationCancelled, ResultLayer.UseCase, "a thing happened"), new TestResult(FailureType.OperationCancelled, ResultLayer.Service, null) },
+            new object[] { new TestResult(new ResultError(OperationStatus.NotAllowed(), ResultLayer.Infrastructure, "test 2")),  new TestResult(new ResultError(OperationStatus.InvariantViolation(), ResultLayer.Infrastructure, null)) },
+            new object[] { new TestResult(new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, "of something")),  new TestResult(new ResultError(OperationStatus.AlreadyExists(), ResultLayer.Service, "why")) },
+            new object[] { new TestResult(new ResultError(OperationStatus.Cancelled(), ResultLayer.UseCase, "a thing happened")), new TestResult(new ResultError(OperationStatus.Cancelled(), ResultLayer.Service, null)) },
         };
     
     public static IEnumerable<object[]> CombineWithOneFailureResultTestCases =>
         new List<object[]>
         {
-            new object[] { new TestResult(ResultLayer.Unknown), new TestResult(FailureType.Generic, ResultLayer.Unknown, null) },
-            new object[] { new TestResult(ResultLayer.Service),  new TestResult(FailureType.DomainViolation, ResultLayer.Unknown, "test") },
-            new object[] { new TestResult(ResultLayer.Infrastructure),  new TestResult(FailureType.InvariantViolation, ResultLayer.Infrastructure, null) },
-            new object[] { new TestResult(ResultLayer.Unknown),  new TestResult(FailureType.AlreadyExists, ResultLayer.Service, "why") },
-            new object[] { new TestResult(ResultLayer.UseCase), new TestResult(FailureType.OperationCancelled, ResultLayer.Service, null) },
+            new object[] { new TestResult(OperationStatus.Success(), ResultLayer.Unknown), new TestResult(new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, null)) },
+            new object[] { new TestResult(OperationStatus.Success<int>(), ResultLayer.Service),  new TestResult(new ResultError(OperationStatus.DomainViolation(), ResultLayer.Unknown, "test")) },
+            new object[] { new TestResult(OperationStatus.Success(), ResultLayer.Infrastructure),  new TestResult(new ResultError(OperationStatus.InvariantViolation(), ResultLayer.Infrastructure, null)) },
+            new object[] { new TestResult(OperationStatus.Success<object>(), ResultLayer.Unknown),  new TestResult(new ResultError(OperationStatus.AlreadyExists(), ResultLayer.Service, "why")) },
+            new object[] { new TestResult(OperationStatus.Success(), ResultLayer.UseCase), new TestResult(new ResultError(OperationStatus.Cancelled(), ResultLayer.Service, null)) },
         };
     
     public static IEnumerable<object[]> CombineWithSuccessfulResultTestCases =>
@@ -494,24 +498,17 @@ public class ResultStatusTests
     
     private static IEnumerable<ResultError> CreateErrorsWithAllLayers()
     {
-        return Enum.GetValues<ResultLayer>().Select(layer => new ResultError(FailureType.Generic, layer, "test"));
+        return Enum.GetValues<ResultLayer>().Select(layer => new ResultError(OperationStatus.Failure(), layer, "test"));
     }
     
     private static IEnumerable<ResultError> CreateErrorsWithAllFailureTypes()
     {
-        return Enum.GetValues<FailureType>().Where(ft => ft != FailureType.None).Select(failureType => new ResultError(failureType, ResultLayer.Unknown, "test"));
+        return OperationStatuses.GetAllFailures().Select(failureType => new ResultError(failureType, ResultLayer.Unknown, "test"));
     }
     
     private static TestResult CreateMultiErroredResult(TestResult result, params ResultError[] errors)
     {
         result.AddErrors(errors);
         return result;
-    }
-    
-    private static ResultLayer GetExpectedLayer(IResultStatus result1, IResultStatus result2)
-    {
-        return result1.CurrentLayer is not ResultLayer.Unknown 
-            ? result1.CurrentLayer 
-            : result2.CurrentLayer;
     }
 }

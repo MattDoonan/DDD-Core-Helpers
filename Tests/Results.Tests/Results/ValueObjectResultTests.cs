@@ -1,4 +1,5 @@
-﻿using DDD.Core.Results;
+﻿using DDD.Core.Operations.Statuses.Abstract;
+using DDD.Core.Results;
 using DDD.Core.Results.ValueObjects;
 using DDD.Core.ValueObjects.Base;
 using DDD.Core.ValueObjects.Factories;
@@ -32,7 +33,7 @@ public class ValueObjectResultTests : BasicValueResultTests
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = ValueObjectResult.Fail<TestValueObject>();
-        result.AssertFailure(FailureType.Generic, 1);
+        result.AssertFailure(OperationStatus.Failure<TestValueObject>(), 1);
     }
 
     public override void
@@ -40,7 +41,7 @@ public class ValueObjectResultTests : BasicValueResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);
-        result.AssertFailure(FailureType.Generic, 1);
+        result.AssertFailure(OperationStatus.Failure<TestValueObject>(), 1);
     }
 
     public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
@@ -66,7 +67,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         var valueObjectResult = ValueObjectResult.Fail<TestValueObject>(errorMessage);
         var convertedResult = valueObjectResult.ToTypedResult();
         Assert.IsType<Result<TestValueObject>>(convertedResult);
-        convertedResult.AssertFailure(FailureType.Generic, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(), 1);
     }
 
     public override void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -96,14 +97,14 @@ public class ValueObjectResultTests : BasicValueResultTests
     public void WhenIFailTheResult_BecauseOfADomainViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = ValueObjectResult.DomainViolation<TestValueObject>();
-        result.AssertFailure(FailureType.DomainViolation, 1);    
+        result.AssertFailure(OperationStatus.DomainViolation<TestValueObject>(), 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvalidInput_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = ValueObjectResult.InvalidInput<TestValueObject>();
-        result.AssertFailure(FailureType.InvalidInput, 1);    
+        result.AssertFailure(OperationStatus.InvalidInput<TestValueObject>(), 1);    
     }
     
     [Fact]
@@ -121,7 +122,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToTypedEntityResult();
-        convertedResult.AssertFailure( FailureType.Generic, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(), 1);
     }
     
     [Fact]
@@ -130,7 +131,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         var obj = TestValueObject.Create(1).Output;
         var result = ValueObjectResult.Pass(obj);    
         var convertedResult = result.ToEntityResult();
-        result.AssertSuccessful();
+        convertedResult.AssertSuccessful(OperationStatus.Success<TestValueObject>());
     }
     
     [Fact]
@@ -139,7 +140,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToEntityResult();
-        convertedResult.AssertFailure(FailureType.Generic, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(), 1);
     }
     
     [Fact]
@@ -157,7 +158,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToTypedMapperResult();
-        convertedResult.AssertFailure(FailureType.Generic, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(), 1);
     }
     
     [Fact]
@@ -166,7 +167,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         var obj = TestValueObject.Create(1).Output;
         var result = ValueObjectResult.Pass(obj);    
         var convertedResult = result.ToMapperResult();
-        result.AssertSuccessful();
+        convertedResult.AssertSuccessful(OperationStatus.Success<TestValueObject>());
     }
     
     [Fact]
@@ -175,7 +176,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToMapperResult();
-        convertedResult.AssertFailure(FailureType.Generic, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(), 1);
     }
     
     [Fact]
@@ -193,7 +194,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToTypedInfraResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(), ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -202,7 +203,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         var obj = TestValueObject.Create(1).Output;
         var result = ValueObjectResult.Pass(obj);    
         var convertedResult = result.ToInfraResult();
-        result.AssertSuccessful();
+        convertedResult.AssertSuccessful(OperationStatus.Success<TestValueObject>(), ResultLayer.Infrastructure);
     }
     
     [Fact]
@@ -211,7 +212,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToInfraResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(), ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -229,7 +230,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToTypedServiceResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(), ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -238,7 +239,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         var obj = TestValueObject.Create(1).Output;
         var result = ValueObjectResult.Pass(obj);    
         var convertedResult = result.ToServiceResult();
-        result.AssertSuccessful();
+        convertedResult.AssertSuccessful(OperationStatus.Success<TestValueObject>(), ResultLayer.Service);
     }
     
     [Fact]
@@ -247,7 +248,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToServiceResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(), ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -265,7 +266,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToTypedUseCaseResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(), ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -274,7 +275,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         var obj = TestValueObject.Create(1).Output;
         var result = ValueObjectResult.Pass(obj);    
         var convertedResult = result.ToUseCaseResult();
-        result.AssertSuccessful();
+        convertedResult.AssertSuccessful(OperationStatus.Success<TestValueObject>(), ResultLayer.UseCase);
     }
     
     [Fact]
@@ -283,7 +284,7 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase,1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(), ResultLayer.UseCase,1);
     }
     
     [Fact]
@@ -292,6 +293,6 @@ public class ValueObjectResultTests : BasicValueResultTests
         const string errorMessage = "I want it to fail";
         var result = ValueObjectResult.Fail<TestValueObject>(errorMessage);    
         var convertedResult = result.ToTypedValueObjectResult<TestValueObject2>();
-        convertedResult.AssertFailure(FailureType.Generic,1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestValueObject>(),1);
     }
 }

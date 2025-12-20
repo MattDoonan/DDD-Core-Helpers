@@ -1,4 +1,7 @@
-﻿using DDD.Core.Results.Abstract;
+﻿using DDD.Core.Operations.Statuses;
+using DDD.Core.Operations.Statuses.Abstract;
+using DDD.Core.Operations.Statuses.ValueObjects;
+using DDD.Core.Results.Abstract;
 using DDD.Core.Results.Exceptions;
 using DDD.Core.Results.ValueObjects;
 using Xunit;
@@ -18,16 +21,16 @@ public static class ResultAssertor
             }
         }
         
-        public void AssertFailure(FailureType expectedFailureType, ResultLayer expectedLayer, int expectedErrors)
+        public void AssertFailure(FailedOperationStatus expectedStatus, ResultLayer expectedLayer, int expectedErrors)
         {
-            AssertFailure((ResultStatus)typedResult, expectedFailureType, expectedLayer, expectedErrors);
+            AssertFailure((ResultStatus)typedResult, expectedStatus, expectedLayer, expectedErrors);
             Assert.False(typedResult.HasOutput);
             Assert.Throws<ResultOutputAccessException>(() => typedResult.Output);
         }
 
         public void AssertSuccessful(T expectedValue, ResultLayer expectedLayer = ResultLayer.Unknown)
         {
-            AssertSuccessful(typedResult, expectedLayer);
+            AssertSuccessful(typedResult, OperationStatus.Success<T>(), expectedLayer);
             Assert.True(typedResult.HasOutput);
             Assert.Equal(expectedValue, typedResult.Output);
         }
@@ -40,48 +43,53 @@ public static class ResultAssertor
         {
             Assert.Equal(resultStatus.IsSuccessful, secondResultStatus.IsSuccessful);
             Assert.Equal(resultStatus.IsFailure, secondResultStatus.IsFailure);
-            Assert.Equal(resultStatus.PrimaryFailureType, secondResultStatus.PrimaryFailureType);
+            Assert.Equal(resultStatus.PrimaryStatus, secondResultStatus.PrimaryStatus);
             Assert.Equal(resultStatus.CurrentLayer, secondResultStatus.CurrentLayer);
             Assert.Equal(resultStatus.Errors, secondResultStatus.Errors);
             Assert.Equal(resultStatus.ErrorMessages, secondResultStatus.ErrorMessages);
         }
         
-        public void AssertFailure(FailureType expectedFailureType, int expectedErrors)
+        public void AssertFailure(FailedOperationStatus expectedFailureType, int expectedErrors)
         {
             AssertFailure(resultStatus, expectedFailureType, ResultLayer.Unknown, expectedErrors);
         }
-        
+
         public void AssertSuccessful(ResultLayer expectedLayer = ResultLayer.Unknown)
         {
-            Assert.True(resultStatus.IsSuccessful);
-            Assert.False(resultStatus.IsFailure);
-            Assert.Equal(FailureType.None, resultStatus.PrimaryFailureType);
-            Assert.Equal(expectedLayer, resultStatus.CurrentLayer);
-            Assert.Empty(resultStatus.Errors);
-            Assert.Empty(resultStatus.ErrorMessages);
+            AssertSuccessful(resultStatus, OperationStatus.Success(), expectedLayer);
         }
         
-        public void AssertFailure(FailureType expectedFailureType, ResultLayer expectedLayer, int expectedErrors)
+        public void AssertFailure(FailedOperationStatus expectedStatus, ResultLayer expectedLayer, int expectedErrors)
         {
             Assert.True(resultStatus.IsFailure);
             Assert.False(resultStatus.IsSuccessful);
-            Assert.Equal(expectedFailureType, resultStatus.PrimaryFailureType);
+            Assert.Equal(expectedStatus, resultStatus.PrimaryStatus);
             Assert.Equal(expectedLayer, resultStatus.CurrentLayer);
             Assert.Equal(expectedErrors, resultStatus.Errors.Count);
         }
 
-        public void AssertFailureType(params FailureType[] expectedFailureTypes)
+        public void AssertFailureType(params StatusType[] expectedStatuses)
         {
-            Assert.Equal(expectedFailureTypes.Contains(FailureType.OperationTimeout), resultStatus.OperationTimedOut);
-            Assert.Equal(expectedFailureTypes.Contains(FailureType.InvalidRequest), resultStatus.IsAnInvalidRequest);
-            Assert.Equal(expectedFailureTypes.Contains(FailureType.DomainViolation), resultStatus.IsDomainViolation);
-            Assert.Equal(expectedFailureTypes.Contains(FailureType.NotAllowed), resultStatus.IsNotAllowed);
-            Assert.Equal(expectedFailureTypes.Contains(FailureType.InvalidInput), resultStatus.IsInvalidInput);
-            Assert.Equal(expectedFailureTypes.Contains(FailureType.NotFound), resultStatus.IsNotFound);
-            Assert.Equal(expectedFailureTypes.Contains(FailureType.AlreadyExists), resultStatus.AlreadyExisting);
-            Assert.Equal(expectedFailureTypes.Contains(FailureType.InvariantViolation), resultStatus.IsInvariantViolation);
-            Assert.Equal(expectedFailureTypes.Contains(FailureType.ConcurrencyViolation), resultStatus.IsConcurrencyViolation);
-            Assert.Equal(expectedFailureTypes.Contains(FailureType.OperationCancelled), resultStatus.OperationIsCancelled);
+            Assert.Equal(expectedStatuses.Contains(StatusType.OperationTimeout), resultStatus.OperationTimedOut);
+            Assert.Equal(expectedStatuses.Contains(StatusType.InvalidRequest), resultStatus.IsAnInvalidRequest);
+            Assert.Equal(expectedStatuses.Contains(StatusType.DomainViolation), resultStatus.IsDomainViolation);
+            Assert.Equal(expectedStatuses.Contains(StatusType.NotAllowed), resultStatus.IsNotAllowed);
+            Assert.Equal(expectedStatuses.Contains(StatusType.InvalidInput), resultStatus.IsInvalidInput);
+            Assert.Equal(expectedStatuses.Contains(StatusType.NotFound), resultStatus.IsNotFound);
+            Assert.Equal(expectedStatuses.Contains(StatusType.AlreadyExists), resultStatus.AlreadyExisting);
+            Assert.Equal(expectedStatuses.Contains(StatusType.InvariantViolation), resultStatus.IsInvariantViolation);
+            Assert.Equal(expectedStatuses.Contains(StatusType.ConcurrencyViolation), resultStatus.IsConcurrencyViolation);
+            Assert.Equal(expectedStatuses.Contains(StatusType.OperationCancelled), resultStatus.OperationIsCancelled);
+        }
+        
+        public void AssertSuccessful(Success expectedStatus, ResultLayer expectedLayer = ResultLayer.Unknown)
+        {
+            Assert.True(resultStatus.IsSuccessful);
+            Assert.False(resultStatus.IsFailure);
+            Assert.Equal(expectedStatus, resultStatus.PrimaryStatus);
+            Assert.Equal(expectedLayer, resultStatus.CurrentLayer);
+            Assert.Empty(resultStatus.Errors);
+            Assert.Empty(resultStatus.ErrorMessages);
         }
         
     }

@@ -1,4 +1,5 @@
 ﻿using DDD.Core.Entities;
+using DDD.Core.Operations.Statuses.Abstract;
 using DDD.Core.Results;
 using DDD.Core.Results.ValueObjects;
 using DDD.Core.ValueObjects.Identifiers;
@@ -36,14 +37,14 @@ public class RepoResultTests : BasicResultTests
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = RepoResult.Fail<TestRepoResult>();
-        result.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
+        result.AssertFailure(OperationStatus.Failure<TestRepoResult>(), ResultLayer.Infrastructure, 1);
     }
     
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = RepoResult.Fail<TestRepoResult>(errorMessage);
-        result.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
+        result.AssertFailure(OperationStatus.Failure<TestRepoResult>(), ResultLayer.Infrastructure, 1);
     }
 
     public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
@@ -68,7 +69,7 @@ public class RepoResultTests : BasicResultTests
         var repoResult = RepoResult.Fail<TestRepoResult>(errorMessage);
         var convertedResult = repoResult.ToTypedResult();
         Assert.IsType<Result<TestRepoResult>>(convertedResult);
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestRepoResult>(), ResultLayer.Infrastructure, 1);
     }
 
     public override void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -103,14 +104,14 @@ public class RepoResultTests : BasicResultTests
     public override void WhenIFailTheResult_Then_TheResultIsAFailure()
     {
         var result = RepoResult.Fail();
-        result.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
+        result.AssertFailure(OperationStatus.Failure(), ResultLayer.Infrastructure, 1);
     }
 
     public override void WhenIFailTheResult_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = RepoResult.Fail(errorMessage);
-        result.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
+        result.AssertFailure(OperationStatus.Failure(), ResultLayer.Infrastructure, 1);
     }
 
     public override void GivenIHaveASuccessfulResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -125,7 +126,7 @@ public class RepoResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var mapperResult = RepoResult.Fail(errorMessage);
         var result = mapperResult.ToResult();
-        result.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
+        result.AssertFailure(OperationStatus.Failure(), ResultLayer.Infrastructure, 1);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully()
@@ -134,7 +135,7 @@ public class RepoResultTests : BasicResultTests
         var repoResult = RepoResult.Pass(value);
         var result = repoResult.RemoveType();
         Assert.IsType<RepoResult>(result);
-        result.AssertSuccessful(ResultLayer.Infrastructure);
+        result.AssertSuccessful(OperationStatus.Success<TestRepoResult>(), ResultLayer.Infrastructure);
     }
 
     public override void GivenIHaveAFailureResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -188,7 +189,7 @@ public class RepoResultTests : BasicResultTests
         var mergedResult = RepoResult.Merge(r1, r2, r3, r4);
         Assert.True(mergedResult.IsFailure);
         Assert.False(mergedResult.IsSuccessful);
-        Assert.Equal(FailureType.Generic, mergedResult.PrimaryFailureType);
+        Assert.Equal(OperationStatus.Failure(), mergedResult.PrimaryStatus);
         Assert.Equal(ResultLayer.Infrastructure, mergedResult.CurrentLayer);
         Assert.Equal(3, mergedResult.ErrorMessages.Count());
     }
@@ -198,7 +199,7 @@ public class RepoResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = RepoResult.NotFound<TestRepoResult>(errorMessage);
-        result.AssertFailure(FailureType.NotFound, ResultLayer.Infrastructure, 1);
+        result.AssertFailure(OperationStatus.NotFound<TestRepoResult>(), ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -206,7 +207,7 @@ public class RepoResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = RepoResult.AlreadyExists<TestRepoResult>(errorMessage);
-        result.AssertFailure(FailureType.AlreadyExists, ResultLayer.Infrastructure, 1);
+        result.AssertFailure(OperationStatus.AlreadyExists<TestRepoResult>(), ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -214,7 +215,7 @@ public class RepoResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = RepoResult.InvalidRequest<TestRepoResult>(errorMessage);
-        result.AssertFailure(FailureType.InvalidRequest, ResultLayer.Infrastructure, 1);
+        result.AssertFailure(OperationStatus.InvalidRequest<TestRepoResult>(), ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -222,7 +223,7 @@ public class RepoResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = RepoResult.OperationTimeout(errorMessage);
-        result.AssertFailure(FailureType.OperationTimeout, ResultLayer.Infrastructure, 1);
+        result.AssertFailure(OperationStatus.TimedOut(), ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -230,7 +231,7 @@ public class RepoResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = RepoResult.ConcurrencyViolation(errorMessage);
-        result.AssertFailure(FailureType.ConcurrencyViolation, ResultLayer.Infrastructure, 1);
+        result.AssertFailure(OperationStatus.ConcurrencyViolation(), ResultLayer.Infrastructure, 1);
     }
 
     [Fact]
@@ -238,7 +239,7 @@ public class RepoResultTests : BasicResultTests
     {
         const string errorMessage = "I want it to fail";
         var result = RepoResult.ConcurrencyViolation<TestRepoResult>(errorMessage);
-        result.AssertFailure(FailureType.ConcurrencyViolation, ResultLayer.Infrastructure, 1);
+        result.AssertFailure(OperationStatus.ConcurrencyViolation<TestRepoResult>(), ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -256,7 +257,7 @@ public class RepoResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = RepoResult.Fail<TestRepoResult>(errorMessage);    
         var convertedResult = result.ToTypedServiceResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service,1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestRepoResult>(), ResultLayer.Service,1);
     }
     
     [Fact]
@@ -265,7 +266,7 @@ public class RepoResultTests : BasicResultTests
         var obj = new TestRepoResult(TestId.Create(1).Output);
         var result = RepoResult.Pass(obj);    
         var convertedResult = result.ToServiceResult();
-        convertedResult.AssertSuccessful(ResultLayer.Service);
+        convertedResult.AssertSuccessful(OperationStatus.Success<TestRepoResult>(), ResultLayer.Service);
     }
     
     [Fact]
@@ -274,7 +275,7 @@ public class RepoResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = RepoResult.Fail<TestRepoResult>(errorMessage);    
         var convertedResult = result.ToServiceResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service,1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestRepoResult>(), ResultLayer.Service,1);
     }
     
     [Fact]
@@ -292,7 +293,7 @@ public class RepoResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = RepoResult.Fail<TestRepoResult>(errorMessage);    
         var convertedResult = result.ToTypedUseCaseResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase,1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestRepoResult>(), ResultLayer.UseCase,1);
     }
     
     [Fact]
@@ -301,7 +302,7 @@ public class RepoResultTests : BasicResultTests
         var obj = new TestRepoResult(TestId.Create(1).Output);
         var result = RepoResult.Pass(obj);    
         var convertedResult = result.ToUseCaseResult();
-        convertedResult.AssertSuccessful(ResultLayer.UseCase);
+        convertedResult.AssertSuccessful(OperationStatus.Success<TestRepoResult>(), ResultLayer.UseCase);
     }
     
     [Fact]
@@ -310,7 +311,7 @@ public class RepoResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = RepoResult.Fail<TestRepoResult>(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase,1);
+        convertedResult.AssertFailure(OperationStatus.Failure<TestRepoResult>(), ResultLayer.UseCase,1);
     }
     
     [Fact]
@@ -319,7 +320,7 @@ public class RepoResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = RepoResult.Fail(errorMessage);    
         var convertedResult = result.ToTypedRepoResult<string>();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure,1);
+        convertedResult.AssertFailure(OperationStatus.Failure(), ResultLayer.Infrastructure,1);
     }
     
     [Fact]
@@ -328,6 +329,6 @@ public class RepoResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = RepoResult.Fail<int>(errorMessage);    
         var convertedResult = result.ToTypedRepoResult<string>();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<int>(), ResultLayer.Infrastructure, 1);
     }
 }

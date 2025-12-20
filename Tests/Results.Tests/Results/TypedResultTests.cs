@@ -1,4 +1,5 @@
-﻿using DDD.Core.Results;
+﻿using DDD.Core.Operations.Statuses.Abstract;
+using DDD.Core.Results;
 using DDD.Core.Results.Abstract;
 using DDD.Core.Results.Exceptions;
 using DDD.Core.Results.Interfaces;
@@ -25,8 +26,7 @@ public class TypedResultTests
         {
         }
 
-        public TestResult(FailureType failureType, ResultLayer failedLayer, string? because) : base(failureType,
-            failedLayer, because)
+        public TestResult(ResultError error) : base(error)
         {
         }
     }
@@ -41,8 +41,9 @@ public class TypedResultTests
     [Fact]
     public void FailureIntTypedResult_WhenAccessingOutput_Should_ThrowException()
     {
-        var result = new TestResult<int>(FailureType.Generic, ResultLayer.UseCase, "Failure occurred");
-        result.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
+        var error = new ResultError(OperationStatus.Failure<int>(), ResultLayer.UseCase, "Failure occurred");
+        var result = new TestResult<int>(error);
+        result.AssertFailure(OperationStatus.Failure<int>(), ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -55,8 +56,9 @@ public class TypedResultTests
     [Fact]
     public void FailureIntStringResult_WhenAccessingOutput_Should_ThrowException()
     {
-        var result = new TestResult<string>(FailureType.Generic, ResultLayer.UseCase, "Failure occurred");
-        result.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
+        var error = new ResultError(OperationStatus.Failure<string>(), ResultLayer.UseCase, "Failure occurred");
+        var result = new TestResult<string>(error);
+        result.AssertFailure(OperationStatus.Failure<string>(), ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -70,8 +72,9 @@ public class TypedResultTests
     [Fact]
     public void FailureObjectStringResult_WhenAccessingOutput_Should_ThrowException()
     {
-        var result = new TestResult<object>(FailureType.Generic, ResultLayer.UseCase, "Failure occurred");
-        result.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
+        var error = new ResultError(OperationStatus.Failure<object>(), ResultLayer.UseCase, "Failure occurred");
+        var result = new TestResult<object>(error);
+        result.AssertFailure(OperationStatus.Failure<object>(), ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -84,8 +87,9 @@ public class TypedResultTests
     [Fact]
     public void FailureIntTypedResult_WithANullableOutputType_WhenAccessingOutput_Should_ThrowException()
     {
-        var result = new TestResult<int?>(FailureType.Generic, ResultLayer.UseCase, "Failure occurred");
-        result.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
+        var error = new ResultError(OperationStatus.Failure<int?>(), ResultLayer.UseCase, "Failure occurred");
+        var result = new TestResult<int?>(error);
+        result.AssertFailure(OperationStatus.Failure<int?>(), ResultLayer.UseCase, 1);
     }
 
     [Fact]
@@ -98,8 +102,9 @@ public class TypedResultTests
     [Fact]
     public void FailureStringTypedResult_WithANullableOutputType_WhenAccessingOutput_Should_ThrowException()
     {
-        var result = new TestResult<string?>(FailureType.Generic, ResultLayer.UseCase, "Failure occurred");
-        result.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
+        var error = new ResultError(OperationStatus.Failure<string?>(), ResultLayer.UseCase, "Failure occurred");
+        var result = new TestResult<string?>(error);
+        result.AssertFailure(OperationStatus.Failure<string?>(), ResultLayer.UseCase, 1);
     }
 
     [Fact]
@@ -114,7 +119,7 @@ public class TypedResultTests
     {
         var nonTypedResult = Result.Fail("Failure occurred");
         var typedResult = new TestResult<int>(nonTypedResult);
-        typedResult.AssertFailure(FailureType.Generic, ResultLayer.Unknown, 1);
+        typedResult.AssertFailure(OperationStatus.Failure(), ResultLayer.Unknown, 1);
     }
 
     [Fact]
@@ -128,7 +133,8 @@ public class TypedResultTests
     [Fact]
     public void TryGetOutput_WhenResultIsFailure_Should_ReturnFalse()
     {
-        var result = new TestResult<object>(FailureType.Generic, ResultLayer.UseCase, "Failure occurred");
+        var error = new ResultError(OperationStatus.Failure<int>(), ResultLayer.UseCase, "Failure occurred");
+        var result = new TestResult<object>(error);
         Assert.False(result.TryGetOutput(out var output));
         Assert.Null(output);
     }
@@ -143,7 +149,8 @@ public class TypedResultTests
     [Fact]
     public void GetOrDefault_WhenResultIsFailure_Should_ReturnDefaultValue()
     {
-        var result = new TestResult<int>(FailureType.Generic, ResultLayer.UseCase, "Failure occurred");
+        var error = new ResultError(OperationStatus.Failure<int>(), ResultLayer.UseCase, "Failure occurred");
+        var result = new TestResult<int>(error);
         Assert.Equal(42, result.GetOrDefault(42));
     }
     
@@ -157,7 +164,8 @@ public class TypedResultTests
     [Fact]
     public void Unwrap_WhenResultIsFailure_Should_ReturnNull()
     {
-        var result = new TestResult<string>(FailureType.Generic, ResultLayer.UseCase, "Failure occurred");
+        var error = new ResultError(OperationStatus.Failure<string>(), ResultLayer.UseCase, "Failure occurred");
+        var result = new TestResult<string>(error);
         Assert.Null(result.Unwrap());
     }
     
@@ -192,11 +200,12 @@ public class TypedResultTests
     [Fact]
     public void GetErrorsOfType_Should_ReturnErrorsOfSpecifiedType()
     {
-        var result = new TestResult<int>(FailureType.AlreadyExists, ResultLayer.UseCase, "error");
-        result.AddError(new ResultError(FailureType.Generic, ResultLayer.Infrastructure, "error"));
+        var error = new ResultError(OperationStatus.AlreadyExists<int>(), ResultLayer.Infrastructure, "validation error");
+        var result = new TestResult<int>(error);
+        result.AddError(new ResultError(OperationStatus.Failure(), ResultLayer.Infrastructure, "error"));
         var validationErrors = result.GetErrorsOfType().ToList();
         Assert.Single(validationErrors);
-        Assert.Equal(FailureType.AlreadyExists, validationErrors[0].FailureType);
+        Assert.Equal(OperationStatus.AlreadyExists<int>(), validationErrors[0].Failure);
     }
     
     [Fact]

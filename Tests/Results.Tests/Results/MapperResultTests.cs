@@ -1,4 +1,5 @@
-﻿using DDD.Core.Results;
+﻿using DDD.Core.Operations.Statuses.Abstract;
+using DDD.Core.Results;
 using DDD.Core.Results.ValueObjects;
 using Results.Tests.Results.Extensions;
 using Results.Tests.Results.TestStructures;
@@ -17,14 +18,14 @@ public class MapperResultTests : BasicResultTests
     public override void WhenIFailTheResult_Then_TheResultIsAFailure()
     {
         var result = MapperResult.Fail();
-        result.AssertFailure(FailureType.Generic, 1);
+        result.AssertFailure(OperationStatus.Failure(), 1);
     }
 
     public override void WhenIFailTheResult_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail(errorMessage);
-        result.AssertFailure(FailureType.Generic, 1);
+        result.AssertFailure(OperationStatus.Failure(), 1);
     }
 
     public override void GivenIHaveASuccessfulResult_WhenIConvertItIntoAResult_Then_TheResultIsConvertedSuccessfully()
@@ -39,7 +40,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var mapperResult = MapperResult.Fail(errorMessage);
         var result = mapperResult.ToResult();
-        result.AssertFailure(FailureType.Generic, 1);
+        result.AssertFailure(OperationStatus.Failure(), 1);
     }
 
     public override void GivenIHaveASuccessfulResult_WithAValue_WhenIRemoveTheValue_Then_TheResultIsConvertedSuccessfully()
@@ -48,7 +49,7 @@ public class MapperResultTests : BasicResultTests
         var mapperResult = MapperResult.Pass(value);
         var result = mapperResult.RemoveType();
         Assert.IsType<MapperResult>(result);
-        result.AssertSuccessful();
+        result.AssertSuccessful(OperationStatus.Success<int>());
     }
 
     public override void GivenIHaveAFailureResult_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -102,7 +103,7 @@ public class MapperResultTests : BasicResultTests
         var mergedResult = MapperResult.Merge(r1, r2, r3, r4);
         Assert.True(mergedResult.IsFailure);
         Assert.False(mergedResult.IsSuccessful);
-        Assert.Equal(FailureType.Generic, mergedResult.PrimaryFailureType);
+        Assert.Equal(OperationStatus.Failure(), mergedResult.PrimaryStatus);
         Assert.Equal(ResultLayer.Unknown, mergedResult.CurrentLayer);
         Assert.Equal(3, mergedResult.ErrorMessages.Count());
     }
@@ -117,14 +118,14 @@ public class MapperResultTests : BasicResultTests
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = MapperResult.Fail<int>();
-        result.AssertFailure(FailureType.Generic, 1);    
+        result.AssertFailure(OperationStatus.Failure<int>(), 1);    
     }
 
     public override void WhenIFailTheResult_ThatIsMeantToHaveAValue_WithAErrorMessage_Then_TheResultIsAFailure_WithTheFullErrorMessage()
     {
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<int>(errorMessage);
-        result.AssertFailure(FailureType.Generic, 1);
+        result.AssertFailure(OperationStatus.Failure<int>(), 1);
     }
 
     public override void GivenIHaveAValue_WhenIImplyTheResult_Then_TheResultIsImportedSuccessfully()
@@ -149,7 +150,7 @@ public class MapperResultTests : BasicResultTests
         var mapperResult = MapperResult.Fail<int>(errorMessage);
         var result = mapperResult.ToTypedResult();
         Assert.IsType<Result<int>>(result);
-        result.AssertFailure(FailureType.Generic, 1);
+        result.AssertFailure(OperationStatus.Failure<int>(), 1);
     }
 
     public override void GivenIHaveAFailureResult_WithAValue_WhenICopyIt_Then_TheResultIsCopiedSuccessfully()
@@ -179,42 +180,42 @@ public class MapperResultTests : BasicResultTests
     public void WhenIFailTheResult_BecauseOfADomainViolation_Then_TheResultIsAFailure()
     {
         var result = MapperResult.DomainViolation();
-        result.AssertFailure(FailureType.DomainViolation, 1);    
+        result.AssertFailure(OperationStatus.DomainViolation(), 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfADomainViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = MapperResult.DomainViolation<int>();
-        result.AssertFailure(FailureType.DomainViolation, 1);    
+        result.AssertFailure(OperationStatus.DomainViolation<int>(), 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvalidInput_Then_TheResultIsAFailure()
     {
         var result = MapperResult.InvalidInput();
-        result.AssertFailure(FailureType.InvalidInput, 1);    
+        result.AssertFailure(OperationStatus.InvalidInput(), 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvalidInput_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = MapperResult.InvalidInput<int>();
-        result.AssertFailure(FailureType.InvalidInput, 1);    
+        result.AssertFailure(OperationStatus.InvalidInput<int>(), 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvariantViolation_Then_TheResultIsAFailure()
     {
         var result = MapperResult.InvariantViolation();
-        result.AssertFailure(FailureType.InvariantViolation, 1);    
+        result.AssertFailure(OperationStatus.InvariantViolation(), 1);    
     }
     
     [Fact]
     public void WhenIFailTheResult_BecauseOfAnInvariantViolation_ThatIsMeantToHaveAValue_Then_TheResultIsAFailure()
     {
         var result = MapperResult.InvariantViolation<int>();
-        result.AssertFailure(FailureType.InvariantViolation, 1);    
+        result.AssertFailure(OperationStatus.InvariantViolation<int>(), 1);    
     }
 
     [Fact]
@@ -240,7 +241,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<byte>(errorMessage);    
         var convertedResult = result.ToTypedInfraResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<byte>(), ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -249,7 +250,7 @@ public class MapperResultTests : BasicResultTests
         const string value = "Hi";
         var result = MapperResult.Pass(value);    
         var convertedResult = result.ToInfraResult();
-        convertedResult.AssertSuccessful(ResultLayer.Infrastructure);
+        convertedResult.AssertSuccessful(OperationStatus.Success<string>(), ResultLayer.Infrastructure);
     }
     
     [Fact]
@@ -258,7 +259,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToInfraResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<string>(), ResultLayer.Infrastructure, 1);
     }
     
     [Fact]
@@ -275,7 +276,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail(errorMessage);    
         var convertedResult = result.ToInfraResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Infrastructure,1);
+        convertedResult.AssertFailure(OperationStatus.Failure(), ResultLayer.Infrastructure,1);
     }
     
     [Fact]
@@ -293,7 +294,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<short>(errorMessage);    
         var convertedResult = result.ToTypedServiceResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<short>(), ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -302,7 +303,7 @@ public class MapperResultTests : BasicResultTests
         const string value = "Hi";
         var result = MapperResult.Pass(value);    
         var convertedResult = result.ToServiceResult();
-        convertedResult.AssertSuccessful(ResultLayer.Service);
+        convertedResult.AssertSuccessful(OperationStatus.Success<string>(), ResultLayer.Service);
     }
     
     [Fact]
@@ -311,7 +312,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<string>(errorMessage);    
         var convertedResult = result.ToServiceResult();
-        convertedResult.AssertFailure(FailureType.Generic,  ResultLayer.Service,1);
+        convertedResult.AssertFailure(OperationStatus.Failure<string>(),  ResultLayer.Service,1);
     }
     
     [Fact]
@@ -328,7 +329,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail(errorMessage);    
         var convertedResult = result.ToServiceResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.Service, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure(), ResultLayer.Service, 1);
     }
     
     [Fact]
@@ -346,7 +347,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<long>(errorMessage);    
         var convertedResult = result.ToTypedUseCaseResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<long>(), ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -355,7 +356,7 @@ public class MapperResultTests : BasicResultTests
         const string value = "Hi";
         var result = MapperResult.Pass(value);    
         var convertedResult = result.ToUseCaseResult();
-        convertedResult.AssertSuccessful(ResultLayer.UseCase);
+        convertedResult.AssertSuccessful(OperationStatus.Success<string>(), ResultLayer.UseCase);
     }
     
     [Fact]
@@ -364,7 +365,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<int>(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<int>(), ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -381,7 +382,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail(errorMessage);    
         var convertedResult = result.ToUseCaseResult();
-        convertedResult.AssertFailure(FailureType.Generic, ResultLayer.UseCase, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure(), ResultLayer.UseCase, 1);
     }
     
     [Fact]
@@ -390,7 +391,7 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail(errorMessage);    
         var convertedResult = result.ToTypedMapperResult<string>();
-        convertedResult.AssertFailure(FailureType.Generic, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure(), 1);
     }
     
     [Fact]
@@ -399,6 +400,6 @@ public class MapperResultTests : BasicResultTests
         const string errorMessage = "I want it to fail";
         var result = MapperResult.Fail<int>(errorMessage);    
         var convertedResult = result.ToTypedMapperResult<string>();
-        convertedResult.AssertFailure(FailureType.Generic, 1);
+        convertedResult.AssertFailure(OperationStatus.Failure<int>(), 1);
     }
 }
