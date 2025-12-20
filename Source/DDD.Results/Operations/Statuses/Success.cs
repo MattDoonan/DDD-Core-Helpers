@@ -14,7 +14,7 @@ public record Success : OperationStatus
     }
     
     internal Success(Type expectedType) 
-        : this(expectedType, $"The operation retrieving {expectedType} completed successfully")
+        : this(expectedType, $"The operation retrieving {expectedType.Name} completed successfully")
     {
     }
     

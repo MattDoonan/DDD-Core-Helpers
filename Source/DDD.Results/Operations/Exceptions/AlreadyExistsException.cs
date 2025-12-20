@@ -1,4 +1,5 @@
 ﻿using DDD.Core.Operations.Statuses;
+using DDD.Core.Operations.Statuses.Abstract;
 
 namespace DDD.Core.Operations.Exceptions;
 
@@ -7,6 +8,10 @@ namespace DDD.Core.Operations.Exceptions;
 /// </summary>
 public class AlreadyExistsException : OperationException
 {
+    public AlreadyExistsException() : base(OperationStatus.AlreadyExists())
+    {
+    }
+    
     public AlreadyExistsException(AlreadyExists failure) : base(failure)
     {
     }

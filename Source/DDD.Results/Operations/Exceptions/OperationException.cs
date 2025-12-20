@@ -11,6 +11,10 @@ public class OperationException : Exception
     public StatusType Type => _status.Type;
     private readonly FailedOperationStatus _status;
     
+    public OperationException() : this(OperationStatus.Failure())
+    {
+    }
+    
     public OperationException(FailedOperationStatus failure)
     {
         _status = failure;

@@ -10,12 +10,12 @@ namespace DDD.Core.Operations.Statuses;
 public record NotAllowed : FailedOperationStatus
 {
     internal NotAllowed() 
-        : this("Operation is not permitted")
+        : this("The operation is not permitted")
     {
     }
     
     internal NotAllowed(Type expectedType) 
-        : this(expectedType, $"Operation to get {expectedType.Name} is not permitted")
+        : this(expectedType, $"The operation to get {expectedType.Name} is not permitted")
     {
     }
     
@@ -36,7 +36,7 @@ public record NotAllowed : FailedOperationStatus
 
     public override OperationException ToException()
     {
-        throw new NotAllowedException(this);
+        return new NotAllowedException(this);
     }
 }
 

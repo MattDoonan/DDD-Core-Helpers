@@ -36,7 +36,7 @@ public record NotFound : FailedOperationStatus
 
     public override OperationException ToException()
     {
-        throw new NotFoundException(this);
+        return new NotFoundException(this);
     }
 }
 

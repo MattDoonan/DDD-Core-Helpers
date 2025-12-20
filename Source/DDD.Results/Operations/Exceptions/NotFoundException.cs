@@ -1,4 +1,5 @@
 ﻿using DDD.Core.Operations.Statuses;
+using DDD.Core.Operations.Statuses.Abstract;
 
 namespace DDD.Core.Operations.Exceptions;
 
@@ -7,6 +8,10 @@ namespace DDD.Core.Operations.Exceptions;
 /// </summary>
 public class NotFoundException : OperationException
 {
+    public NotFoundException() : base(OperationStatus.NotFound())
+    {
+    }
+    
     public NotFoundException(NotFound failure) : base(failure)
     {
     }

@@ -1,4 +1,5 @@
 ﻿using DDD.Core.Operations.Statuses;
+using DDD.Core.Operations.Statuses.Abstract;
 
 namespace DDD.Core.Operations.Exceptions;
 
@@ -7,6 +8,10 @@ namespace DDD.Core.Operations.Exceptions;
 /// </summary>
 public class InvalidInputException : OperationException
 {
+    public InvalidInputException() : base(OperationStatus.InvalidInput())
+    {
+    }
+    
     public InvalidInputException(InvalidInput failure) : base(failure)
     {
     }

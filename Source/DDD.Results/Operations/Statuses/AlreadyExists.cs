@@ -36,7 +36,7 @@ public record AlreadyExists : FailedOperationStatus
 
     public override OperationException ToException()
     {
-        throw new AlreadyExistsException(this);
+        return new AlreadyExistsException(this);
     }
 }
 

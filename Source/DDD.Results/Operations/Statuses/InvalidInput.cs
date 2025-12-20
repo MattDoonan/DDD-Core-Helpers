@@ -15,7 +15,7 @@ public record InvalidInput : FailedOperationStatus
     }
     
     internal InvalidInput(Type expectedType) 
-        : this(expectedType, $"The input for {expectedType.Name} is invalid")
+        : this(expectedType, $"The input to retrieve {expectedType.Name} is invalid")
     {
     }
     

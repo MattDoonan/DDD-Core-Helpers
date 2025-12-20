@@ -10,12 +10,12 @@ namespace DDD.Core.Operations.Statuses;
 public record InvariantViolation : FailedOperationStatus
 {
     internal InvariantViolation() 
-        : this("An unexpected failure occured")
+        : this("An invariant condition was violated")
     {
     }
     
     internal InvariantViolation(Type expectedType) 
-        : this(expectedType, $"An unexpected failure occured when retrieving {expectedType.Name}")
+        : this(expectedType, $"An invariant condition was violated when retrieving {expectedType.Name}")
     {
     }
     
