@@ -13,10 +13,9 @@ public class WriteUnitOfWork<TDbContext>
         Context = context;
     }
 
-    public async Task<RepoResult> SaveAsync(CancellationToken token = default)
+    public Task<RepoResult> SaveAsync(CancellationToken token = default)
     {
-        return await Context.SaveChangesAsync(token)
-            .ToRepoResultAsync();
+        return Context.SaveAsync(token);
     }
     
     public void Add<T>(T aggregateRoot)

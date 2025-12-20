@@ -31,4 +31,10 @@ internal static class TaskExtension
             return e.ToRepoResult<TSource>();
         }
     }
+    
+    public static async Task<RepoResult> RemoveTypeAsync<TSource>(this Task<RepoResult<TSource>> resultTask)
+    {
+        var result = await resultTask;
+        return result.RemoveType();
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using DDD.Core.Converters.SingleValueObjects;
+using DDD.Core.Extensions;
 using DDD.Core.Interfaces.Factories;
 using DDD.Core.Interfaces.Values;
 using DDD.Core.Results;
@@ -35,11 +36,13 @@ internal class SingleValueObjectConverterSelector : ValueConverterSelector
 
     private static InfraResult<IEnumerable<ValueConverterInfo>> CheckForSingleValueObject(Type modelClrType)
     {
-        var isSingleValueResult = CheckIfSingleValue(modelClrType);
-        if (isSingleValueResult.IsFailure)
-        {
-            return isSingleValueResult;
-        }
+        return modelClrType.IsSingleValueObject()
+            ? InfraResult.Pass(CheckForFactories(modelClrType))
+            : InfraResult.Fail<IEnumerable<ValueConverterInfo>>("the model is not single value object");
+    }
+
+    private static IEnumerable<ValueConverterInfo> CheckForFactories(Type modelClrType)
+    {
         var infos = new List<ValueConverterInfo>();
         var convertableResult = CheckForConvertableValueObject(modelClrType);
         if (convertableResult.IsSuccessful)
@@ -51,42 +54,32 @@ internal class SingleValueObjectConverterSelector : ValueConverterSelector
         {
             infos.Add(factoryResult.Output);
         }
-        return infos;
+        return infos.AsEnumerable();
     }
     
     private static InfraResult<ValueConverterInfo> CheckForConvertableValueObject(Type modelClrType)
     {
-        var convertableOpenType = typeof(IConvertable<,>);
-        var convertableInterface = modelClrType.GetInterfaces()
-            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == convertableOpenType);
-        if (convertableInterface is null)
+        var valueTypeResult = modelClrType.GetConvertibleInputType();
+        if (valueTypeResult.IsFailure)
         {
-            return InfraResult.Fail("the model is not IConvertable");
+            return valueTypeResult.ToTypedInfraResult<ValueConverterInfo>();
         }
-        
-        var valueType = convertableInterface.GetGenericArguments()[0];
-        
+        var valueType = valueTypeResult.Output;
         var converterType = typeof(ConvertableValueObjectConverter<,>)
             .MakeGenericType(modelClrType, valueType);
-        
         return CreateConverterInfo(modelClrType, valueType, converterType);
     }
     
     private static InfraResult<ValueConverterInfo> CheckForSimpleFactory(Type modelClrType)
     {
-        var factoryOpenType = typeof(ISingleValueObjectFactory<,>);
-        var factoryInterface = modelClrType.GetInterfaces()
-            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == factoryOpenType);
-        if (factoryInterface is null)
+        var valueTypeResult = modelClrType.GetSimpleFactoryInputType();
+        if (valueTypeResult.IsFailure)
         {
-            return InfraResult.Fail("the model is not ISimpleValueObjectFactory");
+            return valueTypeResult.ToTypedInfraResult<ValueConverterInfo>();
         }
-        
-        var valueType = factoryInterface.GetGenericArguments()[0];
-        
+        var valueType = valueTypeResult.Output;
         var converterType = typeof(SingleValueObjectFactoryConverter<,>)
             .MakeGenericType(modelClrType, valueType);
-        
         return CreateConverterInfo(modelClrType, valueType, converterType);
     }
     
@@ -98,15 +91,5 @@ internal class SingleValueObjectConverterSelector : ValueConverterSelector
             Factory
         );
         ValueConverter Factory(ValueConverterInfo info) => (ValueConverter)Activator.CreateInstance(converterType, info.MappingHints)!;
-    }
-    
-    private static InfraResult CheckIfSingleValue(Type modelClrType)
-    {
-        var singleValueOpenType = typeof(ISingleValue<>);
-        var singleValueInterface = modelClrType.GetInterfaces()
-            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == singleValueOpenType);
-        return singleValueInterface is null 
-            ? InfraResult.Fail("the model is not ISingleValue") 
-            : InfraResult.Pass();
     }
 }

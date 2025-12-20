@@ -11,6 +11,12 @@ public static class DbContextExtensions
 {
     extension(DbContext context)
     {
+        public Task<RepoResult> SaveAsync(CancellationToken token = default)
+        {
+            return context.SaveChangesAsync(token)
+                .ToRepoResultAsync().RemoveTypeAsync();
+        }
+        
         public Task<RepoResult<TAggregate>> GetAsync<TId, TAggregate>(TId id, CancellationToken token = default)
             where TId : ValueObject, IAggregateRootId
             where TAggregate : Entity, IAggregateRoot<TId>
