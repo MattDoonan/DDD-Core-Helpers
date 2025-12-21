@@ -1,9 +1,10 @@
 ﻿using DDD.Core.Entities;
 using DDD.Core.Entities.Interfaces;
+using DDD.Core.UnitOfWork.Interfaces;
 
 namespace DDD.Core.Repositories;
 
-public class WriteRepository<T>
+public class WriteRepository<T> : ISingleRepository<T>
     where T : Entity, IAggregateRoot
 {
      private readonly DbSet<T> _dbSet;

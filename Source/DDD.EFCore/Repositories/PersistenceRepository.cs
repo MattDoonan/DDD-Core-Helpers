@@ -1,6 +1,8 @@
 ﻿using DDD.Core.Entities;
 using DDD.Core.Entities.Interfaces;
 using DDD.Core.Results;
+using DDD.Core.UnitOfWork;
+using DDD.Core.UnitOfWork.Interfaces;
 
 namespace DDD.Core.Repositories;
 
@@ -41,6 +43,6 @@ public class PersistenceRepository<T, TDbContext>
     
     public Task<RepoResult> SaveAsync(CancellationToken token = default)
     {
-        return _unitOfWork.SaveAsync(token);
+        return _unitOfWork.SaveChangesAsync(token);
     }
 }

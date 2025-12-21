@@ -1,21 +1,21 @@
 using DDD.Core.Extensions;
 using DDD.Core.Results;
 
-namespace DDD.Core.Repositories;
+namespace DDD.Core.UnitOfWork;
 
-public class WriteUnitOfWork<TDbContext>
+/// <summary>
+/// Unit of Work for write operations using a specific DbContext.
+/// Provides methods to add and update aggregate roots.
+/// </summary>
+/// <typeparam name="TDbContext">
+/// The type of DbContext used by this Unit of Work.
+/// </typeparam>
+public class WriteUnitOfWork<TDbContext> : PersistUnitOfWork<TDbContext>
     where TDbContext : DbContext
 {
-    protected readonly TDbContext Context;
 
-    public WriteUnitOfWork(TDbContext context)
+    public WriteUnitOfWork(TDbContext context) : base(context)
     {
-        Context = context;
-    }
-
-    public Task<RepoResult> SaveAsync(CancellationToken token = default)
-    {
-        return Context.SaveAsync(token);
     }
     
     public void Add<T>(T aggregateRoot)
@@ -44,6 +44,13 @@ public class WriteUnitOfWork<TDbContext>
     {
         var dbSet = Context.Set<T>();
         dbSet.UpdateRange(aggregateRoots);
+    }
+
+    public void Remove<T>(T aggregateRoot)
+        where T : class
+    {
+        var dbSet = Context.Set<T>();
+        dbSet.Remove(aggregateRoot);
     }
     
 }

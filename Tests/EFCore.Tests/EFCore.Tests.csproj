@@ -16,10 +16,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Source\DDD.EFCore\DDD.EFCore.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Extensions\" />
     </ItemGroup>    
 
 </Project>
