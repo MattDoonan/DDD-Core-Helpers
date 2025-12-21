@@ -2,4 +2,7 @@
 
 namespace DDD.Core.ValueObjects.Base;
 
+/// <summary>
+/// Base class for all Value Objects
+/// </summary>
 public abstract record ValueObject : IValueObject;

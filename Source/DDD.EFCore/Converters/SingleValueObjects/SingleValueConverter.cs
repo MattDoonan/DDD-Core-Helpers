@@ -4,7 +4,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DDD.Core.Converters.SingleValueObjects;
 
-internal abstract class SingleValueConverter<T, TValue> : ValueConverter<T, TValue>
+/// <summary>
+/// A base value converter for single value objects.
+/// </summary>
+/// <typeparam name="T">
+/// The type of the single value object.
+/// </typeparam>
+/// <typeparam name="TValue">
+/// The underlying value type.
+/// </typeparam>
+public abstract class SingleValueConverter<T, TValue> : ValueConverter<T, TValue>
     where T : ISingleValue<TValue>
     where TValue : IComparable, IComparable<TValue>, IEquatable<TValue>
 {

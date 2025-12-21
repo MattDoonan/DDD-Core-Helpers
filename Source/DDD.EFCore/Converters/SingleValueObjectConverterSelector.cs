@@ -5,7 +5,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DDD.Core.Converters;
 
-internal class SingleValueObjectConverterSelector : ValueConverterSelector
+/// <summary>
+/// A custom value converter selector that handles single value objects.
+/// </summary>
+public class SingleValueObjectConverterSelector : ValueConverterSelector
 {
     public SingleValueObjectConverterSelector(ValueConverterSelectorDependencies dependencies) : base(dependencies)
     {

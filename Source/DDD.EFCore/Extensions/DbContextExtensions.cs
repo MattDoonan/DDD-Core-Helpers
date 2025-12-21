@@ -11,6 +11,15 @@ public static class DbContextExtensions
 {
     extension(DbContext context)
     {
+        /// <summary>
+        /// Saves changes to the database and returns a RepoResult indicating success or failure.
+        /// </summary>
+        /// <param name="token">
+        /// A CancellationToken to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        /// A Task representing the asynchronous operation, containing a RepoResult.
+        /// </returns>
         public Task<RepoResult> SaveAsync(CancellationToken token = default)
         {
             return context.SaveChangesAsync(token)
