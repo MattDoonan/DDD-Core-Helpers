@@ -109,6 +109,15 @@ public class ResultErrorTests
         var newError = error.WithLayer(ResultLayer.Infrastructure);
         Assert.Equal(ResultLayer.Service, newError.ResultLayer);
     }
+
+    [Theory, MemberData(nameof(AllFailureTypes))]
+    public void Throw_Should_ThrowOperationStatusError(FailedOperationStatus failedOperationStatus)
+    {
+        var error = new ResultError(failedOperationStatus, ResultLayer.Infrastructure);
+        var expectedExceptionType = failedOperationStatus.ToException().GetType();
+        Assert.IsType(expectedExceptionType, error.GetFailureException());
+        Assert.Throws(expectedExceptionType, () => error.Throw());
+    }
     
     
     public static IEnumerable<object[]> AllFailureTypes =>
