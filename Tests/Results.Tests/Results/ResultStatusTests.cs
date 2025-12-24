@@ -111,7 +111,7 @@ public class ResultStatusTests
     {
         var error = new ResultError(OperationStatus.InvalidInput(), ResultLayer.Unknown, "test");
         var result = new TestResult(error);
-        Assert.Throws<ResultException>(() => result.SetPrimaryStatus(OperationStatus.Success()));
+        Assert.Throws<ResultConversionException>(() => result.SetPrimaryStatus(OperationStatus.Success()));
         result.AssertFailure(OperationStatus.InvalidInput(), ResultLayer.Unknown, 1);
     }
     

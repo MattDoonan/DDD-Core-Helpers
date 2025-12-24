@@ -3,6 +3,15 @@ using DDD.Core.ValueObjects.Factories;
 
 namespace DDD.Core.ValueObjects.Identifiers.Types;
 
+/// <summary>
+/// Base class for all Guid based Identifiers
+/// </summary>
+/// <param name="Value">
+/// The value of the identifier.
+/// </param>
+/// <typeparam name="T">
+/// The type of the identifier.
+/// </typeparam>
 public abstract record GuidIdentifier<T>(Guid Value) : Identifier<Guid>(Value), IGuidCreatables<T>
     where T : GuidIdentifier<T>, IGuidFactory<T>
 {

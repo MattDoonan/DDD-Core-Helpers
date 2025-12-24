@@ -3,8 +3,17 @@ using DDD.Core.ValueObjects.Identifiers.Interfaces;
 
 namespace DDD.Core.Entities;
 
+/// <summary>
+/// Base class for entities.
+/// </summary>
 public abstract class Entity;
 
+/// <summary>
+/// Base class for entities with identifier of type <typeparamref name="TId"/>.
+/// </summary>
+/// <typeparam name="TId">
+/// The type of the entity identifier.
+/// </typeparam>
 public abstract class Entity<TId> : Entity, IEntity<TId>
     where TId : IIdentifier
 {
