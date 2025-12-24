@@ -52,11 +52,11 @@ internal static class TypeExtensions
         
         private InfraResult<Type> GetConvertableInterface()
         {
-            var convertableOpenType = typeof(IConvertable<,>);
+            var convertableOpenType = typeof(IConvertibleFactory<,>);
             var convertableInterface = type.GetInterfaces()
                 .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == convertableOpenType);
             return convertableInterface is null
-                ? InfraResult.NotFound<Type>("the type does not implement IConvertable<,>")
+                ? InfraResult.NotFound<Type>("the type does not implement IConvertibleFactory<,>")
                 : InfraResult.Pass(convertableInterface);
         }
 

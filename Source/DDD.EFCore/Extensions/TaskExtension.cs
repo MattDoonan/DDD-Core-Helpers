@@ -4,7 +4,7 @@ namespace DDD.Core.Extensions;
 
 internal static class TaskExtension
 {
-    public static async Task<RepoResult<List<TSource>>> ToRepoResultAsync<TSource>(this Task<List<TSource>> task)
+    public static async Task<RepoResult<List<TSource>>> ToTypedRepoResultAsync<TSource>(this Task<List<TSource>> task)
     {
         try
         {
@@ -17,14 +17,14 @@ internal static class TaskExtension
         }
     }
 
-    public static async Task<RepoResult<TSource>> ToRepoResultAsync<TSource>(this Task<TSource?> task)
+    public static async Task<RepoResult<TSource>> ToTypedRepoResultAsync<TSource>(this Task<TSource?> task)
     {
         try
         {
             var result = await task;
             return result is not null
                 ? RepoResult.Pass(result)
-                : RepoResult.NotFound<TSource>("there was no result obtained from the query");
+                : RepoResult.NotFound<TSource>("there was no result obtained");
         }
         catch (Exception e)
         {
@@ -32,9 +32,16 @@ internal static class TaskExtension
         }
     }
     
-    public static async Task<RepoResult> RemoveTypeAsync<TSource>(this Task<RepoResult<TSource>> resultTask)
+    public static async Task<RepoResult> ToRepoResultAsync(this Task task)
     {
-        var result = await resultTask;
-        return result.RemoveType();
+        try
+        {
+            await task;
+            return RepoResult.Pass();
+        }
+        catch (Exception e)
+        {
+            return e.ToRepoResult();
+        }
     }
 }

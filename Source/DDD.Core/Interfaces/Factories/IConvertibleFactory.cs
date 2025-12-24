@@ -1,6 +1,6 @@
 ﻿namespace DDD.Core.Interfaces.Factories;
 
-public interface IConvertable<in TValue, out T>
+public interface IConvertibleFactory<in TValue, out T>
 {
     static abstract T From(TValue value);
 }

@@ -16,7 +16,16 @@ internal static class ExceptionExtension
                 _ => RepoResult.Fail<T>($"{e.Message}")
             };
         }
-
         
+        public RepoResult ToRepoResult()
+        {
+            return e switch
+            {
+                DbUpdateConcurrencyException => RepoResult.ConcurrencyViolation($"of this error: {e.Message}"),
+                DbUpdateException => RepoResult.InvalidRequest($"the update operation failed because of {e.Message}"),
+                OperationCanceledException => RepoResult.OperationCancelled("the operation was cancelled"),
+                _ => RepoResult.Fail($"{e.Message}")
+            };
+        }
     }
 }

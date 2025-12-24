@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DDD.Core.Converters.SingleValueObjects;
 
 /// <summary>
-/// A value converter for single value objects that implement <see cref="IConvertable{TValue,T}"/>.
+/// A value converter for single value objects that implement <see cref="IConvertibleFactory{TValue,T}"/>.
 /// </summary>
 /// <typeparam name="T">
 /// The type of the single value object.
@@ -14,13 +14,13 @@ namespace DDD.Core.Converters.SingleValueObjects;
 /// <typeparam name="TValue">
 /// The underlying value type.
 /// </typeparam>
-public class ConvertableValueObjectConverter<T, TValue> : SingleValueConverter<T, TValue>
-    where T : ISingleValue<TValue>, IConvertable<TValue, T>
+public class IConvertibleFactoryConverter<T, TValue> : SingleValueConverter<T, TValue>
+    where T : ISingleValue<TValue>, IConvertibleFactory<TValue, T>
     where TValue : IComparable, IComparable<TValue>, IEquatable<TValue>
 {
     private static Expression<Func<TValue, T>> ConvertFrom => x => From(x);
     
-    public ConvertableValueObjectConverter(ConverterMappingHints? mappingHints = null) 
+    public IConvertibleFactoryConverter(ConverterMappingHints? mappingHints = null) 
         : base(ConvertFrom, mappingHints)
     {
     }

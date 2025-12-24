@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
+using DDD.Core.Factories.Exceptions;
 using DDD.Core.Results;
-using DDD.Core.UnitOfWork.Exceptions;
 using DDD.Core.UnitOfWork.Interfaces;
 
 namespace DDD.Core.Factories;
@@ -8,7 +8,7 @@ namespace DDD.Core.Factories;
 /// <summary>
 /// Factory class for creating repository instances.
 /// </summary>
-internal static class RepositoryFactory
+public static class RepositoryInstanceFactory
 {
     /// <summary>
     /// Creates an instance of the specified repository type using the provided DbContext.
@@ -26,7 +26,7 @@ internal static class RepositoryFactory
     /// <returns>
     /// The created repository instance.
     /// </returns>
-    /// <exception cref="InvalidUnitOfWorkRepositoryException">
+    /// <exception cref="RepositoryFactoryException">
     /// Thrown if the repository instance could not be created.
     /// </exception>
     public static TRepository Create<TDbContext, TRepository>(TDbContext dbContext) 
@@ -43,7 +43,7 @@ internal static class RepositoryFactory
         {
             return fromDbSetResult.Output;
         }
-        throw new InvalidUnitOfWorkRepositoryException(
+        throw new RepositoryFactoryException(
             $"Could not create repository instance {typeof(TRepository).Name}");
     }
     

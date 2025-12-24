@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace EFCore.Tests.Helpers;
+namespace EFCore.Tests.Helpers.Factories;
 
 public static class ContextOptionsFactory
 {

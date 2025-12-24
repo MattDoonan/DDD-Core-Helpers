@@ -14,6 +14,18 @@ public class SingleValueObjectConverterSelector : ValueConverterSelector
     {
     }
     
+    /// <summary>
+    /// Selects appropriate value converters for the given model and provider CLR types.
+    /// This method checks if the model type is a single value object and provides
+    /// suitable converters if applicable.
+    /// </summary>
+    /// <param name="modelClrType">
+    /// The CLR type of the model.
+    /// </param>
+    /// <param name="providerClrType">
+    /// The CLR type of the provider (optional).
+    /// </param>
+    /// <returns></returns>
     public override IEnumerable<ValueConverterInfo> Select(Type modelClrType, Type? providerClrType = null)
     {
         var converters = base.Select(modelClrType, providerClrType);
@@ -65,7 +77,7 @@ public class SingleValueObjectConverterSelector : ValueConverterSelector
             return valueTypeResult.ToTypedInfraResult<ValueConverterInfo>();
         }
         var valueType = valueTypeResult.Output;
-        var converterType = typeof(ConvertableValueObjectConverter<,>)
+        var converterType = typeof(IConvertibleFactoryConverter<,>)
             .MakeGenericType(modelClrType, valueType);
         return CreateConverterInfo(modelClrType, valueType, converterType);
     }

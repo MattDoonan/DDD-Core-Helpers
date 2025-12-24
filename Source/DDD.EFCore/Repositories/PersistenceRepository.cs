@@ -2,7 +2,6 @@
 using DDD.Core.Entities.Interfaces;
 using DDD.Core.Results;
 using DDD.Core.UnitOfWork;
-using DDD.Core.UnitOfWork.Interfaces;
 
 namespace DDD.Core.Repositories;
 
