@@ -14,7 +14,7 @@ public record Failure : FailedOperationStatus
     {
     }
     
-    internal Failure(Type expectedType) 
+    protected Failure(Type expectedType) 
         : this(expectedType, $"The operation to retrieve {expectedType.Name} was a failure")
     {
     }
@@ -27,11 +27,6 @@ public record Failure : FailedOperationStatus
     protected Failure(Type expectedType, string message) 
         : base(StatusType.GenericFailure, expectedType, message)
     {
-    }
-    
-    public override void Throw()
-    {
-        throw ToException();
     }
     
     public override OperationException ToException()

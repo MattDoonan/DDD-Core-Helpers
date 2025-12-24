@@ -14,7 +14,7 @@ public record InvalidRequest : FailedOperationStatus
     {
     }
     
-    internal InvalidRequest(Type expectedType) 
+    protected InvalidRequest(Type expectedType) 
         : this(expectedType, $"The request for {expectedType.Name} is invalid")
     {
     }
@@ -27,11 +27,6 @@ public record InvalidRequest : FailedOperationStatus
     protected InvalidRequest(Type expectedType, string message) 
         : base(StatusType.InvalidRequest, expectedType, message)
     {
-    }
-
-    public override void Throw()
-    {
-        throw ToException();
     }
 
     public override OperationException ToException()

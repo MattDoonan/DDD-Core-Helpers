@@ -1,4 +1,5 @@
-﻿using DDD.Core.Operations.Statuses;
+﻿using DDD.Core.Operations.Exceptions;
+using DDD.Core.Operations.Statuses;
 using DDD.Core.Operations.Statuses.Abstract;
 using DDD.Core.Operations.Statuses.ValueObjects;
 using DDD.Core.Results.Exceptions;
@@ -410,49 +411,24 @@ public abstract class ResultStatus : IResultStatus
     /// </summary>
     /// <returns></returns>
     public string ErrorMessagesToString() => string.Join(Environment.NewLine, ErrorMessages);
-    
-    /// <summary>
-    /// Throws a <see cref="ResultException"/> with the specified message.
-    /// </summary>
-    /// <param name="message">
-    /// The message to include in the exception.
-    /// </param>
-    /// <exception cref="ResultException">
-    /// Thrown to indicate the result status as an exception.
-    /// </exception>
-    public void Throw(string message) => throw ToException(message);
 
     /// <summary>
-    /// Throws a <see cref="ResultException"/> representing the current result status.
+    /// Throws the exception associated with the primary failure status, if it is a failure.
     /// </summary>
-    /// <exception cref="ResultException">
-    /// Thrown to indicate the result status as an exception.
-    /// </exception>
-    public void Throw() => throw ToException();
-
-    /// <summary>
-    /// Converts the current result status to a <see cref="ResultException"/>.
-    /// </summary>
-    /// <param name="message">
-    /// The message to include in the exception.
-    /// </param>
-    /// <returns>
-    /// A <see cref="ResultException"/> representing the current result status.
-    /// </returns>
-    public ResultException ToException(string message) => new (this, message);
-    
-    /// <summary>
-    /// Converts the current result status to a <see cref="ResultException"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="ResultException"/> representing the current result status.
-    /// </returns>
-    public ResultException ToException() => new (this);
+    public void ThrowIfFailure()
+    {
+        if (PrimaryStatus is FailedOperationStatus failedOperationStatus)
+        {
+            failedOperationStatus.Throw();
+        }
+    }
     
     
     private void ThrowIfTypeIsNoneAndErrorsExist(StatusType statusType)
     {
         if (statusType == StatusType.Success && 0 < _errors.Count)
-            Throw("Cannot set primary status to Success when there are existing errors.");
+            throw new ResultConversionException(this, "Cannot set primary status to Success when there are existing errors.");
     }
+    
+    
 }

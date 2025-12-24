@@ -14,7 +14,7 @@ public record AlreadyExists : FailedOperationStatus
     {
     }
 
-    internal AlreadyExists(Type expectedType)
+    protected AlreadyExists(Type expectedType)
         : this(expectedType, $"Resource of type {expectedType.Name} already exists")
     {
     }
@@ -27,11 +27,6 @@ public record AlreadyExists : FailedOperationStatus
     protected AlreadyExists(Type expectedType, string message) 
         : base(StatusType.AlreadyExists, expectedType, message)
     {
-    }
-
-    public override void Throw()
-    {
-        throw ToException();
     }
 
     public override OperationException ToException()

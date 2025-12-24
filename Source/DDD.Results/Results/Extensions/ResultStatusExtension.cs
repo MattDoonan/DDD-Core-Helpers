@@ -9,16 +9,34 @@ public static class ResultStatusExtension
     extension<TResult>(IEnumerable<TResult> results) 
         where TResult : IResultStatus
     {
+        /// <summary>
+        /// Checks if all results in the collection are successful.
+        /// </summary>
+        /// <returns>
+        /// True if all results are successful; otherwise, false.
+        /// </returns>
         public bool AllSuccessful()
         {
             return results.All(r => r.IsSuccessful);
         }
 
+        /// <summary>
+        /// Retrieves all errors from the collection of results.
+        /// </summary>
+        /// <returns>
+        /// An enumerable of <see cref="ResultError"/> containing all errors from the results.
+        /// </returns>
         public IEnumerable<ResultError> GetErrors()
         {
             return results.SelectMany(r => r.Errors);
         }
 
+        /// <summary>
+        /// Retrieves all error messages from the collection of results.
+        /// </summary>
+        /// <returns>
+        /// An enumerable of strings containing all error messages from the results.
+        /// </returns>
         public IEnumerable<string> GetErrorMessages()
         {
             return results.SelectMany(r => r.ErrorMessages);

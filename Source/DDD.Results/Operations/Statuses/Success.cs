@@ -13,17 +13,17 @@ public record Success : OperationStatus
     {
     }
     
-    internal Success(Type expectedType) 
+    protected Success(Type expectedType) 
         : this(expectedType, $"The operation retrieving {expectedType.Name} completed successfully")
     {
     }
     
-    internal Success(string message) 
+    protected Success(string message) 
         : base(StatusType.Success, message)
     {
     }
     
-    internal Success(Type expectedType, string message) 
+    protected Success(Type expectedType, string message) 
         : base(StatusType.Success, expectedType, message)
     {
     }

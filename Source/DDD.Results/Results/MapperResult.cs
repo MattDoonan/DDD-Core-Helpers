@@ -9,7 +9,7 @@ namespace DDD.Core.Results;
 
 /// <summary>
 /// Represents the result of a mapping operation.
-/// Inherits from InfraConvertible to provide conversion capabilities.
+/// Inherits from <see cref="InfraConvertible"/> to provide conversion capabilities.
 /// Used to indicate success or failure of mapping operations.
 /// </summary>
 public class MapperResult : InfraConvertible, IResultFactory<MapperResult>
@@ -384,15 +384,15 @@ public class MapperResult<T> : InfraConvertible<T>
     }
     
     /// <summary>
-    /// Implicitly converts an <see cref="UntypedResult"/> to a <see cref="MapperResult{T}"/>.
+    /// Implicitly converts an <see cref="MapperResult"/> to a <see cref="MapperResult{T}"/>.
     /// </summary>
     /// <param name="result">
-    /// The <see cref="UntypedResult"/> to convert.
+    /// The <see cref="MapperResult"/> to convert.
     /// </param>
     /// <returns>
     /// A <see cref="MapperResult{T}"/> representing the same result status as the provided instance.
     /// </returns>
-    public static implicit operator MapperResult<T>(UntypedResult result)
+    public static implicit operator MapperResult<T>(MapperResult result)
     {
         return new MapperResult<T>(result);
     }

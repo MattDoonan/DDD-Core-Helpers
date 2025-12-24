@@ -17,11 +17,14 @@ public abstract record FailedOperationStatus : OperationStatus
         : base(statusType, outputType, message)
     {
     }
-    
+
     /// <summary>
     /// Throws the corresponding OperationException.
     /// </summary>
-    public abstract void Throw();
+    public void Throw()
+    {
+        throw ToException();
+    }
     
     /// <summary>
     /// Converts the failure status to an OperationException.

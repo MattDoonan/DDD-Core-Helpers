@@ -13,7 +13,7 @@ public record Cancelled : FailedOperationStatus
         : this("The operation was cancelled")
     {
     }
-    internal Cancelled(Type expectedType) 
+    protected Cancelled(Type expectedType) 
         : this(expectedType, $"The operation to retrieve {expectedType.Name} was cancelled")
     {
     }
@@ -26,11 +26,6 @@ public record Cancelled : FailedOperationStatus
     protected Cancelled(Type expectedOutput, string message) 
         : base(StatusType.OperationCancelled, expectedOutput, message)
     {
-    }
-    
-    public override void Throw()
-    {
-        throw ToException();
     }
     
     public override OperationException ToException()

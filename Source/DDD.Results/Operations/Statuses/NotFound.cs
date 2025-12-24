@@ -14,7 +14,7 @@ public record NotFound : FailedOperationStatus
     {
     }
     
-    internal NotFound(Type expectedType) 
+    protected NotFound(Type expectedType) 
         : this(expectedType, $"Requested resource of type {expectedType.Name} was not found")
     {
     }
@@ -27,11 +27,6 @@ public record NotFound : FailedOperationStatus
     protected NotFound(Type expectedType, string message) 
         : base(StatusType.NotFound, expectedType, message)
     {
-    }
-
-    public override void Throw()
-    {
-        throw ToException();
     }
 
     public override OperationException ToException()

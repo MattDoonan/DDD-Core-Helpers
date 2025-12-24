@@ -411,15 +411,15 @@ public class EntityResult<T> : MapperConvertible<T>
     }
     
     /// <summary>
-    /// Implicitly converts a <see cref="UntypedResult"/> to a typed <see cref="EntityResult{T}"/>.
+    /// Implicitly converts a <see cref="EntityResult"/> to a typed <see cref="EntityResult{T}"/>.
     /// </summary>
     /// <param name="result">
-    /// The <see cref="UntypedResult"/> to be converted to a typed EntityResult.
+    /// The <see cref="EntityResult"/> to be converted to a typed EntityResult.
     /// </param>
     /// <returns>
-    /// A new instance of <see cref="EntityResult{T}"/> based on the provided <see cref="UntypedResult"/>.
+    /// A new instance of <see cref="EntityResult{T}"/> based on the provided <see cref="EntityResult"/>.
     /// </returns>
-    public static implicit operator EntityResult<T>(UntypedResult result)
+    public static implicit operator EntityResult<T>(EntityResult result)
     {
         return new EntityResult<T>(result);
     }

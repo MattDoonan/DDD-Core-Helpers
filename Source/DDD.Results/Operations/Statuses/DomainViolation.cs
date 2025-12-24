@@ -14,7 +14,7 @@ public record DomainViolation : FailedOperationStatus
     {
     }
     
-    internal DomainViolation(Type expectedType) 
+    protected DomainViolation(Type expectedType) 
         : this( $"A domain violation has occurred while retrieving {expectedType.Name}")
     {
     }
@@ -27,11 +27,6 @@ public record DomainViolation : FailedOperationStatus
     protected DomainViolation(Type expectedType, string message) 
         : base(StatusType.DomainViolation, expectedType, message)
     {
-    }
-
-    public override void Throw()
-    { 
-        throw ToException();
     }
 
     public override OperationException ToException()

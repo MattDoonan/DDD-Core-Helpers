@@ -74,7 +74,7 @@ public abstract class TypedResult<T> : ResultStatus, ITypedResult<T>
     {
         if (result.IsSuccessful)
         {
-            throw new ResultConversionException(this, "Cannot convert a successful non-typed Result to a typed Result.");
+            throw new ResultConversionException(result, "Cannot convert a successful non-typed Result to a typed Result.");
         }
         HasOutput = false;
     }

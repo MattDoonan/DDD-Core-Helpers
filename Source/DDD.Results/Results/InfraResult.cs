@@ -9,7 +9,7 @@ namespace DDD.Core.Results;
 
 /// <summary>
 /// Represents the result of an infrastructure operation.
-/// Inherits from RepoConvertible and implements IResultFactory for InfraResult.
+/// Inherits from <see cref="RepoConvertible"/> and implements IResultFactory for InfraResult.
 /// Used for non-repository related infrastructure results.
 /// </summary>
 public class InfraResult : RepoConvertible, IResultFactory<InfraResult>
@@ -414,12 +414,12 @@ public class InfraResult<T> : RepoConvertible<T>
     /// Implicitly converts a RepoConvertible to a typed InfraResult of type T.
     /// </summary>
     /// <param name="result">
-    /// The <see cref="UntypedResult"/> to convert.
+    /// The <see cref="InfraResult"/> to convert.
     /// </param>
     /// <returns>
     /// A new instance of <see cref="InfraResult{T}"/> based on the provided result.
     /// </returns>
-    public static implicit operator InfraResult<T>(UntypedResult result)
+    public static implicit operator InfraResult<T>(InfraResult result)
     {
         return new InfraResult<T>(result);
     }

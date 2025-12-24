@@ -14,7 +14,7 @@ public record TimedOut : FailedOperationStatus
     {
     }
     
-    internal TimedOut(Type expectedType) 
+    protected TimedOut(Type expectedType) 
         : this(expectedType, $"The operation to retrieve {expectedType.Name} has timed out")
     {
     }
@@ -27,11 +27,6 @@ public record TimedOut : FailedOperationStatus
     protected TimedOut(Type expectedType, string message) 
         : base(StatusType.OperationTimeout, expectedType, message)
     {
-    }
-
-    public override void Throw()
-    {
-        throw ToException();
     }
 
     public override OperationException ToException()

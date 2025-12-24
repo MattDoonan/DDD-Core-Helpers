@@ -14,7 +14,7 @@ public record ConcurrencyViolation : FailedOperationStatus
     {
     }
     
-    internal ConcurrencyViolation(Type expectedType) 
+    protected ConcurrencyViolation(Type expectedType) 
         : this(expectedType, $"The operation retrieving {expectedType.Name} failed due to a concurrency violation")
     {
     }
@@ -27,11 +27,6 @@ public record ConcurrencyViolation : FailedOperationStatus
     protected ConcurrencyViolation(Type expectedType, string message) 
         : base(StatusType.ConcurrencyViolation, expectedType, message)
     {
-    }
-
-    public override void Throw()
-    {
-        throw ToException();
     }
 
     public override OperationException ToException()

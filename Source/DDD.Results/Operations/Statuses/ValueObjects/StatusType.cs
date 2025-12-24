@@ -1,5 +1,8 @@
 ﻿namespace DDD.Core.Operations.Statuses.ValueObjects;
 
+/// <summary>
+/// Represents the various types of operation statuses.
+/// </summary>
 public enum StatusType
 {
     Success,

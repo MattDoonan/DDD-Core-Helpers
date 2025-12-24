@@ -14,7 +14,7 @@ public record NotAllowed : FailedOperationStatus
     {
     }
     
-    internal NotAllowed(Type expectedType) 
+    protected NotAllowed(Type expectedType) 
         : this(expectedType, $"The operation to get {expectedType.Name} is not permitted")
     {
     }
@@ -27,11 +27,6 @@ public record NotAllowed : FailedOperationStatus
     protected NotAllowed(Type expectedType, string message) 
         : base(StatusType.NotAllowed, expectedType, message)
     {
-    }
-    
-    public override void Throw()
-    {
-        throw ToException();
     }
 
     public override OperationException ToException()

@@ -14,7 +14,7 @@ public record InvalidInput : FailedOperationStatus
     {
     }
     
-    internal InvalidInput(Type expectedType) 
+    protected InvalidInput(Type expectedType) 
         : this(expectedType, $"The input to retrieve {expectedType.Name} is invalid")
     {
     }
@@ -27,11 +27,6 @@ public record InvalidInput : FailedOperationStatus
     protected InvalidInput(Type expectedType, string message) 
         : base(StatusType.InvalidInput, expectedType, message)
     {
-    }
-
-    public override void Throw()
-    {
-        throw ToException();
     }
 
     public override OperationException ToException()

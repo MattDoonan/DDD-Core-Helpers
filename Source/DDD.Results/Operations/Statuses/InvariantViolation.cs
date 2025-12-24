@@ -14,7 +14,7 @@ public record InvariantViolation : FailedOperationStatus
     {
     }
     
-    internal InvariantViolation(Type expectedType) 
+    protected InvariantViolation(Type expectedType) 
         : this(expectedType, $"An invariant condition was violated when retrieving {expectedType.Name}")
     {
     }
@@ -27,11 +27,6 @@ public record InvariantViolation : FailedOperationStatus
     protected InvariantViolation(Type expectedType, string message) 
         : base(StatusType.InvariantViolation, expectedType, message)
     {
-    }
-    
-    public override void Throw()
-    {
-        throw ToException();
     }
 
     public override OperationException ToException()

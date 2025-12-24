@@ -1,4 +1,5 @@
-﻿using DDD.Core.Operations.Statuses;
+﻿using DDD.Core.Operations.Exceptions;
+using DDD.Core.Operations.Statuses;
 using DDD.Core.Operations.Statuses.Abstract;
 using DDD.Core.Results.Abstract;
 using DDD.Core.Results.Exceptions;
@@ -385,22 +386,20 @@ public class ResultStatusTests
     }
     
     [Fact]
-    public void Throw_Should_ThrowException()
+    public void ThrowIfFailure_Should_ThrowException_WhenFailed()
     {
-        var result = new TestResult(OperationStatus.Success(), ResultLayer.Unknown);
-        var exception = Record.Exception(() => result.Throw());
+        var result = new TestResult(new ResultError(OperationStatus.Failure(), ResultLayer.Unknown, null));
+        var exception = Record.Exception(() => result.ThrowIfFailure());
         Assert.NotNull(exception);
-        Assert.IsType<ResultException>(exception);
+        Assert.IsType<OperationException>(exception);
     }
     
     [Fact]
-    public void Throw_WithString_Should_ThrowException_WithMessage()
+    public void ThrowIfFailure_Should_NotThrowException_WhenSuccessful()
     {
         var result = new TestResult(OperationStatus.Success(), ResultLayer.Unknown);
-        var exception = Record.Exception(() => result.Throw("Test exception"));
-        Assert.NotNull(exception);
-        Assert.IsType<ResultException>(exception);
-        Assert.Equal("Test exception", exception.Message);
+        var exception = Record.Exception(() => result.ThrowIfFailure());
+        Assert.Null(exception);
     }
     
     public sealed class TestResult : ResultStatus
