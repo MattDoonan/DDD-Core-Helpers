@@ -31,7 +31,7 @@ public static class RepositoryInstanceFactory
     /// </exception>
     public static TRepository Create<TDbContext, TRepository>(TDbContext dbContext) 
         where TDbContext : DbContext
-        where TRepository : class, ISingleRepository
+        where TRepository : class
     {
         var fromDbContextResult = CreateFromDbContext<TDbContext, TRepository>(dbContext);
         if (fromDbContextResult.IsSuccessful)
@@ -49,14 +49,14 @@ public static class RepositoryInstanceFactory
     
     private static InfraResult<TRepository> CreateFromDbContext<TDbContext, TRepository>(TDbContext dbContext)
         where TDbContext : DbContext
-        where TRepository : class, ISingleRepository
+        where TRepository : class
     {
         return CreateInstance<TRepository>(dbContext);
     }
     
     private static InfraResult<TRepository> CreateFromDbSet<TDbContext, TRepository>(TDbContext dbContext)
         where TDbContext : DbContext
-        where TRepository : class, ISingleRepository
+        where TRepository : class
     {
         foreach (var dbSetProperty in GetAllDbSets<TDbContext>())
         {
@@ -71,14 +71,12 @@ public static class RepositoryInstanceFactory
     
     private static InfraResult<TRepository> CreateFromDbSetProperty<TDbContext, TRepository>(TDbContext dbContext, PropertyInfo dbSetProperty)
         where TDbContext : DbContext
-        where TRepository : class, ISingleRepository
+        where TRepository : class
     {
         var dbSetInstance = dbSetProperty.GetValue(dbContext);
-        if (dbSetInstance is null)
-        {
-            return InfraResult.Fail<TRepository>("DbSet instance is null.");
-        }
-        return CreateInstance<TRepository>(dbSetInstance);
+        return dbSetInstance is not null 
+            ? CreateInstance<TRepository>(dbSetInstance)
+            : InfraResult.Fail<TRepository>("DbSet instance is null.");
     }
     
     
@@ -92,7 +90,7 @@ public static class RepositoryInstanceFactory
 
 
     private static InfraResult<TRepository> CreateInstance<TRepository>(params object[] args)   
-        where TRepository : class, ISingleRepository
+        where TRepository : class
     {
         try
         {

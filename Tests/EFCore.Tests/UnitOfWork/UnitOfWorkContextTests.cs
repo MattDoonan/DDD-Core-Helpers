@@ -1,5 +1,6 @@
 ﻿using DDD.Core.Repositories;
 using DDD.Core.UnitOfWork;
+using DDD.Core.UnitOfWork.Interfaces;
 using EFCore.Tests.Helpers.Contexts;
 using EFCore.Tests.Helpers.Factories;
 using EFCore.Tests.Helpers.Models;
@@ -9,11 +10,20 @@ namespace EFCore.Tests.UnitOfWork;
 
 public class UnitOfWorkContextTests
 {
+    private sealed class LikesRepository : ISingleRepository
+    {
+        public int Get()
+        { 
+            return 42;
+        }
+    }
+    
     private sealed class TestUnitOfWorkContext : UnitOfWorkContext<SocialsDbContext>
     {
         public SingleRepository<Account> Accounts => LazyGet<SingleRepository<Account>>();
         public SingleRepository<Post> Posts => LazyGet<SingleRepository<Post>>();
         public SingleRepository<Comment> Comments => LazyGet<SingleRepository<Comment>>();
+        public LikesRepository Likes => LazyGet(() => new LikesRepository());
 
         public TestUnitOfWorkContext(SocialsDbContext dbContext) : base(dbContext)
         {
@@ -24,19 +34,27 @@ public class UnitOfWorkContextTests
     [Fact]
     public void GetSingleUnitOfWork_ShouldCreateInstance_WhenCalled()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        using var dbContext = new SocialsDbContext(options);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
         var uowContext = new TestUnitOfWorkContext(dbContext);
         var repository = uowContext.Accounts;
         Assert.NotNull(repository);
         Assert.IsType<SingleRepository<Account>>(repository);
     }
+    
+    [Fact]
+    public void GetSingleUnitOfWork_UsingLazyGet_WithPredicate_ShouldCreateInstance_WhenCalled()
+    {
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var uowContext = new TestUnitOfWorkContext(dbContext);
+        var repository = uowContext.Likes;
+        Assert.NotNull(repository);
+        Assert.IsType<LikesRepository>(repository);
+    }
 
     [Fact]
     public void GetSingleUnitOfWork_ShouldReturnSameInstance_OnMultipleCalls()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        using var dbContext = new SocialsDbContext(options);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
         var uowContext = new TestUnitOfWorkContext(dbContext);
         var repo1 = uowContext.Accounts;
         var repo2 = uowContext.Accounts;
@@ -44,10 +62,19 @@ public class UnitOfWorkContextTests
     }
     
     [Fact]
+    public void GetSingleUnitOfWork_UsingLazyGet_WithPredicate_ShouldReturnSameInstance_OnMultipleCalls()
+    {
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var uowContext = new TestUnitOfWorkContext(dbContext);
+        var repository = uowContext.Likes;
+        var repository2 = uowContext.Likes;
+        Assert.Same(repository, repository2);
+    }
+    
+    [Fact]
     public async Task SaveChanges_ShouldCallDbContextSaveChanges()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        await using var dbContext = new SocialsDbContext(options);
+        await using var dbContext = ContextFactory.Create<SocialsDbContext>();
         var uowContext = new TestUnitOfWorkContext(dbContext);
         uowContext.Accounts.Add(new Account());
         var changes = await uowContext.SaveChangesAsync();
@@ -58,8 +85,7 @@ public class UnitOfWorkContextTests
     [Fact]
     public void GetSingleUnitOfWork_ShouldCreateNewRepoForDifferentTypes()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        using var dbContext = new SocialsDbContext(options);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
         var uowContext = new TestUnitOfWorkContext(dbContext);
         var accountRepo = uowContext.Accounts;
         var postRepo = uowContext.Posts;
@@ -69,8 +95,7 @@ public class UnitOfWorkContextTests
     [Fact]
     public void GetSingleUnitOfWork_ShouldCacheNewRepoForDifferentTypes()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        using var dbContext = new SocialsDbContext(options);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
         var uowContext = new TestUnitOfWorkContext(dbContext);
         var accountRepo = uowContext.Accounts;
         var postRepo = uowContext.Posts;
@@ -83,8 +108,7 @@ public class UnitOfWorkContextTests
     [Fact]
     public async Task SaveChanges_ShouldReturnFailureResult_WhenExceptionOccurs()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        var dbContext = new SocialsDbContext(options);
+        var dbContext = ContextFactory.Create<SocialsDbContext>();
         var uowContext = new TestUnitOfWorkContext(dbContext);
         await dbContext.DisposeAsync();
         var result = await uowContext.SaveChangesAsync();
@@ -94,12 +118,11 @@ public class UnitOfWorkContextTests
     [Fact]
     public void RemoveFromCache_ShouldRemoveCachedRepository_WhenCalled()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        using var dbContext = new SocialsDbContext(options);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
         var uowContext = new TestUnitOfWorkContext(dbContext);
         var accountRepo = uowContext.Accounts;
-        var isSuccessful = uowContext.RemoveFromCache<SingleRepository<Account>>();
-        Assert.True(isSuccessful);
+        var removalResult = uowContext.RemoveFromCache<SingleRepository<Account>>();
+        Assert.True(removalResult.IsSuccessful);
         var accountRepo2 = uowContext.Accounts;
         Assert.NotSame(accountRepo, accountRepo2);
     }
@@ -107,8 +130,7 @@ public class UnitOfWorkContextTests
     [Fact]
     public void ClearCache_ShouldRemoveAllCachedRepositories_WhenCalled()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        using var dbContext = new SocialsDbContext(options);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
         var uowContext = new TestUnitOfWorkContext(dbContext);
         var accountRepo = uowContext.Accounts;
         var postRepo = uowContext.Posts;

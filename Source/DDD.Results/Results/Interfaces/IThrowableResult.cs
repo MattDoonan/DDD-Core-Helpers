@@ -1,6 +1,4 @@
-﻿using DDD.Core.Results.Exceptions;
-
-namespace DDD.Core.Results.Interfaces;
+﻿namespace DDD.Core.Results.Interfaces;
 
 public interface IThrowableResult
 {

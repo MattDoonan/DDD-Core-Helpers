@@ -3,9 +3,9 @@ using DDD.Core.ValueObjects.Factories;
 using DDD.Core.ValueObjects.SingleValueObjects;
 using Xunit;
 
-namespace ValueObjectTests.Helpers;
+namespace Core.Tests.ValueObjects.TestFixtures;
 
-public abstract class ValueObjectBaseHelper<T>(T baseValue, T largerValue, T smallerValue)
+public abstract class ValueObjectTestFixture<T>(T baseValue, T largerValue, T smallerValue)
     where T : IComparable, IComparable<T>, IEquatable<T>
 {
     private record TestValueObjectBase : SingleValueObject<T>, ISingleValueObjectFactory<T, TestValueObjectBase>

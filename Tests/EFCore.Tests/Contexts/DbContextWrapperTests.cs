@@ -11,9 +11,8 @@ public class DbContextWrapperTests
     [Fact]
     public void TestDbContextWrapper_Creation_Succeeds()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        using var context = new SocialsDbContext(options);
-        var wrapper = new DbContextWrapper<SocialsDbContext>(context);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var wrapper = new DbContextWrapper<SocialsDbContext>(dbContext);
         Assert.NotNull(wrapper);
         Assert.IsType<DbContextWrapper<SocialsDbContext>>(wrapper);
     }
@@ -21,9 +20,8 @@ public class DbContextWrapperTests
     [Fact]
     public async Task SaveChangesAsync_NoChanges_ReturnsSuccess()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        await using var context = new SocialsDbContext(options);
-        var wrapper = new DbContextWrapper<SocialsDbContext>(context);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var wrapper = new DbContextWrapper<SocialsDbContext>(dbContext);
         var result = await wrapper.SaveChangesAsync();
         Assert.True(result.IsSuccessful);
     }
@@ -31,12 +29,11 @@ public class DbContextWrapperTests
     [Fact]
     public async Task SaveChangesAsync_WithChanges_ReturnsSuccess()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        await using var context = new SocialsDbContext(options);
-        var wrapper = new DbContextWrapper<SocialsDbContext>(context);
+        await using var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var wrapper = new DbContextWrapper<SocialsDbContext>(dbContext);
         
         var account = new Account();
-        context.Accounts.Add(account);
+        dbContext.Accounts.Add(account);
         
         var result = await wrapper.SaveChangesAsync();
         Assert.True(result.IsSuccessful);
@@ -45,15 +42,14 @@ public class DbContextWrapperTests
     [Fact]
     public async Task SaveChangesAsync_WithInvalidChanges_ReturnsFailure()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        await using var context = new SocialsDbContext(options);
-        var wrapper = new DbContextWrapper<SocialsDbContext>(context);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var wrapper = new DbContextWrapper<SocialsDbContext>(dbContext);
         var account = new Account(AccountId.Create().Output);
-        context.Accounts.Add(account);
+        dbContext.Accounts.Add(account);
         var result1 = await wrapper.SaveChangesAsync();
         Assert.True(result1.IsSuccessful);
-        var accountDuplicate = context.Accounts.First();
-        context.Accounts.Add(accountDuplicate); 
+        var accountDuplicate = dbContext.Accounts.First();
+        dbContext.Accounts.Add(accountDuplicate); 
         var result2 = await wrapper.SaveChangesAsync();
         Assert.True(result2.IsFailure);
     }
@@ -61,9 +57,8 @@ public class DbContextWrapperTests
     [Fact]
     public async Task SaveChangesAsync_CancellationRequested_ReturnsFailure()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        await using var context = new SocialsDbContext(options);
-        var wrapper = new DbContextWrapper<SocialsDbContext>(context);
+        await using var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var wrapper = new DbContextWrapper<SocialsDbContext>(dbContext);
         using var cts = new CancellationTokenSource();
         await cts.CancelAsync();
         var result = await wrapper.SaveChangesAsync(cts.Token);
@@ -74,10 +69,9 @@ public class DbContextWrapperTests
     [Fact]
     public async Task SaveChangesAsync_WhenDbContextIsDisposed_Should_ReturnFailure()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        var context = new SocialsDbContext(options);
-        var wrapper = new DbContextWrapper<SocialsDbContext>(context);
-        await context.DisposeAsync();
+        var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var wrapper = new DbContextWrapper<SocialsDbContext>(dbContext);
+        await dbContext.DisposeAsync();
         var result = await wrapper.SaveChangesAsync();
         Assert.True(result.IsFailure);
     }
@@ -85,9 +79,8 @@ public class DbContextWrapperTests
     [Fact]
     public void SaveChanges_NoChanges_ReturnsSuccess()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        using var context = new SocialsDbContext(options);
-        var wrapper = new DbContextWrapper<SocialsDbContext>(context);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var wrapper = new DbContextWrapper<SocialsDbContext>(dbContext);
         var result = wrapper.SaveChanges();
         Assert.True(result.IsSuccessful);
     }
@@ -95,12 +88,11 @@ public class DbContextWrapperTests
     [Fact]
     public void SaveChanges_WithChanges_ReturnsSuccess()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        using var context = new SocialsDbContext(options);
-        var wrapper = new DbContextWrapper<SocialsDbContext>(context);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var wrapper = new DbContextWrapper<SocialsDbContext>(dbContext);
         
         var account = new Account();
-        context.Accounts.Add(account);
+        dbContext.Accounts.Add(account);
         
         var result = wrapper.SaveChanges();
         Assert.True(result.IsSuccessful);
@@ -109,15 +101,14 @@ public class DbContextWrapperTests
     [Fact]
     public void SaveChanges_WithInvalidChanges_ReturnsFailure()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        using var context = new SocialsDbContext(options);
-        var wrapper = new DbContextWrapper<SocialsDbContext>(context);
+        using var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var wrapper = new DbContextWrapper<SocialsDbContext>(dbContext);
         var account = new Account(AccountId.Create().Output);
-        context.Accounts.Add(account);
+        dbContext.Accounts.Add(account);
         var result1 = wrapper.SaveChanges();
         Assert.True(result1.IsSuccessful);
-        var accountDuplicate = context.Accounts.First();
-        context.Accounts.Add(accountDuplicate); 
+        var accountDuplicate = dbContext.Accounts.First();
+        dbContext.Accounts.Add(accountDuplicate); 
         var result2 = wrapper.SaveChanges();
         Assert.True(result2.IsFailure);
     }
@@ -125,10 +116,9 @@ public class DbContextWrapperTests
     [Fact]
     public void SaveChanges_WhenDbContextIsDisposed_Should_ReturnFailure()
     {
-        var options = ContextOptionsFactory.Create<SocialsDbContext>();
-        var context = new SocialsDbContext(options);
-        var wrapper = new DbContextWrapper<SocialsDbContext>(context);
-        context.Dispose();
+        var dbContext = ContextFactory.Create<SocialsDbContext>();
+        var wrapper = new DbContextWrapper<SocialsDbContext>(dbContext);
+        dbContext.Dispose();
         var result = wrapper.SaveChanges();
         Assert.True(result.IsFailure);
     }

@@ -1,5 +1,7 @@
-﻿using DDD.Core.Contexts;
+﻿using System.Linq.Expressions;
+using DDD.Core.Contexts;
 using DDD.Core.Factories;
+using DDD.Core.Results;
 using DDD.Core.UnitOfWork.Interfaces;
 
 namespace DDD.Core.UnitOfWork;
@@ -40,7 +42,7 @@ public class UnitOfWorkContext<TDbContext> : DbContextWrapper<TDbContext>
     ///         Use this method within your derived Unit of Work context to access repositories.
     ///         It ensures that each repository is created only once and cached for future use.
     ///         For example:
-    ///         public IRepository Repository => LazyGet<Repository>();
+    ///         public IRepository Repository => LazyGet<Repository/>();
     ///     </para>
     /// </remarks>
     /// </summary>
@@ -51,12 +53,34 @@ public class UnitOfWorkContext<TDbContext> : DbContextWrapper<TDbContext>
     /// The repository instance of the specified type.
     /// </returns>
     protected TRepository LazyGet<TRepository>() 
-        where TRepository : class, ISingleRepository
+        where TRepository : class
     {
         var cachedRepositoryResult = _repositoryCache.Get<TRepository>();
         return cachedRepositoryResult.IsSuccessful 
             ? cachedRepositoryResult.Output 
             : CreateAndCacheRepository<TRepository>();
+    }
+
+    /// <summary>
+    /// Lazily gets or creates a repository using the provided predicate.
+    /// This method allows for custom repository instantiation logic.
+    /// </summary>
+    /// <param name="creationPredicate">
+    /// An expression that defines how to create the repository if it is not already cached.
+    /// </param>
+    /// <typeparam name="TRepository">
+    /// The type of repository to get or create.
+    /// </typeparam>
+    /// <returns>
+    /// The repository instance of the specified type.
+    /// </returns>
+    protected TRepository LazyGet<TRepository>(Expression<Func<TRepository>> creationPredicate)
+        where TRepository : class, ISingleRepository
+    {
+        var cachedRepositoryResult = _repositoryCache.Get<TRepository>();
+        return cachedRepositoryResult.IsSuccessful 
+            ? cachedRepositoryResult.Output 
+            : CreateAndCacheRepository(creationPredicate);
     }
     
     
@@ -67,9 +91,9 @@ public class UnitOfWorkContext<TDbContext> : DbContextWrapper<TDbContext>
     /// The type of repository to remove.
     /// </typeparam>
     /// <returns>
-    /// True if the repository was successfully removed; otherwise, false.
+    /// The result of the removal operation.
     /// </returns>
-    public bool RemoveFromCache<TRepository>() 
+    public InfraResult RemoveFromCache<TRepository>() 
         where TRepository : class, ISingleRepository
     {
         return _repositoryCache.Remove<TRepository>();
@@ -84,10 +108,24 @@ public class UnitOfWorkContext<TDbContext> : DbContextWrapper<TDbContext>
     }
     
     private TRepository CreateAndCacheRepository<TRepository>() 
-        where TRepository : class, ISingleRepository
+        where TRepository : class
     {
         var repository = RepositoryInstanceFactory.Create<TDbContext, TRepository>(Context);
-        _repositoryCache.Add(repository);
+        CacheRepository(repository);
         return repository;
+    }
+    
+    private TRepository CreateAndCacheRepository<TRepository>(Expression<Func<TRepository>> creationPredicate) 
+        where TRepository : class
+    {
+        var repository = creationPredicate.Compile().Invoke();
+        CacheRepository(repository);
+        return repository;
+    }
+    
+    private void CacheRepository<TRepository>(TRepository repository) 
+        where TRepository : class
+    {
+        _repositoryCache.Add(repository);
     }
 }

@@ -4,7 +4,7 @@ using DDD.Core.ValueObjects.Factories;
 using DDD.Core.ValueObjects.Identifiers;
 using Xunit;
 
-namespace ValueObjectTests;
+namespace Core.Tests.Lists;
 
 public class IdentifierListTests
 {

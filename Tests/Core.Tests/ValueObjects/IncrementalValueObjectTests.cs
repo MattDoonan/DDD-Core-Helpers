@@ -3,7 +3,7 @@ using DDD.Core.ValueObjects.Factories;
 using DDD.Core.ValueObjects.SingleValueObjects.Types;
 using Xunit;
 
-namespace ValueObjectTests;
+namespace Core.Tests.ValueObjects;
 
 public class IncrementalValueObjectTests
 {
