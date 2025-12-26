@@ -32,7 +32,7 @@ public static class ExitCode
     /// </returns>
     public static async Task<int> FromResultAsync<T>(Task<Result<T>> resultTask)
     {
-        return FromBool((await resultTask).IsSuccessful);
+        return FromResult(await resultTask);
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public static class ExitCode
     /// </returns>
     public static async Task<int> FromResultAsync(Task<Result> result)
     {
-        return FromBool((await result).IsSuccessful);
+        return FromResult(await result);
     }
 
     /// <summary>
