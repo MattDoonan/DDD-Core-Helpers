@@ -8,7 +8,7 @@ namespace Results.Tests.Constants;
 public class ExitCodeExtensionsTests
 {
     [Fact]
-    public async Task ToExitCodeAsync_WithSuccessfulResult_Should_Return1()
+    public async Task ToExitCodeAsync_WithSuccessfulResult_Should_ReturnSuccessCode()
     {
         var resultTask = Task.FromResult(Result.Pass());
         var exitCode = await resultTask.ToExitCodeAsync();
@@ -16,7 +16,7 @@ public class ExitCodeExtensionsTests
     }
 
     [Fact]
-    public async Task ToExitCodeAsync_WithFailedResult_Should_Return0()
+    public async Task ToExitCodeAsync_WithFailedResult_Should_ReturnFailureCode()
     {
         var resultTask = Task.FromResult(Result.Fail("Error"));
         var exitCode = await resultTask.ToExitCodeAsync();
@@ -24,7 +24,7 @@ public class ExitCodeExtensionsTests
     }
     
     [Fact]
-    public async Task ToExitCodeAsync_WithSuccessfulTypedResult_Should_Return1()
+    public async Task ToExitCodeAsync_WithSuccessfulTypedResult_Should_ReturnSuccessCode()
     {
         var resultTask = Task.FromResult(Result.Pass("Success"));
         var exitCode = await resultTask.ToExitCodeAsync();
@@ -32,7 +32,7 @@ public class ExitCodeExtensionsTests
     }
 
     [Fact]
-    public async Task ToExitCodeAsync_WithFailedTypedResult_Should_Return0()
+    public async Task ToExitCodeAsync_WithFailedTypedResult_Should_ReturnFailureCode()
     {
         var resultTask = Task.FromResult(Result.Fail<string>("Error"));
         var exitCode = await resultTask.ToExitCodeAsync();

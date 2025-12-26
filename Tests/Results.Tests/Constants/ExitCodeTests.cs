@@ -7,19 +7,19 @@ namespace Results.Tests.Constants;
 public class ExitCodeTests
 {
     [Fact]
-    public void ExitCode_Success_Should_Be1()
+    public void ExitCode_Success_Should_Be0()
     {
-        Assert.Equal(1, ExitCode.Success);
+        Assert.Equal(0, ExitCode.Success);
     }
 
     [Fact]
-    public void ExitCode_Failure_Should_Be0()
+    public void ExitCode_Failure_Should_Be1()
     {
-        Assert.Equal(0, ExitCode.Failure);
+        Assert.Equal(1, ExitCode.Failure);
     }
     
     [Fact]
-    public async Task FromResultAsync_Should_Return1_WhenResultIsSuccessful()
+    public async Task FromResultAsync_Should_ReturnSuccessCode_WhenResultIsSuccessful()
     {
         var resultTask = Task.FromResult(Result.Pass());
         var exitCode = await ExitCode.FromResultAsync(resultTask);
@@ -27,7 +27,7 @@ public class ExitCodeTests
     }
 
     [Fact]
-    public async Task FromResultAsync_Should_Return0_WhenResultIsFailure()
+    public async Task FromResultAsync_Should_ReturnFailureCode_WhenResultIsFailure()
     {
         var resultTask = Task.FromResult(Result.Fail("Error"));
         var exitCode = await ExitCode.FromResultAsync(resultTask);
@@ -35,7 +35,7 @@ public class ExitCodeTests
     }
     
     [Fact]
-    public async Task FromTypedResultAsync_Should_Return1_WhenResultIsSuccessful()
+    public async Task FromTypedResultAsync_Should_ReturnSuccessCode_WhenResultIsSuccessful()
     {
         var resultTask = Task.FromResult(Result.Pass("Success"));
         var exitCode = await ExitCode.FromResultAsync(resultTask);
@@ -43,7 +43,7 @@ public class ExitCodeTests
     }
 
     [Fact]
-    public async Task FromTypedResultAsync_Should_Return0_WhenResultIsFailure()
+    public async Task FromTypedResultAsync_Should_ReturnFailureCode_WhenResultIsFailure()
     {
         var resultTask = Task.FromResult(Result.Fail<string>("Error"));
         var exitCode = await ExitCode.FromResultAsync(resultTask);
@@ -51,7 +51,7 @@ public class ExitCodeTests
     }
     
     [Fact]
-    public void FromResult_Should_Return1_WhenResultIsSuccessful()
+    public void FromResult_Should_ReturnSuccessCode_WhenResultIsSuccessful()
     {
         var result = Result.Pass();
         var exitCode = ExitCode.FromBool(result.IsSuccessful);
@@ -59,7 +59,7 @@ public class ExitCodeTests
     }
 
     [Fact]
-    public void FromResult_Should_Return0_WhenResultIsFailure()
+    public void FromResult_Should_ReturnFailureCode_WhenResultIsFailure()
     {
         var result = Result.Fail("Error");
         var exitCode = ExitCode.FromBool(result.IsSuccessful);
@@ -67,7 +67,7 @@ public class ExitCodeTests
     }
     
     [Fact]
-    public void FromTypedResult_Should_Return1_WhenResultIsSuccessful()
+    public void FromTypedResult_Should_ReturnSuccessCode_WhenResultIsSuccessful()
     {
         var result = Result.Pass("Success");
         var exitCode = ExitCode.FromBool(result.IsSuccessful);
@@ -75,7 +75,7 @@ public class ExitCodeTests
     }
 
     [Fact]
-    public void FromTypedResult_Should_Return0_WhenResultIsFailure()
+    public void FromTypedResult_Should_ReturnFailureCode_WhenResultIsFailure()
     {
         var result = Result.Fail<string>("Error");
         var exitCode = ExitCode.FromBool(result.IsSuccessful);
